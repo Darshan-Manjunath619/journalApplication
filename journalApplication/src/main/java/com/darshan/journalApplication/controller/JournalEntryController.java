@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class JournalEntryController {
 
+
+    // right now we are storing the data in the temporary storage in the map
     private Map<Long , JournalEntry> journalEntries = new HashMap<>();
 
     @GetMapping
@@ -26,11 +28,14 @@ public class JournalEntryController {
         return true;
     }
 
+    // Get request with path
     @GetMapping("/{id}")
     public JournalEntry getById(@PathVariable Long id){
             return journalEntries.get(id);
         }
 
+
+    // Get Request with request paramater
     @GetMapping("/search")
     public List<JournalEntry> searchByTitle(@RequestParam String title) {
         List<JournalEntry> result = new ArrayList<>();
