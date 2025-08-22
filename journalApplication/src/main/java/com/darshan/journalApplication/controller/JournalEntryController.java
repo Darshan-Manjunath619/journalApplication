@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class JournalEntryController {
 
+
+    // right now we are storing the data in the temporary storage in the map
     private Map<Long , JournalEntry> journalEntries = new HashMap<>();
 
     @GetMapping
