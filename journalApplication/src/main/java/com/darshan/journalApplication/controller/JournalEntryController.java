@@ -47,14 +47,16 @@ public class JournalEntryController {
         return result;
     }
 
-    @DeleteMapping("{id}")
-    public JournalEntry deleteById(@PathVariable Long id){
-        return journalEntries.remove(id);
-    }
-
+    // put request with parameter
     @PutMapping("{id}")
     public JournalEntry putById(@PathVariable Long id , @RequestBody JournalEntry myEntry){
         return journalEntries.put(id , myEntry);
+    }
+
+    // delete request with parameter
+    @DeleteMapping("{id}")
+    public JournalEntry deleteById(@PathVariable Long id){
+        return journalEntries.remove(id);
     }
 
 }

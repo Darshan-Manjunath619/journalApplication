@@ -11,7 +11,7 @@ public class HealthCheck {
     @GetMapping
 
     public static String health(){
-        return "ok application is running !";
+        return "ok application is running with port 8080 in local !";
     }
 
 }
