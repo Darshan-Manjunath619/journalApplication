@@ -5,6 +5,7 @@ import com.darshan.journalApplication.service.JournalEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,16 +22,17 @@ public class JournalEntryControllerV2 {
 
         @GetMapping
         public List<JournalEntry> getAll(){
-            return null;
+            return journalEntryService.getAll();
         }
 
         @PostMapping
-        public boolean createEntry(@RequestBody JournalEntry myEntry){
+        public JournalEntry createEntry(@RequestBody JournalEntry myEntry){
+            myEntry.setDate(LocalDateTime.now());
             journalEntryService.EntryRecord(myEntry);
-            return true;
+            return myEntry;
         }
 
-        // Get request with path
+        // Get request with path(id)
         @GetMapping("/{id}")
         public JournalEntry getById(@PathVariable Long id){
             return null;
