@@ -4,6 +4,7 @@ import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.repository.JournalEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import java.util.List;
 
 @Component
 public class JournalEntryService {
@@ -13,5 +14,9 @@ public class JournalEntryService {
 
     public void EntryRecord(JournalEntry journalEntry){
         journalEntryRepository.save(journalEntry);
+    }
+
+    public List<JournalEntry> getAll(){
+        return journalEntryRepository.findAll();
     }
 }
