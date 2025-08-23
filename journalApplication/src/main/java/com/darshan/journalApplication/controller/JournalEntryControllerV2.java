@@ -2,14 +2,12 @@ package com.darshan.journalApplication.controller;
 
 import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.service.JournalEntryService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/journal")
@@ -34,8 +32,8 @@ public class JournalEntryControllerV2 {
 
         // Get request with path(id)
         @GetMapping("/{id}")
-        public JournalEntry getById(@PathVariable Long id){
-            return null;
+        public Optional<JournalEntry> getById(@PathVariable ObjectId id){
+            return journalEntryService.getById(id);
         }
 
 
@@ -48,13 +46,13 @@ public class JournalEntryControllerV2 {
 
         // put request with parameter
         @PutMapping("{id}")
-        public JournalEntry putById(@PathVariable Long id , @RequestBody JournalEntry myEntry){
+        public JournalEntry putById(@PathVariable ObjectId id , @RequestBody JournalEntry myEntry){
             return null;
         }
 
         // delete request with parameter
         @DeleteMapping("{id}")
-        public JournalEntry deleteById(@PathVariable Long id){
+        public JournalEntry deleteById(@PathVariable ObjectId id){
             return null;
         }
 
