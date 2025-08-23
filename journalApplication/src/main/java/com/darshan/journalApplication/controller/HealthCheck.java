@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("health")
 
 public class HealthCheck {
+
+    // Get request to verify the application is running
     @GetMapping
 
     public static String health(){
