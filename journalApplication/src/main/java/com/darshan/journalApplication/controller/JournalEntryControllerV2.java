@@ -4,6 +4,9 @@ import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.service.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -18,57 +21,68 @@ public class JournalEntryControllerV2 {
 
     // Get all entries
     @GetMapping
-    public List<JournalEntry> getAll() {
-        return journalEntryService.getAll();
-    }
-
-    // Create new entry
-    @PostMapping
-    public JournalEntry createEntry(@RequestBody JournalEntry myEntry) {
-        myEntry.setDate(LocalDateTime.now()); // Use java.util.Date for consistency with entity
-        journalEntryService.EntryRecord(myEntry);
-        return myEntry;
-    }
-
-    // Get request with path variable (id)
-    @GetMapping("/{id}")
-    public Optional<JournalEntry> getById(@PathVariable ObjectId id) {
-        return journalEntryService.getById(id);
-    }
-
-    // Search by title (for future implementation)
-    @GetMapping("/search")
-    public List<JournalEntry> searchByTitle(@RequestParam String title) {
-        // TODO: implement search logic later
-        return Collections.emptyList();
-    }
-
-    // Update entry by id
-    @PutMapping("/{id}")
-    public Optional<JournalEntry> putById(@PathVariable ObjectId id, @RequestBody JournalEntry newEntry) {
-        Optional<JournalEntry> oldEntryOpt = journalEntryService.getById(id);
-
-        if (oldEntryOpt.isPresent()) {
-            JournalEntry oldEntry = oldEntryOpt.get();
-
-            if (newEntry.getTitle() != null && !newEntry.getTitle().isEmpty()) {
-                oldEntry.setTitle(newEntry.getTitle());
-            }
-
-            if (newEntry.getContent() != null && !newEntry.getContent().isEmpty()) {
-                oldEntry.setContent(newEntry.getContent());
-            }
-
-            journalEntryService.EntryRecord(oldEntry);
-            return Optional.of(oldEntry);
+    public ResponseEntity<?> getAll() {
+        List<JournalEntry> all = journalEntryService.getAll();
+        if(all != null && !all.isEmpty()){
+            return new ResponseEntity<>(all , HttpStatus.OK);
         }
-        return Optional.empty();
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    // Delete entry by id
-    @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable ObjectId id) {
-        journalEntryService.deleteById(id);
-        return true;
+        // Create new entry
+        @PostMapping
+        public ResponseEntity<JournalEntry> createEntry (@RequestBody JournalEntry myEntry){
+            try {
+                myEntry.setDate(LocalDateTime.now()); // Use java.util.Date for consistency with entity
+                journalEntryService.EntryRecord(myEntry);
+                return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+
+        // Get request with path variable (id)
+        @GetMapping("/{id}")
+        public ResponseEntity<JournalEntry> getById (@PathVariable ObjectId id){
+            Optional<JournalEntry> journalEntry = journalEntryService.getById(id);
+            if (journalEntry.isPresent()) {
+                return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            }
+        }
+
+
+        // Update entry by id
+        @PutMapping("/{id}")
+        public ResponseEntity<?> putById (@PathVariable ObjectId id, @RequestBody JournalEntry newEntry){
+            Optional<JournalEntry> oldEntryOpt = journalEntryService.getById(id);
+
+            if (oldEntryOpt.isPresent()) {
+                JournalEntry oldEntry = oldEntryOpt.get();
+
+                if (newEntry.getTitle() != null && !newEntry.getTitle().isEmpty()) {
+                    oldEntry.setTitle(newEntry.getTitle());
+                }
+
+                if (newEntry.getContent() != null && !newEntry.getContent().isEmpty()) {
+                    oldEntry.setContent(newEntry.getContent());
+                }
+
+                journalEntryService.EntryRecord(oldEntry);
+                return new ResponseEntity<>(oldEntry ,HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Delete entry by id
+        @DeleteMapping("/{id}")
+        public ResponseEntity<?> deleteById (@PathVariable ObjectId id){
+            journalEntryService.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
-}
