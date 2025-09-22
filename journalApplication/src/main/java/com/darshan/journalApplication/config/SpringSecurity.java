@@ -32,7 +32,8 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/journal/**", "/user/**").authenticated()  // 🔐 Requires authentication
+                        .requestMatchers("/journal/**", "/user/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")// 🔐 Requires authentication
                         .anyRequest().permitAll())                                   // ✅ Open to everyone else
                 .httpBasic(Customizer.withDefaults())                                // Use HTTP Basic auth
                 .csrf(AbstractHttpConfigurer::disable)                               // Disable CSRF for APIs
