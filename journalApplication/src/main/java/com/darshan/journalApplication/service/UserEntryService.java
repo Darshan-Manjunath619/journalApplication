@@ -29,7 +29,7 @@ public class UserEntryService {
 
     public void saveNewUser(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(Arrays.asList("USER"));
+        user.setRole(Arrays.asList("USER" , "ADMIN"));
         userEntryRepository.save(user);
     }
 
