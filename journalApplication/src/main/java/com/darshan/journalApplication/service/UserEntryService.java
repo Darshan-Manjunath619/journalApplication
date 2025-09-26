@@ -43,8 +43,6 @@ public class UserEntryService {
               log.info("Error while using info");
               log.error("Error occured for {}: "  ,user.getUserName() ,e);
               log.warn("Error while using warn");
-              log.debug("Error while using debug");
-              log.trace("Error while using trace");
         }
 
     }
