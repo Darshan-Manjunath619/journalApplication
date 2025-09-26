@@ -1,0 +1,20 @@
+---
+spring:
+  profiles:
+    active: dev
+
+
+logging:
+  level:
+    com:
+      darshan:
+        journalApplication: TRACE
+
+
+# Severity levels available:
+# TRACE
+# DEBUG
+# INFO
+# WARN
+# ERROR
+# OFF
