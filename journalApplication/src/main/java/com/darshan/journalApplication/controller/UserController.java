@@ -1,7 +1,7 @@
 package com.darshan.journalApplication.controller;
 
 
-import com.darshan.journalApplication.apiresponse.weatherResponse;
+import com.darshan.journalApplication.apiresponse.WeatherResponse;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.repository.UserEntryRepository;
 import com.darshan.journalApplication.service.UserEntryService;
@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -48,11 +46,11 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> greetings(){
        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        weatherResponse bangalore = weatherService.getWeather("Bangalore");
-        String greetings = "";
+        WeatherResponse bangalore = weatherService.getWeather("Bangalore");
+        String greetings = " ";
         if(bangalore != null){
             greetings = "Weather Feels like " + bangalore.getCurrent().getFeelslike();
         }
-        return new ResponseEntity<>("Hello" + authentication.getName() + greetings , HttpStatus.OK);
+        return new ResponseEntity<>("Hello " + authentication.getName() + greetings , HttpStatus.OK);
     }
 }
