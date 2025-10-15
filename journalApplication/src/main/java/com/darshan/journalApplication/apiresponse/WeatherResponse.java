@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-public class weatherResponse {
+public class WeatherResponse {
 
     private Current current;
 
