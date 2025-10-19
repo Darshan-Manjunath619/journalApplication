@@ -21,8 +21,9 @@ public class AdminController {
         return new ResponseEntity<>(all,HttpStatus.OK);
     }
 
-    @PostMapping
-    public void createAdminUser(@RequestBody User user){
+    //User SignUp
+    @PostMapping("/signup")
+    public void signUp(@RequestBody User user){
         userEntryService.saveNewUser(user);
     }
 }
