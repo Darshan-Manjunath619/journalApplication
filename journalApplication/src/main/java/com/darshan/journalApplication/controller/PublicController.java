@@ -1,9 +1,11 @@
 package com.darshan.journalApplication.controller;
 
+import com.darshan.journalApplication.dto.UserDto;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.service.UserDetailsImp;
 import com.darshan.journalApplication.service.UserEntryService;
 import com.darshan.journalApplication.utils.JwtUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("public")
 @Slf4j
-
+@Tag(name = "Public Controller" ,description = "Health , Login Controllers")
 public class PublicController {
 
     @Autowired
@@ -33,14 +35,14 @@ public class PublicController {
     private JwtUtil jwtUtil;
 
     // Health Controller
-    @GetMapping
+    @GetMapping("/health-checkup")
     public static String health(){
         return "ok application is running with port 8080 in local !";
     }
 
     //User Login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user){
+    public ResponseEntity<String> login(@RequestBody UserDto user){
         try{
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUserName(),user.getPassword()));
