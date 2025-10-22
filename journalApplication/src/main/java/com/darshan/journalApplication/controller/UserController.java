@@ -53,6 +53,6 @@ public class UserController {
         if(bangalore != null){
             greetings = "Weather Feels like " + bangalore.getCurrent().getFeelslike();
         }
-        return new ResponseEntity<>("Hello " + authentication.getName() + greetings , HttpStatus.OK);
+        return new ResponseEntity<>("Hello " + authentication.getName().toUpperCase()+ " " + greetings , HttpStatus.OK);
     }
 }
