@@ -44,11 +44,6 @@
 		</dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.38</version>
@@ -70,35 +65,24 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
-		<!-- JWT API for creating and parsing tokens -->
+		<!-- Spring Data JPA / Hibernate -->
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-api</artifactId>
-			<version>0.12.3</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- Provides JWT implementation (signing, parsing, etc.) -->
+		<!-- MySQL JDBC Driver -->
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-impl</artifactId>
-			<version>0.12.3</version>
-			<scope>runtime</scope>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>
 		</dependency>
 
-		<!-- Adds JSON serialization/deserialization (using Jackson) -->
+		<!-- Optional: Flyway -->
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId>
-			<version>0.12.3</version>
-			<scope>runtime</scope>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.5.0</version>
-		</dependency>
-
 
 	</dependencies>
 	<build>
