@@ -51,11 +51,11 @@ public class UserEntryService {
         return userEntryRepository.findAll();
     }
 
-    public Optional<User> getById(ObjectId id){
+    public Optional<User> getById(Long id){
         return userEntryRepository.findById(id);
     }
 
-    public void deleteById(ObjectId id){
+    public void deleteById(Long id){
          userEntryRepository.deleteById(id);
     }
 
