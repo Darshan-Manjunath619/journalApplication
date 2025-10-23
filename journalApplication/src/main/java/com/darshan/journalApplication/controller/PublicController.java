@@ -1,6 +1,5 @@
 package com.darshan.journalApplication.controller;
 
-import com.darshan.journalApplication.dto.UserDto;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.service.UserDetailsImp;
 import com.darshan.journalApplication.service.UserEntryService;
@@ -40,9 +39,14 @@ public class PublicController {
         return "ok application is running with port 8080 in local !";
     }
 
+    @PostMapping("/signup")
+    public void signUp(@RequestBody User user){
+        userEntryService.saveNewUser(user);
+    }
+
     //User Login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto user){
+    public ResponseEntity<String> login(@RequestBody User user){
         try{
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUserName(),user.getPassword()));
