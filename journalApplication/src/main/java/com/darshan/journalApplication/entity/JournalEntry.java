@@ -1,30 +1,30 @@
 package com.darshan.journalApplication.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-//Verifying from git
-
+import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
-@Document(collection = "journal_entries")
-//This annonation is used to tell springboot this is a collection that will be stored as mongodb document
+@Entity
+@Table(name = "journal_entries")
 @Data
-// Just adding this will add all the gettter and setter.
 @NoArgsConstructor
-
+@AllArgsConstructor
+@Builder
 public class JournalEntry {
+
     @Id
-    private ObjectId id;
-    @NonNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     private LocalDateTime date;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id") // FK column
+    private User user;
 }
