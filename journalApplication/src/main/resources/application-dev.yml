@@ -4,11 +4,27 @@ spring:
   redis:
     host: localhost
     port: 6379
-  data:
-    mongodb:
-      uri: mongodb+srv://darshanmanjunath619_db_user:hx4hVcfej4byclQc@cluster0.iynzcwe.mongodb.net/journalDB?retryWrites=true&w=majority&appName=Cluster0
-      database: journaldb
-      auto-index-creation: true
+#  data:
+#    mongodb:
+#      uri: mongodb+srv://darshanmanjunath619_db_user:hx4hVcfej4byclQc@cluster0.iynzcwe.mongodb.net/journalDB?retryWrites=true&w=majority&appName=Cluster0
+#      database: journaldb
+#      auto-index-creation: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/JournalApplication?useSSL=false&serverTimezone=UTC
+    username: root
+    password: pass@123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # creates/updates tables automatically (use 'validate' in production)
+    show-sql: true        # shows generated SQL queries in the console
+    properties:
+      hibernate:
+        format_sql: true  # formats SQL nicely
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
   mail:
     host: smtp.gmail.com
     port: 587
