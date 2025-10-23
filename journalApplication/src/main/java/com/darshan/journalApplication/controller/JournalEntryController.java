@@ -58,7 +58,7 @@ public class JournalEntryController {
 
         // Get request with path variable (id)
         @GetMapping("/id/{id}")
-        public ResponseEntity<JournalEntry> getById (@PathVariable ObjectId id){
+        public ResponseEntity<JournalEntry> getById (@PathVariable Long id){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
             User byUserName = userEntryService.findByUserName(userName);
@@ -75,7 +75,7 @@ public class JournalEntryController {
 
         // Update entry by id
         @PutMapping("/{id}")
-        public ResponseEntity<?> putById (@PathVariable ObjectId id,
+        public ResponseEntity<?> putById (@PathVariable Long id,
                                           @RequestBody JournalEntry newEntry
         ){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -103,7 +103,7 @@ public class JournalEntryController {
        //Delete entry by id
 
         @DeleteMapping("/{id}")
-        public ResponseEntity<?> deleteById (@PathVariable ObjectId id){
+        public ResponseEntity<?> deleteById (@PathVariable Long id){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
             journalEntryService.deleteById(id , userName);

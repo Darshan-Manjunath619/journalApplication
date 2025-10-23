@@ -41,12 +41,12 @@ public class JournalEntryService {
         return journalEntryRepository.findAll();
     }
 
-    public Optional<JournalEntry> getById(ObjectId id) {
+    public Optional<JournalEntry> getById(Long id) {
         return journalEntryRepository.findById(id);
     }
 
     @Transactional
-    public void deleteById(ObjectId id, String userName) {
+    public void deleteById(Long id, String userName) {
         try {
             User user = userEntryService.findByUserName(userName);
             boolean b = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
