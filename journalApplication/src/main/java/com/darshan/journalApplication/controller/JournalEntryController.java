@@ -4,6 +4,7 @@ import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.service.JournalEntryService;
 import com.darshan.journalApplication.service.UserEntryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "Journal Entries" , description = "ReadAll,Create,GetById,UpdateById,DeleteById")
 public class JournalEntryController {
 
     @Autowired
