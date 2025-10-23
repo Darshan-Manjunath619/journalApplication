@@ -18,12 +18,15 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # creates/updates tables automatically (use 'validate' in production)
-    show-sql: true        # shows generated SQL queries in the console
+      ddl-auto: update   # creates/updates tables automatically (use 'validate' in production) # shows generated SQL queries in the console
     properties:
       hibernate:
         format_sql: true  # formats SQL nicely
         dialect: org.hibernate.dialect.MySQL8Dialect
+
+  flyway:
+      enabled: false
+
 
   mail:
     host: smtp.gmail.com
