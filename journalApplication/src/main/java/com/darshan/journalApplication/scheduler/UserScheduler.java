@@ -2,10 +2,9 @@ package com.darshan.journalApplication.scheduler;
 
 import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.entity.User;
-import com.darshan.journalApplication.repository.UserImp;
+import com.darshan.journalApplication.repository.UserEntryRepository;
 import com.darshan.journalApplication.service.EmailService;
 import com.darshan.journalApplication.service.SentimentAnalysis;
-import com.darshan.journalApplication.service.UserDetailsImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,14 +21,14 @@ public class UserScheduler {
     private SentimentAnalysis sentimentAnalysis;
 
     @Autowired
-    private UserImp userImp;
+    private EmailService emailService;
 
     @Autowired
-    private EmailService emailService;
+    private UserEntryRepository userEntryRepository;
 
     @Scheduled(cron = "0 0 9 * * SUN")
     public void fetchUserAndSentimentAnalysis(){
-        List<User> users = userImp.getAllUsersSa();
+        List<User> users = userEntryRepository.findByEmailIsNotNullAndSentimentAnalysisTrue();
         for(User user : users){
             List<JournalEntry> journalEntries = user.getJournalEntries();
             List<String> collect = journalEntries.stream().filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS))).map(x -> x.getContent()).collect(Collectors.toList());
