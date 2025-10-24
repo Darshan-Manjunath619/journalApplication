@@ -3,7 +3,6 @@ import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.repository.JournalEntryRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +25,7 @@ public class JournalEntryService {
     public void EntryRecord(JournalEntry journalEntry, String userName) {
             User user = userEntryService.findByUserName(userName);
             journalEntry.setDate(LocalDateTime.now());
+            journalEntry.setUser(user);
             JournalEntry saved = journalEntryRepository.save(journalEntry);
             user.getJournalEntries().add(saved);
             userEntryService.saveEntry(user);
@@ -41,12 +41,12 @@ public class JournalEntryService {
         return journalEntryRepository.findAll();
     }
 
-    public Optional<JournalEntry> getById(ObjectId id) {
+    public Optional<JournalEntry> getById(Long id) {
         return journalEntryRepository.findById(id);
     }
 
     @Transactional
-    public void deleteById(ObjectId id, String userName) {
+    public void deleteById(Long id, String userName) {
         try {
             User user = userEntryService.findByUserName(userName);
             boolean b = user.getJournalEntries().removeIf(x -> x.getId().equals(id));

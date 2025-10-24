@@ -1,13 +1,10 @@
 package com.darshan.journalApplication.repository;
 
 import com.darshan.journalApplication.entity.JournalEntry;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@Component
-public interface JournalEntryRepository extends MongoRepository<JournalEntry, ObjectId> {
-
-
-
+@Repository
+public interface JournalEntryRepository extends JpaRepository<JournalEntry, Long> {
+    // Add any custom queries if needed
 }

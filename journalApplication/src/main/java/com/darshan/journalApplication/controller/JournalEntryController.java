@@ -5,7 +5,6 @@ import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.service.JournalEntryService;
 import com.darshan.journalApplication.service.UserEntryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +59,7 @@ public class JournalEntryController {
 
         // Get request with path variable (id)
         @GetMapping("/id/{id}")
-        public ResponseEntity<JournalEntry> getById (@PathVariable ObjectId id){
+        public ResponseEntity<JournalEntry> getById (@PathVariable Long id){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
             User byUserName = userEntryService.findByUserName(userName);
@@ -77,7 +76,7 @@ public class JournalEntryController {
 
         // Update entry by id
         @PutMapping("/{id}")
-        public ResponseEntity<?> putById (@PathVariable ObjectId id,
+        public ResponseEntity<?> putById (@PathVariable Long id,
                                           @RequestBody JournalEntry newEntry
         ){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -105,7 +104,7 @@ public class JournalEntryController {
        //Delete entry by id
 
         @DeleteMapping("/{id}")
-        public ResponseEntity<?> deleteById (@PathVariable ObjectId id){
+        public ResponseEntity<?> deleteById (@PathVariable Long id){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userName = authentication.getName();
             journalEntryService.deleteById(id , userName);

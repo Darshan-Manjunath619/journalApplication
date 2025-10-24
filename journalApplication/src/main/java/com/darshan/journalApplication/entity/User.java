@@ -1,36 +1,39 @@
 package com.darshan.journalApplication.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-@Document(collection = "users")
+@Entity
+@Table(name = "users") // Maps to the table 'users' in MySQL
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
     @Id
-    private ObjectId  id;
-    //to automatically handle the unique we add to the properties
-    @Indexed(unique = true)
-    @NonNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generated primary key
+    private Long id; // ObjectId → Long (MySQL PK)
+
+    @Column(unique = true, nullable = false)
     private String userName;
-    @NonNull
+
+    @Column(nullable = false)
     private String password;
+
     private String email;
+
     private boolean sentimentAnalysis;
-    private List<String> role;
-    @DBRef
+
+    @ElementCollection(fetch = FetchType.EAGER) // For storing list of roles as separate table
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private List<String> role = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<JournalEntry> journalEntries = new ArrayList<>();
-
 }
-
-
