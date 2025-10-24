@@ -1,5 +1,6 @@
 package com.darshan.journalApplication.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
@@ -33,5 +34,6 @@ public class User {
     private List<String> role = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<JournalEntry> journalEntries = new ArrayList<>();
 }

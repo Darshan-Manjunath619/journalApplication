@@ -1,5 +1,6 @@
 package com.darshan.journalApplication.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -24,7 +25,8 @@ public class JournalEntry {
 
     private LocalDateTime date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") // FK column
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")// FK column
+    @JsonBackReference
     private User user;
 }
