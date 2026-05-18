@@ -35,38 +35,38 @@ The project also includes weather lookup with Redis caching, email support, admi
 
 ```text
 src/main/java/com/darshan/journalApplication
-├── apiresponse
-│   └── WeatherResponse.java
-├── config
-│   ├── RedisConfig.java
-│   ├── SpringSecurity.java
-│   └── SwaggerConfig.java
-├── controller
-│   ├── AdminController.java
-│   ├── JournalEntryController.java
-│   ├── PublicController.java
-│   └── UserController.java
-├── entity
-│   ├── JournalEntry.java
-│   └── User.java
-├── filter
-│   └── JwtFilter.java
-├── repository
-│   ├── JournalEntryRepository.java
-│   └── UserEntryRepository.java
-├── scheduler
-│   └── UserScheduler.java
-├── service
-│   ├── EmailService.java
-│   ├── JournalEntryService.java
-│   ├── RedisService.java
-│   ├── SentimentAnalysis.java
-│   ├── UserDetailsImp.java
-│   ├── UserEntryService.java
-│   └── WeatherService.java
-├── utils
-│   └── JwtUtil.java
-└── JournalApplication.java
++-- apiresponse
+|   `-- WeatherResponse.java
++-- config
+|   +-- RedisConfig.java
+|   +-- SpringSecurity.java
+|   `-- SwaggerConfig.java
++-- controller
+|   +-- AdminController.java
+|   +-- JournalEntryController.java
+|   +-- PublicController.java
+|   `-- UserController.java
++-- entity
+|   +-- JournalEntry.java
+|   `-- User.java
++-- filter
+|   `-- JwtFilter.java
++-- repository
+|   +-- JournalEntryRepository.java
+|   `-- UserEntryRepository.java
++-- scheduler
+|   `-- UserScheduler.java
++-- service
+|   +-- EmailService.java
+|   +-- JournalEntryService.java
+|   +-- RedisService.java
+|   +-- SentimentAnalysis.java
+|   +-- UserDetailsImp.java
+|   +-- UserEntryService.java
+|   `-- WeatherService.java
++-- utils
+|   `-- JwtUtil.java
+`-- JournalApplication.java
 ```
 
 ## Dependencies
@@ -483,20 +483,20 @@ Use Swagger to explore and test APIs from the browser.
 
 ```text
 User
- ├── id
- ├── userName
- ├── password
- ├── email
- ├── sentimentAnalysis
- ├── role
- └── journalEntries
+ +-- id
+ +-- userName
+ +-- password
+ +-- email
+ +-- sentimentAnalysis
+ +-- role
+ `-- journalEntries
 
 JournalEntry
- ├── id
- ├── title
- ├── content
- ├── date
- └── user
+ +-- id
+ +-- title
+ +-- content
+ +-- date
+ `-- user
 ```
 
 Relationship:
@@ -566,4 +566,3 @@ Then set those values as environment variables on your machine or deployment ser
 8. Create a journal entry.
 9. Get all journal entries.
 10. Update or delete entries as needed.
-
