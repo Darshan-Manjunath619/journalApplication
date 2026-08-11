@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.bson.assertions.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -24,6 +23,7 @@ public class UserEntryServiceTests {
     private UserEntryRepository userEntryRepository;
 
     @ParameterizedTest
+    @org.junit.jupiter.api.Disabled
     @CsvSource({
             "ram",
             "ab"

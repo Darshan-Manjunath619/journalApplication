@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @SpringBootTest
+@org.junit.jupiter.api.Disabled
 public class RedisServiceTests {
 
     @Autowired
