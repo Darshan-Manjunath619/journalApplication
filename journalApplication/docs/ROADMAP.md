@@ -5,7 +5,10 @@ Status: [ ] not started, [-] in progress, [x] completed.
 ## Phase 1 — Modular Monolith and SPA
 
 [x] 1.0 Repository analysis and baseline
-[ ] 1.1 Backend foundation cleanup
+[-] 1.1 Backend foundation cleanup
+  - [x] 1.1A Configuration and secret safety
+  - [ ] 1.1B DTO, validation, and error foundation
+  - [ ] 1.1C Logging, correlation, and structural hygiene
 [ ] 1.2 Authentication and security
 [ ] 1.3 Journal core features
 [ ] 1.4 Search, filtering, sorting, and pagination

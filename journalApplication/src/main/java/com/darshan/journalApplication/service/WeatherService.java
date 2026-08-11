@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.util.StringUtils;
 
 @Service
 public class WeatherService {
@@ -24,6 +25,9 @@ public class WeatherService {
     private RestTemplate restTemplate;
 
     public WeatherResponse getWeather(String city){
+        if (!StringUtils.hasText(apiKey)) {
+            return null;
+        }
         WeatherResponse weatherResponse = redisService.get("Weather_Of_"+city, WeatherResponse.class);
         if(weatherResponse != null){
             return weatherResponse;

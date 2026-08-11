@@ -1,20 +1,25 @@
----
 spring:
+  application:
+    name: journalApplication
+  config:
+    import: optional:file:.env[.properties]
   profiles:
-    active: dev
-
+    default: local
+  jpa:
+    open-in-view: false
+  data:
+    redis:
+      repositories:
+        enabled: false
 
 logging:
   level:
-    com:
-      darshan:
-        journalApplication: TRACE
+    root: INFO
+    com.darshan.journalApplication: INFO
 
+features:
+  sentiment-scheduler: false
 
-# Severity levels available:
-# TRACE
-# DEBUG
-# INFO
-# WARN
-# ERROR
-# OFF
+weather:
+  api:
+    key: ${WEATHER_API_KEY:}
