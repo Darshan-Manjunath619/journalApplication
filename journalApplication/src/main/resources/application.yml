@@ -13,6 +13,8 @@ spring:
         enabled: false
 
 logging:
+  pattern:
+    level: "%5p [correlationId:%X{correlationId:-none}]"
   level:
     root: INFO
     com.darshan.journalApplication: INFO

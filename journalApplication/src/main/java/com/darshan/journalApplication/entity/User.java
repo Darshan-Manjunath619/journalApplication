@@ -31,9 +31,11 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER) // For storing list of roles as separate table
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
+    @Builder.Default
     private List<String> role = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Builder.Default
     private List<JournalEntry> journalEntries = new ArrayList<>();
 }

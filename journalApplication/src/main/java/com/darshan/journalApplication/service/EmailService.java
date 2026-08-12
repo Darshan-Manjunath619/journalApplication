@@ -21,10 +21,10 @@ public class EmailService {
             mail.setSubject(subject);
             mail.setText(body);
             javaMailSender.send(mail);
-            log.info("Email sent Succesfull to {} "+ to);
+            log.info("Email sent successfully to {}", to);
 
         } catch (Exception e) {
-            log.error("Error Occured while sending the email " + e);
+            log.error("Email delivery failed for {}", to, e);
         }
     }
 }

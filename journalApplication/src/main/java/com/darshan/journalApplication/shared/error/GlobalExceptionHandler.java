@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import java.net.URI;
 import java.util.*;
+import com.darshan.journalApplication.shared.web.CorrelationIdFilter;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -72,6 +73,10 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
         problem.setTitle(title);
         problem.setInstance(URI.create(request.getRequestURI()));
+        Object correlationId = request.getAttribute(CorrelationIdFilter.ATTRIBUTE);
+        if (correlationId != null) {
+            problem.setProperty("correlationId", correlationId);
+        }
         return problem;
     }
 }

@@ -24,19 +24,10 @@ class PublicControllerTests {
 
     @BeforeEach void setUp() {
         MockitoAnnotations.openMocks(this);
-        PublicController controller = new PublicController();
-        set(controller, "userEntryService", users);
-        set(controller, "authenticationManager", authenticationManager);
-        set(controller, "userDetailsImp", userDetails);
-        set(controller, "jwtUtil", jwt);
-        set(controller, "userMapper", new UserMapper());
+        PublicController controller = new PublicController(
+                users, authenticationManager, userDetails, jwt, new UserMapper());
         mvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler()).build();
-    }
-
-    private void set(Object target, String field, Object value) {
-        try { var f=target.getClass().getDeclaredField(field); f.setAccessible(true); f.set(target,value); }
-        catch (ReflectiveOperationException e) { throw new AssertionError(e); }
     }
 
     @Test void rejectsInvalidRegistrationBeforeService() throws Exception {

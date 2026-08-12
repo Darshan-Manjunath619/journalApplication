@@ -2,7 +2,6 @@ package com.darshan.journalApplication.config;
 
 import com.darshan.journalApplication.filter.JwtFilter;
 import com.darshan.journalApplication.service.UserDetailsImp;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,15 +22,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SpringSecurity {
 
-    @Autowired
     private final UserDetailsImp userDetailsService;
-
-    @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
     // ✅ Keep only this constructor
-    public SpringSecurity(UserDetailsImp userDetailsService) {
+    public SpringSecurity(UserDetailsImp userDetailsService, JwtFilter jwtFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean

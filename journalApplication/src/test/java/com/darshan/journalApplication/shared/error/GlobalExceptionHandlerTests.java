@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.darshan.journalApplication.shared.web.CorrelationIdFilter;
 
 class GlobalExceptionHandlerTests {
     private MockMvc mvc;
@@ -55,6 +56,17 @@ class GlobalExceptionHandlerTests {
                 .andExpect(jsonPath("$.detail").value("An unexpected error occurred"))
                 .andExpect(content().string(org.hamcrest.Matchers.not(
                         org.hamcrest.Matchers.containsString("sensitive detail"))));
+    }
+
+    @Test
+    void includesCorrelationIdInProblemResponse() throws Exception {
+        mvc = MockMvcBuilders.standaloneSetup(new TestController())
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .addFilters(new CorrelationIdFilter()).build();
+        mvc.perform(get("/missing").header(CorrelationIdFilter.HEADER, "request-42"))
+                .andExpect(status().isNotFound())
+                .andExpect(header().string(CorrelationIdFilter.HEADER, "request-42"))
+                .andExpect(jsonPath("$.correlationId").value("request-42"));
     }
 
     record Input(@NotBlank String name) {}

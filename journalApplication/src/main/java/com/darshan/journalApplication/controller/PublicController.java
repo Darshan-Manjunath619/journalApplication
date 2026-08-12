@@ -25,20 +25,23 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Public Controller" ,description = "Health , Login Controllers")
 public class PublicController {
 
-    @Autowired
-    private UserEntryService userEntryService;
+    private final UserEntryService userEntryService;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsImp userDetailsImp;
+    private final JwtUtil jwtUtil;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserDetailsImp userDetailsImp;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private UserMapper userMapper;
+    public PublicController(UserEntryService userEntryService,
+                            AuthenticationManager authenticationManager,
+                            UserDetailsImp userDetailsImp,
+                            JwtUtil jwtUtil,
+                            UserMapper userMapper) {
+        this.userEntryService = userEntryService;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsImp = userDetailsImp;
+        this.jwtUtil = jwtUtil;
+        this.userMapper = userMapper;
+    }
 
     // Health Controller
     @GetMapping("/health-checkup")

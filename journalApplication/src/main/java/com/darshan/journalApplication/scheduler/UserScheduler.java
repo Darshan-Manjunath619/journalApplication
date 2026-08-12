@@ -19,14 +19,16 @@ import java.util.stream.Collectors;
 @ConditionalOnProperty(name = "features.sentiment-scheduler", havingValue = "true")
 public class UserScheduler {
 
-    @Autowired
-    private SentimentAnalysis sentimentAnalysis;
+    private final SentimentAnalysis sentimentAnalysis;
+    private final EmailService emailService;
+    private final UserEntryRepository userEntryRepository;
 
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private UserEntryRepository userEntryRepository;
+    public UserScheduler(SentimentAnalysis sentimentAnalysis, EmailService emailService,
+                         UserEntryRepository userEntryRepository) {
+        this.sentimentAnalysis = sentimentAnalysis;
+        this.emailService = emailService;
+        this.userEntryRepository = userEntryRepository;
+    }
 
     @Scheduled(cron = "0 0 9 * * SUN")
     public void fetchUserAndSentimentAnalysis(){
