@@ -7,10 +7,10 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [x] 1.0 Repository analysis and baseline
 [-] 1.1 Backend foundation cleanup
   - [x] 1.1A Configuration and secret safety
-  - [-] 1.1B DTO, validation, and error foundation
+  - [x] 1.1B DTO, validation, and error foundation
     - [x] 1.1B-1 Validation and centralized error contract
     - [x] 1.1B-2 User and authentication DTO boundary
-    - [ ] 1.1B-3 Journal DTO boundary
+    - [x] 1.1B-3 Journal DTO boundary
   - [ ] 1.1C Logging, correlation, and structural hygiene
 [ ] 1.2 Authentication and security
 [ ] 1.3 Journal core features

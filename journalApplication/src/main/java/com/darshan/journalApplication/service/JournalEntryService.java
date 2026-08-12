@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import com.darshan.journalApplication.shared.error.ResourceNotFoundException;
+import com.darshan.journalApplication.journal.dto.UpdateJournalRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,21 +17,24 @@ import java.util.Optional;
 @Slf4j
 public class JournalEntryService {
 
-    @Autowired
-    private JournalEntryRepository journalEntryRepository;
+    private final JournalEntryRepository journalEntryRepository;
+    private final UserEntryService userEntryService;
 
-    @Autowired
-    private UserEntryService userEntryService;
+    public JournalEntryService(JournalEntryRepository journalEntryRepository,
+                               UserEntryService userEntryService) {
+        this.journalEntryRepository = journalEntryRepository;
+        this.userEntryService = userEntryService;
+    }
 
     @Transactional
-    public void EntryRecord(JournalEntry journalEntry, String userName) {
+    public JournalEntry EntryRecord(JournalEntry journalEntry, String userName) {
             User user = userEntryService.findByUserName(userName);
             journalEntry.setDate(LocalDateTime.now());
             journalEntry.setUser(user);
             JournalEntry saved = journalEntryRepository.save(journalEntry);
             user.getJournalEntries().add(saved);
             userEntryService.saveEntry(user);
-
+            return saved;
     }
 
     public void EntryRecord(JournalEntry journalEntry) {
@@ -41,22 +46,32 @@ public class JournalEntryService {
         return journalEntryRepository.findAll();
     }
 
+    public List<JournalEntry> getAllByOwner(String userName) {
+        return journalEntryRepository.findAllByUserUserNameOrderByDateDesc(userName);
+    }
+
     public Optional<JournalEntry> getById(Long id) {
         return journalEntryRepository.findById(id);
     }
 
+    public JournalEntry getOwned(Long id, String userName) {
+        return journalEntryRepository.findByIdAndUserUserName(id, userName)
+                .orElseThrow(() -> new ResourceNotFoundException("Journal entry not found"));
+    }
+
+    @Transactional
+    public JournalEntry updateOwned(Long id, String userName, UpdateJournalRequest request) {
+        JournalEntry entry = getOwned(id, userName);
+        if (request.title() != null) entry.setTitle(request.title().trim());
+        if (request.content() != null) entry.setContent(request.content());
+        return journalEntryRepository.save(entry);
+    }
+
     @Transactional
     public void deleteById(Long id, String userName) {
-        try {
-            User user = userEntryService.findByUserName(userName);
-            boolean b = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
-            if(b) {
-                userEntryService.saveEntry(user);
-                journalEntryRepository.deleteById(id);
-        }
-        } catch (Exception e) {
-            log.error(String.valueOf(e + "check"));
-            throw new RuntimeException("An Error Occured while deleting.");
-        }
+        JournalEntry entry = getOwned(id, userName);
+        User user = entry.getUser();
+        user.getJournalEntries().remove(entry);
+        journalEntryRepository.delete(entry);
     }
 }
