@@ -1,6 +1,10 @@
 package com.darshan.journalApplication.controller;
 
 import com.darshan.journalApplication.entity.User;
+import com.darshan.journalApplication.auth.dto.*;
+import com.darshan.journalApplication.user.UserMapper;
+import com.darshan.journalApplication.user.dto.UserResponse;
+import jakarta.validation.Valid;
 import com.darshan.journalApplication.service.UserDetailsImp;
 import com.darshan.journalApplication.service.UserEntryService;
 import com.darshan.journalApplication.utils.JwtUtil;
@@ -33,6 +37,9 @@ public class PublicController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private UserMapper userMapper;
+
     // Health Controller
     @GetMapping("/health-checkup")
     public static String health(){
@@ -40,24 +47,18 @@ public class PublicController {
     }
 
     @PostMapping("/signup")
-    public void signUp(@RequestBody User user){
-        userEntryService.saveNewUser(user);
+    public ResponseEntity<UserResponse> signUp(@Valid @RequestBody RegisterRequest request){
+        User saved = userEntryService.saveNewUser(userMapper.toEntity(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toResponse(saved));
     }
 
     //User Login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user){
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserName(),user.getPassword()));
-            UserDetails userDetails = userDetailsImp.loadUserByUsername(user.getUserName());
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            return new ResponseEntity<>(jwt, HttpStatus.OK);
-
-        } catch (AuthenticationException e) {
-            log.error("Error Occured while Generating JWT Token :  " + e);
-            return new ResponseEntity<>("Incorrect Password or Username " ,HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.userName(),request.password()));
+        UserDetails userDetails = userDetailsImp.loadUserByUsername(request.userName());
+        String jwt = jwtUtil.generateToken(userDetails.getUsername());
+        return ResponseEntity.ok(new AuthResponse(jwt, "Bearer", 3600));
     }
 }

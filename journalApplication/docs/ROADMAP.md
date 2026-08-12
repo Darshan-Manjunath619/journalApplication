@@ -9,7 +9,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.1A Configuration and secret safety
   - [-] 1.1B DTO, validation, and error foundation
     - [x] 1.1B-1 Validation and centralized error contract
-    - [ ] 1.1B-2 User and authentication DTO boundary
+    - [x] 1.1B-2 User and authentication DTO boundary
     - [ ] 1.1B-3 Journal DTO boundary
   - [ ] 1.1C Logging, correlation, and structural hygiene
 [ ] 1.2 Authentication and security

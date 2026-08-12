@@ -7,6 +7,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import java.net.URI;
 import java.util.*;
 
@@ -47,6 +48,14 @@ public class GlobalExceptionHandler {
                                              HttpServletRequest request) {
         return ResponseEntity.badRequest().body(problem(HttpStatus.BAD_REQUEST,
                 "Malformed request", "Request body is not valid JSON", request));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    ResponseEntity<ProblemDetail> unauthorized(BadCredentialsException exception,
+                                                HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem(
+                HttpStatus.UNAUTHORIZED, "Authentication failed",
+                "Invalid username or password", request));
     }
 
     @ExceptionHandler(Exception.class)
