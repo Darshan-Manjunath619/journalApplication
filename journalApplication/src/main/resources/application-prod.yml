@@ -8,6 +8,8 @@ spring:
       ddl-auto: validate
   flyway:
     enabled: true
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:false}
+    baseline-version: 1
   mail:
     host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:587}

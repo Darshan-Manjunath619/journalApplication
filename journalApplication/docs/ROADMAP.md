@@ -12,7 +12,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
     - [x] 1.1B-2 User and authentication DTO boundary
     - [x] 1.1B-3 Journal DTO boundary
   - [x] 1.1C Logging, correlation, and structural hygiene
-  - [ ] 1.1D Flyway database migration foundation
+  - [x] 1.1D Flyway database migration foundation
 [ ] 1.2 Authentication and security
 [ ] 1.3 Journal core features
 [ ] 1.4 Search, filtering, sorting, and pagination
