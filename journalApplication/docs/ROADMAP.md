@@ -13,7 +13,12 @@ Status: [ ] not started, [-] in progress, [x] completed.
     - [x] 1.1B-3 Journal DTO boundary
   - [x] 1.1C Logging, correlation, and structural hygiene
   - [x] 1.1D Flyway database migration foundation
-[ ] 1.2 Authentication and security
+[-] 1.2 Authentication and security
+  - [x] 1.2A Access-token and HTTP security hardening
+  - [ ] 1.2B Refresh-token persistence
+  - [ ] 1.2C Rotation, reuse detection, and logout
+  - [ ] 1.2D Profile and password security
+  - [ ] 1.2E Security verification and documentation
 [ ] 1.3 Journal core features
 [ ] 1.4 Search, filtering, sorting, and pagination
 [ ] 1.5 Additional domain features

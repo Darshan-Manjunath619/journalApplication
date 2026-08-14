@@ -62,6 +62,7 @@ public class PublicController {
                 new UsernamePasswordAuthenticationToken(request.userName(),request.password()));
         UserDetails userDetails = userDetailsImp.loadUserByUsername(request.userName());
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        return ResponseEntity.ok(new AuthResponse(jwt, "Bearer", 3600));
+        return ResponseEntity.ok(new AuthResponse(
+                jwt, "Bearer", jwtUtil.getAccessTokenExpiresInSeconds()));
     }
 }

@@ -56,12 +56,13 @@ class PublicControllerTests {
                 .withUsername("alice").password("ignored").roles("USER").build();
         when(userDetails.loadUserByUsername("alice")).thenReturn(principal);
         when(jwt.generateToken("alice")).thenReturn("signed-token");
+        when(jwt.getAccessTokenExpiresInSeconds()).thenReturn(900L);
         mvc.perform(post("/public/login").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"userName\":\"alice\",\"password\":\"password123\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("signed-token"))
                 .andExpect(jsonPath("$.tokenType").value("Bearer"))
-                .andExpect(jsonPath("$.expiresIn").value(3600));
+                .andExpect(jsonPath("$.expiresIn").value(900));
     }
 
     @Test void loginReturnsProblemDetailForInvalidCredentials() throws Exception {

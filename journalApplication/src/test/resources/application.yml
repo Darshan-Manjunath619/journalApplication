@@ -18,3 +18,11 @@ spring:
 weather:
   api:
     key: disabled-in-tests
+security:
+  jwt:
+    secret: test-only-jwt-secret-at-least-32-bytes-long
+    issuer: journal-application-test
+    audience: journal-spa-test
+    access-token-ttl: PT15M
+  cors:
+    allowed-origins: http://localhost:5173
