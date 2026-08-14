@@ -58,7 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (JwtException | IllegalArgumentException exception) {
             SecurityContextHolder.clearContext();
-            log.debug("Rejected bearer token: {}", exception.getMessage());
+            log.debug("Rejected bearer token");
         }
 
         filterChain.doFilter(request, response);

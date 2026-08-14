@@ -20,11 +20,12 @@ class FlywayMigrationTests {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void appliesVersionOneAndCreatesLegacyTables() {
-        assertEquals("1", flyway.info().current().getVersion().getVersion());
+    void appliesAllMigrationsAndCreatesExpectedTables() {
+        assertEquals("2", flyway.info().current().getVersion().getVersion());
         assertEquals(1, tableCount("USERS"));
         assertEquals(1, tableCount("JOURNAL_ENTRIES"));
         assertEquals(1, tableCount("USER_ROLES"));
+        assertEquals(1, tableCount("REFRESH_TOKENS"));
     }
 
     private int tableCount(String tableName) {

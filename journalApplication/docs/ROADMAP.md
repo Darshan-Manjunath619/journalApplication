@@ -15,7 +15,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.1D Flyway database migration foundation
 [-] 1.2 Authentication and security
   - [x] 1.2A Access-token and HTTP security hardening
-  - [ ] 1.2B Refresh-token persistence
+  - [x] 1.2B Refresh-token persistence
   - [ ] 1.2C Rotation, reuse detection, and logout
   - [ ] 1.2D Profile and password security
   - [ ] 1.2E Security verification and documentation
