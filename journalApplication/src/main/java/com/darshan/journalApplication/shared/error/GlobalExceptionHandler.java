@@ -1,5 +1,8 @@
 package com.darshan.journalApplication.shared.error;
 
+import com.darshan.journalApplication.auth.InvalidRefreshTokenException;
+import com.darshan.journalApplication.auth.RefreshTokenReuseException;
+import com.darshan.journalApplication.auth.UntrustedOriginException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +60,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem(
                 HttpStatus.UNAUTHORIZED, "Authentication failed",
                 "Invalid username or password", request));
+    }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    ResponseEntity<ProblemDetail> invalidRefreshToken(
+            InvalidRefreshTokenException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem(
+                HttpStatus.UNAUTHORIZED, "Invalid session",
+                "The refresh token is missing, invalid, or expired", request));
+    }
+
+    @ExceptionHandler(RefreshTokenReuseException.class)
+    ResponseEntity<ProblemDetail> refreshTokenReuse(
+            RefreshTokenReuseException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem(
+                HttpStatus.UNAUTHORIZED, "Session invalidated",
+                "Refresh token reuse was detected; sign in again", request));
+    }
+
+    @ExceptionHandler(UntrustedOriginException.class)
+    ResponseEntity<ProblemDetail> untrustedOrigin(
+            UntrustedOriginException exception, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem(
+                HttpStatus.FORBIDDEN, "Untrusted origin",
+                "This browser origin is not allowed", request));
     }
 
     @ExceptionHandler(Exception.class)

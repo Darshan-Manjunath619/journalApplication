@@ -30,12 +30,52 @@ public class RefreshTokenService {
 
     @Transactional
     public IssuedRefreshToken issue(User user) {
-        Instant createdAt = clock.instant();
+        return issueAt(user, clock.instant());
+    }
+
+    private IssuedRefreshToken issueAt(User user, Instant createdAt) {
         Instant expiresAt = createdAt.plus(timeToLive);
         String rawToken = codec.generate();
         repository.save(new RefreshToken(
                 user, codec.hash(rawToken), expiresAt, createdAt));
         return new IssuedRefreshToken(rawToken, expiresAt);
+    }
+
+    @Transactional(noRollbackFor = {
+            InvalidRefreshTokenException.class, RefreshTokenReuseException.class})
+    public RotatedRefreshToken rotate(String rawToken) {
+        Instant now = clock.instant();
+        RefreshToken current = repository
+                .findForUpdateByTokenHash(codec.hash(rawToken))
+                .orElseThrow(InvalidRefreshTokenException::new);
+
+        if (current.getRevokedAt() != null) {
+            repository.revokeAllActiveByUserId(current.getUser().getId(), now);
+            throw new RefreshTokenReuseException();
+        }
+        if (!current.getExpiresAt().isAfter(now)) {
+            current.revoke(now);
+            repository.save(current);
+            throw new InvalidRefreshTokenException();
+        }
+
+        current.revoke(now);
+        repository.save(current);
+        IssuedRefreshToken replacement = issueAt(current.getUser(), now);
+        return new RotatedRefreshToken(
+                current.getUser().getUserName(),
+                replacement.token(),
+                replacement.expiresAt());
+    }
+
+    @Transactional
+    public void revokePresented(String rawToken) {
+        if (rawToken == null || rawToken.isBlank()) {
+            return;
+        }
+        repository.findForUpdateByTokenHash(codec.hash(rawToken))
+                .filter(token -> token.getRevokedAt() == null)
+                .ifPresent(this::revoke);
     }
 
     @Transactional(readOnly = true)

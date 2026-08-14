@@ -16,7 +16,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [-] 1.2 Authentication and security
   - [x] 1.2A Access-token and HTTP security hardening
   - [x] 1.2B Refresh-token persistence
-  - [ ] 1.2C Rotation, reuse detection, and logout
+  - [x] 1.2C Rotation, reuse detection, and logout
   - [ ] 1.2D Profile and password security
   - [ ] 1.2E Security verification and documentation
 [ ] 1.3 Journal core features

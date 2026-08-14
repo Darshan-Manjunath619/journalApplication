@@ -27,6 +27,15 @@ class SecurityIntegrationTests {
     }
 
     @Test
+    void permitsVersionedLoginEndpointWithoutAnAccessToken() throws Exception {
+        mvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title").value("Validation failed"));
+    }
+
+    @Test
     void returnsProblemDetailForMissingAccessToken() throws Exception {
         mvc.perform(get("/journal").header("X-Correlation-ID", "security-401"))
                 .andExpect(status().isUnauthorized())

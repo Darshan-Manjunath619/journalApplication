@@ -82,4 +82,69 @@ class RefreshTokenServiceTests {
     void generatedTokensAreNotRepeated() {
         assertNotEquals(codec.generate(), codec.generate());
     }
+
+    @Test
+    void rotatesAnActiveTokenAndRevokesThePresentedToken() {
+        User user = User.builder().id(10L).userName("darshan").build();
+        RefreshToken current = new RefreshToken(
+                user, codec.hash("old-token"), NOW.plusSeconds(60), NOW.minusSeconds(60));
+        when(repository.findForUpdateByTokenHash(codec.hash("old-token")))
+                .thenReturn(Optional.of(current));
+
+        RotatedRefreshToken rotated = service.rotate("old-token");
+
+        assertEquals("darshan", rotated.userName());
+        assertNotEquals("old-token", rotated.token());
+        assertEquals(NOW, current.getRevokedAt());
+        verify(repository, times(2)).save(any(RefreshToken.class));
+    }
+
+    @Test
+    void detectsReuseAndRevokesAllActiveTokensForTheUser() {
+        User user = User.builder().id(10L).userName("darshan").build();
+        RefreshToken reused = new RefreshToken(
+                user, codec.hash("reused"), NOW.plusSeconds(60), NOW.minusSeconds(60));
+        reused.revoke(NOW.minusSeconds(10));
+        when(repository.findForUpdateByTokenHash(codec.hash("reused")))
+                .thenReturn(Optional.of(reused));
+
+        assertThrows(RefreshTokenReuseException.class, () -> service.rotate("reused"));
+
+        verify(repository).revokeAllActiveByUserId(10L, NOW);
+    }
+
+    @Test
+    void rejectsAndRevokesAnExpiredToken() {
+        RefreshToken expired = new RefreshToken(
+                User.builder().id(10L).build(), codec.hash("expired-token"),
+                NOW, NOW.minusSeconds(60));
+        when(repository.findForUpdateByTokenHash(codec.hash("expired-token")))
+                .thenReturn(Optional.of(expired));
+
+        assertThrows(InvalidRefreshTokenException.class,
+                () -> service.rotate("expired-token"));
+
+        assertEquals(NOW, expired.getRevokedAt());
+        verify(repository).save(expired);
+    }
+
+    @Test
+    void rejectsAnUnknownToken() {
+        assertThrows(InvalidRefreshTokenException.class,
+                () -> service.rotate("unknown-token"));
+    }
+
+    @Test
+    void logoutRevokesThePresentedActiveToken() {
+        RefreshToken active = new RefreshToken(
+                User.builder().id(10L).build(), codec.hash("logout-token"),
+                NOW.plusSeconds(60), NOW);
+        when(repository.findForUpdateByTokenHash(codec.hash("logout-token")))
+                .thenReturn(Optional.of(active));
+
+        service.revokePresented("logout-token");
+
+        assertEquals(NOW, active.getRevokedAt());
+        verify(repository).save(active);
+    }
 }
