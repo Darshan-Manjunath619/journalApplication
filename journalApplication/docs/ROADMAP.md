@@ -1,5 +1,8 @@
 # Delivery Roadmap
 
+Permanent scope and acceptance criteria: [MASTER_ROADMAP.md](MASTER_ROADMAP.md).
+This file is the concise execution checklist; update both files together.
+
 Status: [ ] not started, [-] in progress, [x] completed.
 
 ## Phase 1 — Modular Monolith and SPA
