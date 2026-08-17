@@ -15,6 +15,8 @@ public interface UserEntryRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByEmailAndIdNot(String email, Long id);
+
     void deleteByUserName(String userName);
 
     List<User> findByEmailIsNotNullAndSentimentAnalysisTrue();

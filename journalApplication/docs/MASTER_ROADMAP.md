@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.2C completed**. Next: **Phase 1.2D — Profile
-and password security**.
+Current checkpoint: **Phase 1.2D completed**. Next: **Phase 1.2E — Security
+verification and documentation**.
 
 ---
 
@@ -70,7 +70,7 @@ stable error contract, secrets are not tracked, and Flyway owns schema changes.
   expiry and revocation fields.
 - [x] **1.2C Rotation and logout** — HttpOnly cookie, one-time rotation,
   row locking, reuse detection, origin validation, and logout revocation.
-- [ ] **1.2D Profile and password security** — authenticated profile read/update,
+- [x] **1.2D Profile and password security** — authenticated profile read/update,
   current-password verification, secure rehashing, and session invalidation.
 - [ ] **1.2E Security verification and documentation** — registration conflicts,
   invalid/expired/reused tokens, roles, CORS/origin behavior, and complete flow docs.

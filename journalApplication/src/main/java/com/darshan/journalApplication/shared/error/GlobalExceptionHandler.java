@@ -3,6 +3,7 @@ package com.darshan.journalApplication.shared.error;
 import com.darshan.journalApplication.auth.InvalidRefreshTokenException;
 import com.darshan.journalApplication.auth.RefreshTokenReuseException;
 import com.darshan.journalApplication.auth.UntrustedOriginException;
+import com.darshan.journalApplication.user.InvalidCurrentPasswordException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +85,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem(
                 HttpStatus.FORBIDDEN, "Untrusted origin",
                 "This browser origin is not allowed", request));
+    }
+
+    @ExceptionHandler(InvalidCurrentPasswordException.class)
+    ResponseEntity<ProblemDetail> invalidCurrentPassword(
+            InvalidCurrentPasswordException exception, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(problem(
+                HttpStatus.BAD_REQUEST, "Password change rejected",
+                exception.getMessage(), request));
     }
 
     @ExceptionHandler(Exception.class)

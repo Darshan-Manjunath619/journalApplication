@@ -89,4 +89,9 @@ public class RefreshTokenService {
         token.revoke(clock.instant());
         repository.save(token);
     }
+
+    @Transactional
+    public int revokeAllForUser(Long userId) {
+        return repository.revokeAllActiveByUserId(userId, clock.instant());
+    }
 }

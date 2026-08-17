@@ -46,6 +46,15 @@ class SecurityIntegrationTests {
     }
 
     @Test
+    void protectsVersionedProfileEndpoint() throws Exception {
+        mvc.perform(get("/api/v1/users/me")
+                        .header("X-Correlation-ID", "profile-401"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.title").value("Authentication required"))
+                .andExpect(jsonPath("$.correlationId").value("profile-401"));
+    }
+
+    @Test
     void returnsProblemDetailForMalformedAccessToken() throws Exception {
         mvc.perform(get("/journal")
                         .header("Authorization", "Bearer malformed")

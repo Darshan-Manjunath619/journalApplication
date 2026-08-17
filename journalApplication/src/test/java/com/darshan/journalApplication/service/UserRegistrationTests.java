@@ -3,6 +3,7 @@ package com.darshan.journalApplication.service;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.repository.UserEntryRepository;
 import com.darshan.journalApplication.shared.error.ConflictException;
+import com.darshan.journalApplication.auth.RefreshTokenService;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,11 +14,12 @@ import static org.mockito.Mockito.*;
 class UserRegistrationTests {
     @Mock UserEntryRepository repository;
     @Mock PasswordEncoder encoder;
+    @Mock RefreshTokenService refreshTokens;
     UserEntryService service;
 
     @BeforeEach void setUp() {
         MockitoAnnotations.openMocks(this);
-        service = new UserEntryService(repository, encoder);
+        service = new UserEntryService(repository, encoder, refreshTokens);
     }
 
     @Test void normalizesHashesAndAssignsOnlyUserRole() {
