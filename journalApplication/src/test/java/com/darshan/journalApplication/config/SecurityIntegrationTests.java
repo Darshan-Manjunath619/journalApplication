@@ -83,4 +83,19 @@ class SecurityIntegrationTests {
                 .andExpect(header().string(
                         "Access-Control-Allow-Origin", "http://localhost:5173"));
     }
+
+    @Test
+    void rejectsCorsPreflightFromUntrustedOrigin() throws Exception {
+        mvc.perform(options("/journal")
+                        .header("Origin", "https://attacker.example")
+                        .header("Access-Control-Request-Method", "GET"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "administrator", roles = "ADMIN")
+    void permitsAdminRoleOnAdminEndpoint() throws Exception {
+        mvc.perform(get("/admin"))
+                .andExpect(status().isOk());
+    }
 }

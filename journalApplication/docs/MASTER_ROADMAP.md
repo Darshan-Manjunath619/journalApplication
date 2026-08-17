@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.2D completed**. Next: **Phase 1.2E — Security
-verification and documentation**.
+Current checkpoint: **Phase 1.2 Authentication and security completed**.
+Next: **Phase 1.3 — Journal core features**.
 
 ---
 
@@ -62,7 +62,7 @@ weather calls.
 Acceptance: no HTTP endpoint exposes a JPA entity, invalid requests have a
 stable error contract, secrets are not tracked, and Flyway owns schema changes.
 
-### 1.2 Authentication and security `[-]`
+### 1.2 Authentication and security `[x]`
 
 - [x] **1.2A Access-token and HTTP hardening** — 15-minute JWTs with issuer,
   audience, token ID, deny-by-default authorization, CORS, and JSON `401/403`.
@@ -72,7 +72,7 @@ stable error contract, secrets are not tracked, and Flyway owns schema changes.
   row locking, reuse detection, origin validation, and logout revocation.
 - [x] **1.2D Profile and password security** — authenticated profile read/update,
   current-password verification, secure rehashing, and session invalidation.
-- [ ] **1.2E Security verification and documentation** — registration conflicts,
+- [x] **1.2E Security verification and documentation** — registration conflicts,
   invalid/expired/reused tokens, roles, CORS/origin behavior, and complete flow docs.
 
 Acceptance: registration assigns only `USER`; login/refresh/logout work; stolen
