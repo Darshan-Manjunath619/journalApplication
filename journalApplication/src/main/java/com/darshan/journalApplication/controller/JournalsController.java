@@ -42,10 +42,11 @@ public class JournalsController {
             @RequestParam(required = false) Instant from,
             @RequestParam(required = false) Instant to,
             @RequestParam(required = false) Boolean favorite,
+            @RequestParam(required = false, name = "tag") @Min(1) Long tagId,
             @RequestParam(defaultValue = "createdAt,desc") String sort) {
         SortSelection selection = parseSort(sort);
         return PageResponse.from(journals.searchOwned(authentication.getName(),
-                new JournalSearchCriteria(query, from, to, favorite), page, size,
+                new JournalSearchCriteria(query, from, to, favorite, tagId), page, size,
                 selection.field(), selection.direction()), mapper::toResponse);
     }
 
@@ -54,7 +55,7 @@ public class JournalsController {
             Authentication authentication,
             @Valid @RequestBody CreateJournalRequest request) {
         JournalEntry saved = journals.createOwned(
-                mapper.toEntity(request), authentication.getName());
+                mapper.toEntity(request), authentication.getName(), request.tagIds());
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toResponse(saved));
     }
 

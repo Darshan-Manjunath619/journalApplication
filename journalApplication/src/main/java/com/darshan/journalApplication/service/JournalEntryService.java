@@ -12,6 +12,8 @@ import com.darshan.journalApplication.journal.JournalSearchCriteria;
 import com.darshan.journalApplication.shared.error.InvalidQueryParameterException;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import com.darshan.journalApplication.tag.TagService;
+import java.util.Set;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,18 +25,26 @@ public class JournalEntryService {
 
     private final JournalEntryRepository journalEntryRepository;
     private final UserEntryService userEntryService;
+    private final TagService tagService;
 
     public JournalEntryService(JournalEntryRepository journalEntryRepository,
-                               UserEntryService userEntryService) {
+                               UserEntryService userEntryService, TagService tagService) {
         this.journalEntryRepository = journalEntryRepository;
         this.userEntryService = userEntryService;
+        this.tagService = tagService;
     }
 
     @Transactional
     public JournalEntry createOwned(JournalEntry journalEntry, String userName) {
+        return createOwned(journalEntry, userName, Set.of());
+    }
+
+    @Transactional
+    public JournalEntry createOwned(JournalEntry journalEntry, String userName, Set<Long> tagIds) {
         User user = userEntryService.getProfile(userName);
         journalEntry.setDate(LocalDateTime.now());
         journalEntry.setUser(user);
+        journalEntry.setTags(tagService.resolveOwned(tagIds, userName));
         return journalEntryRepository.save(journalEntry);
     }
 
@@ -67,6 +77,7 @@ public class JournalEntryService {
         }
 
         Specification<JournalEntry> specification = (root, query, builder) -> {
+            query.distinct(true);
             var predicate = builder.equal(root.get("user").get("userName"), userName);
             if (criteria.query() != null && !criteria.query().isBlank()) {
                 String pattern = "%" + criteria.query().trim().toLowerCase() + "%";
@@ -86,12 +97,18 @@ public class JournalEntryService {
                 predicate = builder.and(predicate,
                         builder.equal(root.get("favorite"), criteria.favorite()));
             }
+            if (criteria.tagId() != null) {
+                predicate = builder.and(predicate,
+                        builder.equal(root.join("tags").get("id"), criteria.tagId()));
+            }
             return predicate;
         };
 
         Sort stableSort = Sort.by(direction, sortField).and(Sort.by(direction, "id"));
         Pageable pageable = PageRequest.of(page, size, stableSort);
-        return journalEntryRepository.findAll(specification, pageable);
+        Page<JournalEntry> result = journalEntryRepository.findAll(specification, pageable);
+        result.getContent().forEach(entry -> entry.getTags().size());
+        return result;
     }
 
     public Optional<JournalEntry> getById(Long id) {
@@ -110,6 +127,9 @@ public class JournalEntryService {
         if (request.title() != null) entry.setTitle(request.title().trim());
         if (request.content() != null) entry.setContent(request.content());
         if (request.favorite() != null) entry.setFavorite(request.favorite());
+        if (request.tagIds() != null) {
+            entry.setTags(tagService.resolveOwned(request.tagIds(), userName));
+        }
         return journalEntryRepository.save(entry);
     }
 

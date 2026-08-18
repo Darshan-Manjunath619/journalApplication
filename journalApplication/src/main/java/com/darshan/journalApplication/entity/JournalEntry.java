@@ -5,13 +5,18 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import com.darshan.journalApplication.tag.Tag;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "journal_entries")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -41,6 +46,14 @@ public class JournalEntry {
     @Builder.Default
     @Column(nullable = false)
     private boolean favorite = false;
+
+    @ManyToMany
+    @JoinTable(name = "journal_entry_tags",
+            joinColumns = @JoinColumn(name = "journal_entry_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @Builder.Default
+    @BatchSize(size = 50)
+    private Set<Tag> tags = new LinkedHashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)

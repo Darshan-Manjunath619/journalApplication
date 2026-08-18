@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.darshan.journalApplication.tag.Tag;
 
 @Entity
 @Table(name = "users") // Maps to the table 'users' in MySQL
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,4 +40,8 @@ public class User {
     @JsonManagedReference
     @Builder.Default
     private List<JournalEntry> journalEntries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Tag> tags = new ArrayList<>();
 }

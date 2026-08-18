@@ -24,9 +24,9 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.2E Security verification and documentation
 [x] 1.3 Journal core features
 [x] 1.4 Search, filtering, sorting, and pagination
-[-] 1.5 Additional domain features
+[x] 1.5 Additional domain features
   - [x] 1.5A Journal favorites
-  - [ ] 1.5B User-owned tags
+  - [x] 1.5B User-owned tags
 [ ] 1.6 Backend testing
 [ ] 1.7 API documentation
 [ ] 1.8 Frontend foundation

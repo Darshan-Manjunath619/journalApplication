@@ -61,6 +61,12 @@ class SecurityIntegrationTests {
     }
 
     @Test
+    void protectsVersionedTagsEndpoint() throws Exception {
+        mvc.perform(get("/api/v1/tags"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void returnsProblemDetailForMalformedAccessToken() throws Exception {
         mvc.perform(get("/journal")
                         .header("Authorization", "Bearer malformed")
