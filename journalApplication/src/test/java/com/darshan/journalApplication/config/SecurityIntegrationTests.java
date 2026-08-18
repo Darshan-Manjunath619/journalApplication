@@ -27,6 +27,21 @@ class SecurityIntegrationTests {
     }
 
     @Test
+    void exposesActuatorHealthWithoutAuthentication() throws Exception {
+        mvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"))
+                .andExpect(jsonPath("$.components").doesNotExist());
+    }
+
+    @Test
+    @WithMockUser
+    void doesNotExposeOtherActuatorEndpoints() throws Exception {
+        mvc.perform(get("/actuator/info"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void permitsVersionedLoginEndpointWithoutAnAccessToken() throws Exception {
         mvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

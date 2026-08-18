@@ -22,6 +22,24 @@ logging:
 features:
   sentiment-scheduler: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+  health:
+    defaults:
+      enabled: false
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+    ping:
+      enabled: true
+
 weather:
   api:
     key: ${WEATHER_API_KEY:}

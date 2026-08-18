@@ -44,6 +44,18 @@ Typical status codes:
 | `404` | Owned resource was not found |
 | `409` | Unique-name/email conflict or tag is in use |
 
+## Operational health
+
+`GET http://localhost:8080/journal/actuator/health` is public for load balancers
+and deployment checks. It reports only the overall status; component details and
+all other Actuator endpoints are not publicly exposed. Core health explicitly
+includes MySQL, disk space, and the application ping. Optional Redis and mail
+integrations do not make the core service unhealthy when they are disabled.
+
+```json
+{"status":"UP"}
+```
+
 ## Journal pagination
 
 `GET /api/v1/journals` supports `page`, `size`, `q`, `from`, `to`, `favorite`,

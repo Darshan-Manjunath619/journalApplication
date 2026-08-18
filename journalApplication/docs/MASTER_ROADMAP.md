@@ -23,7 +23,7 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.7 API documentation completed**.
+Current checkpoint: **Phase 1.7A Restricted operational health endpoint completed**.
 Next: **Phase 1.8 — Frontend foundation**.
 
 ---
@@ -129,6 +129,7 @@ Acceptance: `mvn verify` is green and covers critical success and failure paths.
 - OpenAPI endpoint, DTO, validation, pagination, authentication, and error docs.
 - Request/response examples and Bearer security scheme.
 - Verify documentation against actual controller behavior.
+- [x] Restricted Actuator health endpoint for runtime and deployment checks.
 
 Acceptance: a developer can exercise every supported API from the generated docs.
 
