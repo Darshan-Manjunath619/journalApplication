@@ -19,6 +19,14 @@ mode. Flyway creates the schema and Hibernate validates it. Redis repositories
 and the sentiment scheduler are disabled. Test values are non-production
 fixtures only.
 
+Phase 1.6C-1 adds repository-level checks for owner-scoped combined filters,
+stable pagination when primary sort values tie, database-enforced tag
+uniqueness, and transaction rollback after a failed journal update.
+
+Example: an update first changes a journal title and then fails because a tag
+does not exist. The integration test reloads the journal and proves that the
+title change was rolled back, so the transaction is atomic.
+
 ## Commands
 
 Run everything:
@@ -48,6 +56,8 @@ These tests produced no confidence and could encourage external side effects.
 
 Phase 1.6B added focused unit/controller tests for tag normalization, duplicate
 and deletion rules, journal mapping and combined updates, tag clearing, date
-validation, and safe query/body validation responses. Phase 1.6C strengthens
-repository, transaction, and combined-filter verification and evaluates real
-MySQL Testcontainers separately from application containerization.
+validation, and safe query/body validation responses. Phase 1.6C-1 strengthened
+repository, transaction, and combined-filter verification. Phase 1.6C-2 will
+run the same persistence boundary against a temporary real MySQL database with
+Testcontainers. It remains pending until a Docker engine is available; the
+regular test suite does not require Docker.

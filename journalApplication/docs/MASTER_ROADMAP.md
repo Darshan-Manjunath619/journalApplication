@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.6B Unit and controller coverage completed**.
-Next: **Phase 1.6C — Repository and integration coverage**.
+Current checkpoint: **Phase 1.6C-1 H2 MySQL-mode repository and transaction coverage completed**.
+Next: **Phase 1.6C-2 — Real MySQL Testcontainers verification**.
 
 ---
 
@@ -116,7 +116,8 @@ own ownership, validation, migration, and tests.
 - [x] Audit and remove unsafe, skipped, or meaningless legacy tests.
 - [x] Unit tests for mapping, validation, services, and token rules.
 - [x] MockMvc tests for controllers and security.
-- Repository/Flyway integration tests against MySQL-compatible infrastructure.
+- [x] H2 MySQL-mode repository, transaction rollback, and Flyway tests.
+- [ ] Real MySQL Testcontainers verification (requires a running Docker engine).
 - No test contacts production or real external services.
 
 Acceptance: `mvn verify` is green and covers critical success and failure paths.

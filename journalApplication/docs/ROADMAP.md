@@ -31,6 +31,8 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.6A Test audit and cleanup
   - [x] 1.6B Unit and controller coverage
   - [ ] 1.6C Repository and integration coverage
+    - [x] 1.6C-1 H2 MySQL-mode repository and transaction tests
+    - [ ] 1.6C-2 Real MySQL Testcontainers verification
 [ ] 1.7 API documentation
 [ ] 1.8 Frontend foundation
 [ ] 1.9 Frontend authentication
