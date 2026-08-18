@@ -46,7 +46,8 @@ These tests produced no confidence and could encourage external side effects.
 
 ## Remaining planned coverage
 
-Phase 1.6B adds missing focused unit/controller tests for tag rules, mappers,
-combined journal updates, and validation responses. Phase 1.6C strengthens
+Phase 1.6B added focused unit/controller tests for tag normalization, duplicate
+and deletion rules, journal mapping and combined updates, tag clearing, date
+validation, and safe query/body validation responses. Phase 1.6C strengthens
 repository, transaction, and combined-filter verification and evaluates real
 MySQL Testcontainers separately from application containerization.

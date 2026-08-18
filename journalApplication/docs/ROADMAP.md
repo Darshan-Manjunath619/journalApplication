@@ -29,7 +29,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.5B User-owned tags
 [-] 1.6 Backend testing
   - [x] 1.6A Test audit and cleanup
-  - [ ] 1.6B Unit and controller coverage
+  - [x] 1.6B Unit and controller coverage
   - [ ] 1.6C Repository and integration coverage
 [ ] 1.7 API documentation
 [ ] 1.8 Frontend foundation
