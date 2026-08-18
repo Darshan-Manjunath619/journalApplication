@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.darshan.journalApplication.tag.Tag;
 
 @Entity
 @Table(name = "users") // Maps to the table 'users' in MySQL
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,9 +33,15 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER) // For storing list of roles as separate table
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
+    @Builder.Default
     private List<String> role = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Builder.Default
     private List<JournalEntry> journalEntries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Tag> tags = new ArrayList<>();
 }

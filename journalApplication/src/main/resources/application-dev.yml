@@ -1,56 +1,26 @@
 spring:
-  application:
-    name: journalApplication
-  redis:
-    host: localhost
-    port: 6379
-#  data:
-#    mongodb:
-#      uri: mongodb+srv://darshanmanjunath619_db_user:hx4hVcfej4byclQc@cluster0.iynzcwe.mongodb.net/journalDB?retryWrites=true&w=majority&appName=Cluster0
-#      database: journaldb
-#      auto-index-creation: true
-
   datasource:
-    url: jdbc:mysql://localhost:3306/JournalApplication?useSSL=false&serverTimezone=UTC
-    username: root
-    password: pass@123
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+    url: ${DB_URL:jdbc:mysql://localhost:3306/JournalApplication?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
   jpa:
     hibernate:
-      ddl-auto: update   # creates/updates tables automatically (use 'validate' in production) # shows generated SQL queries in the console
-    properties:
-      hibernate:
-        format_sql: true  # formats SQL nicely
-        dialect: org.hibernate.dialect.MySQL8Dialect
-
+      ddl-auto: validate
   flyway:
-      enabled: false
-
-
+    enabled: true
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:false}
+    baseline-version: 1
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: darshan.manjunath619@gmail.com
-    password: fgyt ptlt hmmv tkoo
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /journal
 
-
-weather:
-  api:
-    key: 3b02c629406e9864c5a46cac83414f8b
-
-
-
-
-#password - fgyt ptlt hmmv tkoo
+spring.data.redis:
+  host: ${REDIS_HOST:localhost}
+  port: ${REDIS_PORT:6379}

@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 @Service
+@ConditionalOnProperty(name = "features.sentiment-scheduler", havingValue = "true")
 @Slf4j
 @RequiredArgsConstructor
 public class EmailService {
@@ -19,10 +21,10 @@ public class EmailService {
             mail.setSubject(subject);
             mail.setText(body);
             javaMailSender.send(mail);
-            log.info("Email sent Succesfull to {} "+ to);
+            log.info("Email sent successfully to {}", to);
 
         } catch (Exception e) {
-            log.error("Error Occured while sending the email " + e);
+            log.error("Email delivery failed for {}", to, e);
         }
     }
 }

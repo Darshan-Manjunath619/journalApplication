@@ -7,7 +7,6 @@ import com.darshan.journalApplication.repository.UserEntryRepository;
 import com.darshan.journalApplication.service.UserEntryService;
 import com.darshan.journalApplication.service.WeatherService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,14 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @Tag(name = "User APIs" , description = "Greet, Update ,Delete")
 public class UserController {
-    @Autowired
-    private UserEntryService userEntryService;
+    private final UserEntryService userEntryService;
+    private final UserEntryRepository userEntryRepository;
+    private final WeatherService weatherService;
 
-    @Autowired
-    private UserEntryRepository userEntryRepository;
-
-    @Autowired
-    private WeatherService weatherService;
+    public UserController(UserEntryService userEntryService,
+                          UserEntryRepository userEntryRepository,
+                          WeatherService weatherService) {
+        this.userEntryService = userEntryService;
+        this.userEntryRepository = userEntryRepository;
+        this.weatherService = weatherService;
+    }
 
    @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user){

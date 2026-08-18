@@ -1,6 +1,10 @@
 package com.darshan.journalApplication.controller;
 
 import com.darshan.journalApplication.entity.User;
+import com.darshan.journalApplication.auth.dto.*;
+import com.darshan.journalApplication.user.UserMapper;
+import com.darshan.journalApplication.user.dto.UserResponse;
+import jakarta.validation.Valid;
 import com.darshan.journalApplication.service.UserDetailsImp;
 import com.darshan.journalApplication.service.UserEntryService;
 import com.darshan.journalApplication.utils.JwtUtil;
@@ -21,17 +25,23 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Public Controller" ,description = "Health , Login Controllers")
 public class PublicController {
 
-    @Autowired
-    private UserEntryService userEntryService;
+    private final UserEntryService userEntryService;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsImp userDetailsImp;
+    private final JwtUtil jwtUtil;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserDetailsImp userDetailsImp;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    public PublicController(UserEntryService userEntryService,
+                            AuthenticationManager authenticationManager,
+                            UserDetailsImp userDetailsImp,
+                            JwtUtil jwtUtil,
+                            UserMapper userMapper) {
+        this.userEntryService = userEntryService;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsImp = userDetailsImp;
+        this.jwtUtil = jwtUtil;
+        this.userMapper = userMapper;
+    }
 
     // Health Controller
     @GetMapping("/health-checkup")
@@ -40,24 +50,19 @@ public class PublicController {
     }
 
     @PostMapping("/signup")
-    public void signUp(@RequestBody User user){
-        userEntryService.saveNewUser(user);
+    public ResponseEntity<UserResponse> signUp(@Valid @RequestBody RegisterRequest request){
+        User saved = userEntryService.saveNewUser(userMapper.toEntity(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toResponse(saved));
     }
 
     //User Login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user){
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUserName(),user.getPassword()));
-            UserDetails userDetails = userDetailsImp.loadUserByUsername(user.getUserName());
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            return new ResponseEntity<>(jwt, HttpStatus.OK);
-
-        } catch (AuthenticationException e) {
-            log.error("Error Occured while Generating JWT Token :  " + e);
-            return new ResponseEntity<>("Incorrect Password or Username " ,HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.userName(),request.password()));
+        UserDetails userDetails = userDetailsImp.loadUserByUsername(request.userName());
+        String jwt = jwtUtil.generateToken(userDetails.getUsername());
+        return ResponseEntity.ok(new AuthResponse(
+                jwt, "Bearer", jwtUtil.getAccessTokenExpiresInSeconds()));
     }
 }

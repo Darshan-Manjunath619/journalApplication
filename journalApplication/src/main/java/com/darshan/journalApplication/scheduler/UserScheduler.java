@@ -8,6 +8,7 @@ import com.darshan.journalApplication.service.SentimentAnalysis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,16 +16,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@ConditionalOnProperty(name = "features.sentiment-scheduler", havingValue = "true")
 public class UserScheduler {
 
-    @Autowired
-    private SentimentAnalysis sentimentAnalysis;
+    private final SentimentAnalysis sentimentAnalysis;
+    private final EmailService emailService;
+    private final UserEntryRepository userEntryRepository;
 
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private UserEntryRepository userEntryRepository;
+    public UserScheduler(SentimentAnalysis sentimentAnalysis, EmailService emailService,
+                         UserEntryRepository userEntryRepository) {
+        this.sentimentAnalysis = sentimentAnalysis;
+        this.emailService = emailService;
+        this.userEntryRepository = userEntryRepository;
+    }
 
     @Scheduled(cron = "0 0 9 * * SUN")
     public void fetchUserAndSentimentAnalysis(){
