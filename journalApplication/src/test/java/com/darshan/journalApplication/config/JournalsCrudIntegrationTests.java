@@ -28,7 +28,8 @@ class JournalsCrudIntegrationTests {
 
         mvc.perform(get("/api/v1/journals").header("Authorization", bearer(bobToken)))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[]"));
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0));
 
         MvcResult created = mvc.perform(post("/api/v1/journals")
                         .header("Authorization", bearer(aliceToken))

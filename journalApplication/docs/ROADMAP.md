@@ -23,7 +23,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.2D Profile and password security
   - [x] 1.2E Security verification and documentation
 [x] 1.3 Journal core features
-[ ] 1.4 Search, filtering, sorting, and pagination
+[x] 1.4 Search, filtering, sorting, and pagination
 [ ] 1.5 Additional domain features
 [ ] 1.6 Backend testing
 [ ] 1.7 API documentation

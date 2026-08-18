@@ -15,10 +15,27 @@ import org.springframework.security.authentication.BadCredentialsException;
 import java.net.URI;
 import java.util.*;
 import com.darshan.journalApplication.shared.web.CorrelationIdFilter;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(InvalidQueryParameterException.class)
+    ResponseEntity<ProblemDetail> invalidQuery(InvalidQueryParameterException exception,
+                                                HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(problem(HttpStatus.BAD_REQUEST,
+                "Invalid query parameter", exception.getMessage(), request));
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class,
+            MethodArgumentTypeMismatchException.class})
+    ResponseEntity<ProblemDetail> invalidQueryFormat(Exception exception,
+                                                      HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(problem(HttpStatus.BAD_REQUEST,
+                "Invalid query parameter", "One or more query parameters are invalid", request));
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     ResponseEntity<ProblemDetail> notFound(ResourceNotFoundException exception,

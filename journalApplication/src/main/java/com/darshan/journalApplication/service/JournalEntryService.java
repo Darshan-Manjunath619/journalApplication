@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import com.darshan.journalApplication.shared.error.ResourceNotFoundException;
 import com.darshan.journalApplication.journal.dto.UpdateJournalRequest;
+import com.darshan.journalApplication.journal.JournalSearchCriteria;
+import com.darshan.journalApplication.shared.error.InvalidQueryParameterException;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +55,39 @@ public class JournalEntryService {
     @Transactional(readOnly = true)
     public List<JournalEntry> getAllByOwner(String userName) {
         return journalEntryRepository.findAllByUserUserNameOrderByDateDesc(userName);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<JournalEntry> searchOwned(String userName, JournalSearchCriteria criteria,
+                                          int page, int size, String sortField,
+                                          Sort.Direction direction) {
+        if (criteria.from() != null && criteria.to() != null
+                && criteria.from().isAfter(criteria.to())) {
+            throw new InvalidQueryParameterException("from must be before or equal to to");
+        }
+
+        Specification<JournalEntry> specification = (root, query, builder) -> {
+            var predicate = builder.equal(root.get("user").get("userName"), userName);
+            if (criteria.query() != null && !criteria.query().isBlank()) {
+                String pattern = "%" + criteria.query().trim().toLowerCase() + "%";
+                predicate = builder.and(predicate, builder.or(
+                        builder.like(builder.lower(root.get("title")), pattern),
+                        builder.like(builder.lower(root.get("content")), pattern)));
+            }
+            if (criteria.from() != null) {
+                predicate = builder.and(predicate,
+                        builder.greaterThanOrEqualTo(root.get("createdAt"), criteria.from()));
+            }
+            if (criteria.to() != null) {
+                predicate = builder.and(predicate,
+                        builder.lessThanOrEqualTo(root.get("createdAt"), criteria.to()));
+            }
+            return predicate;
+        };
+
+        Sort stableSort = Sort.by(direction, sortField).and(Sort.by(direction, "id"));
+        Pageable pageable = PageRequest.of(page, size, stableSort);
+        return journalEntryRepository.findAll(specification, pageable);
     }
 
     public Optional<JournalEntry> getById(Long id) {

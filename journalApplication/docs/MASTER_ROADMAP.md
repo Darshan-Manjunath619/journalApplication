@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.3 Journal core features completed**.
-Next: **Phase 1.4 — Search, filtering, sorting, and pagination**.
+Current checkpoint: **Phase 1.4 Search, filtering, sorting, and pagination completed**.
+Next: **Phase 1.5 — Additional domain features**.
 
 ---
 
@@ -89,7 +89,7 @@ authenticated user; security tests cover failure paths.
 Acceptance: all CRUD operations pass, cross-user access returns `404`, empty
 collections return `200`, and entities never cross the HTTP boundary.
 
-### 1.4 Search, filtering, sorting, and pagination `[ ]`
+### 1.4 Search, filtering, sorting, and pagination `[x]`
 
 - Stable `PageResponse<T>` contract.
 - Page size bounded to 1–100.
