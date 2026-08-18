@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.5 Additional domain features completed**.
-Next: **Phase 1.6 — Backend testing**.
+Current checkpoint: **Phase 1.6A Test audit and cleanup completed**.
+Next: **Phase 1.6B — Unit and controller coverage**.
 
 ---
 
@@ -111,8 +111,9 @@ are verified without unbounded database reads.
 Acceptance: each retained feature solves a clear journal use case and has its
 own ownership, validation, migration, and tests.
 
-### 1.6 Backend testing `[ ]`
+### 1.6 Backend testing `[-]`
 
+- [x] Audit and remove unsafe, skipped, or meaningless legacy tests.
 - Unit tests for mapping, validation, services, and token rules.
 - MockMvc tests for controllers and security.
 - Repository/Flyway integration tests against MySQL-compatible infrastructure.

@@ -18,6 +18,8 @@ spring:
 weather:
   api:
     key: disabled-in-tests
+features:
+  sentiment-scheduler: false
 security:
   jwt:
     secret: test-only-jwt-secret-at-least-32-bytes-long
