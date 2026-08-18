@@ -55,6 +55,12 @@ class SecurityIntegrationTests {
     }
 
     @Test
+    void protectsVersionedJournalsEndpoint() throws Exception {
+        mvc.perform(get("/api/v1/journals"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void returnsProblemDetailForMalformedAccessToken() throws Exception {
         mvc.perform(get("/journal")
                         .header("Authorization", "Bearer malformed")

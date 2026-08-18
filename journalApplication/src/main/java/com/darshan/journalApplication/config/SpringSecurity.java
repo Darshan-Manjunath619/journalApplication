@@ -50,7 +50,8 @@ public class SpringSecurity {
                         .requestMatchers("/public/**", "/api/v1/auth/**", "/v3/api-docs/**",
                                 "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/journal/**", "/user/**", "/api/v1/users/**")
+                        .requestMatchers("/journal/**", "/user/**", "/api/v1/users/**",
+                                "/api/v1/journals/**")
                         .authenticated()
                         .anyRequest().denyAll())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

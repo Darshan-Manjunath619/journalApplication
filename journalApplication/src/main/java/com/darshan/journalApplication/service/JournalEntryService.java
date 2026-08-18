@@ -27,14 +27,16 @@ public class JournalEntryService {
     }
 
     @Transactional
+    public JournalEntry createOwned(JournalEntry journalEntry, String userName) {
+        User user = userEntryService.getProfile(userName);
+        journalEntry.setDate(LocalDateTime.now());
+        journalEntry.setUser(user);
+        return journalEntryRepository.save(journalEntry);
+    }
+
+    /** Legacy API compatibility; use createOwned for new code. */
     public JournalEntry EntryRecord(JournalEntry journalEntry, String userName) {
-            User user = userEntryService.findByUserName(userName);
-            journalEntry.setDate(LocalDateTime.now());
-            journalEntry.setUser(user);
-            JournalEntry saved = journalEntryRepository.save(journalEntry);
-            user.getJournalEntries().add(saved);
-            userEntryService.saveEntry(user);
-            return saved;
+        return createOwned(journalEntry, userName);
     }
 
     public void EntryRecord(JournalEntry journalEntry) {
@@ -46,6 +48,7 @@ public class JournalEntryService {
         return journalEntryRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<JournalEntry> getAllByOwner(String userName) {
         return journalEntryRepository.findAllByUserUserNameOrderByDateDesc(userName);
     }
@@ -54,6 +57,7 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public JournalEntry getOwned(Long id, String userName) {
         return journalEntryRepository.findByIdAndUserUserName(id, userName)
                 .orElseThrow(() -> new ResourceNotFoundException("Journal entry not found"));
@@ -68,10 +72,13 @@ public class JournalEntryService {
     }
 
     @Transactional
-    public void deleteById(Long id, String userName) {
+    public void deleteOwned(Long id, String userName) {
         JournalEntry entry = getOwned(id, userName);
-        User user = entry.getUser();
-        user.getJournalEntries().remove(entry);
         journalEntryRepository.delete(entry);
+    }
+
+    /** Legacy API compatibility; use deleteOwned for new code. */
+    public void deleteById(Long id, String userName) {
+        deleteOwned(id, userName);
     }
 }

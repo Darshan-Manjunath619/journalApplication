@@ -22,7 +22,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.2C Rotation, reuse detection, and logout
   - [x] 1.2D Profile and password security
   - [x] 1.2E Security verification and documentation
-[ ] 1.3 Journal core features
+[x] 1.3 Journal core features
 [ ] 1.4 Search, filtering, sorting, and pagination
 [ ] 1.5 Additional domain features
 [ ] 1.6 Backend testing

@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.2 Authentication and security completed**.
-Next: **Phase 1.3 — Journal core features**.
+Current checkpoint: **Phase 1.3 Journal core features completed**.
+Next: **Phase 1.4 — Search, filtering, sorting, and pagination**.
 
 ---
 
@@ -79,7 +79,7 @@ Acceptance: registration assigns only `USER`; login/refresh/logout work; stolen
 or reused refresh tokens are contained; profile and password actions enforce the
 authenticated user; security tests cover failure paths.
 
-### 1.3 Journal core features `[ ]`
+### 1.3 Journal core features `[x]`
 
 - Versioned `/api/v1/journals` CRUD endpoints.
 - Authenticated ownership in every repository query.
