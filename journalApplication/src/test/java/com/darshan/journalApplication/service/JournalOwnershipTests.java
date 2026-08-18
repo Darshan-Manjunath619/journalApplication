@@ -30,7 +30,7 @@ class JournalOwnershipTests {
         when(repository.findByIdAndUserUserName(2L, "alice")).thenReturn(Optional.of(entry));
         when(repository.save(entry)).thenReturn(entry);
         JournalEntry result = service.updateOwned(2L, "alice",
-                new UpdateJournalRequest(" New ", null));
+                new UpdateJournalRequest(" New ", null, null));
         assertEquals("New", result.getTitle());
         assertEquals("Keep", result.getContent());
         verify(repository).findByIdAndUserUserName(2L, "alice");

@@ -82,6 +82,10 @@ public class JournalEntryService {
                 predicate = builder.and(predicate,
                         builder.lessThanOrEqualTo(root.get("createdAt"), criteria.to()));
             }
+            if (criteria.favorite() != null) {
+                predicate = builder.and(predicate,
+                        builder.equal(root.get("favorite"), criteria.favorite()));
+            }
             return predicate;
         };
 
@@ -105,6 +109,7 @@ public class JournalEntryService {
         JournalEntry entry = getOwned(id, userName);
         if (request.title() != null) entry.setTitle(request.title().trim());
         if (request.content() != null) entry.setContent(request.content());
+        if (request.favorite() != null) entry.setFavorite(request.favorite());
         return journalEntryRepository.save(entry);
     }
 

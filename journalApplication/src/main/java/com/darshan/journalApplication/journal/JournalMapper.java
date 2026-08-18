@@ -13,6 +13,7 @@ public class JournalMapper {
 
     public JournalResponse toResponse(JournalEntry entry) {
         return new JournalResponse(entry.getId(), entry.getTitle(),
-                entry.getContent(), entry.getDate(), entry.getCreatedAt(), entry.getUpdatedAt());
+                entry.getContent(), entry.getDate(), entry.getCreatedAt(), entry.getUpdatedAt(),
+                entry.isFavorite());
     }
 }

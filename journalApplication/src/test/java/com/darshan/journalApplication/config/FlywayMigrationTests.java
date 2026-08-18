@@ -21,13 +21,14 @@ class FlywayMigrationTests {
 
     @Test
     void appliesAllMigrationsAndCreatesExpectedTables() {
-        assertEquals("3", flyway.info().current().getVersion().getVersion());
+        assertEquals("4", flyway.info().current().getVersion().getVersion());
         assertEquals(1, tableCount("USERS"));
         assertEquals(1, tableCount("JOURNAL_ENTRIES"));
         assertEquals(1, tableCount("USER_ROLES"));
         assertEquals(1, tableCount("REFRESH_TOKENS"));
         assertEquals(1, columnCount("JOURNAL_ENTRIES", "CREATED_AT"));
         assertEquals(1, columnCount("JOURNAL_ENTRIES", "UPDATED_AT"));
+        assertEquals(1, columnCount("JOURNAL_ENTRIES", "FAVORITE"));
     }
 
     private int tableCount(String tableName) {

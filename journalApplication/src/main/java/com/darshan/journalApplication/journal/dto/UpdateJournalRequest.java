@@ -5,10 +5,11 @@ import jakarta.validation.constraints.AssertTrue;
 
 public record UpdateJournalRequest(
         @Size(min = 1, max = 160) String title,
-        @Size(max = 20000) String content
+        @Size(max = 20000) String content,
+        Boolean favorite
 ) {
     @AssertTrue(message = "At least one field must be provided")
     public boolean isAnyFieldProvided() {
-        return title != null || content != null;
+        return title != null || content != null || favorite != null;
     }
 }

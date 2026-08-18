@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.4 Search, filtering, sorting, and pagination completed**.
-Next: **Phase 1.5 — Additional domain features**.
+Current checkpoint: **Phase 1.5A Journal favorites completed**.
+Next: **Phase 1.5B — User-owned tags**.
 
 ---
 
@@ -100,12 +100,12 @@ collections return `200`, and entities never cross the HTTP boundary.
 Acceptance: boundaries, invalid inputs, stable ordering, and combined filters
 are verified without unbounded database reads.
 
-### 1.5 Additional domain features `[ ]`
+### 1.5 Additional domain features `[-]`
 
 - [ ] User-owned reusable tags with normalized unique names.
 - [ ] Tag assignment ownership and deletion conflict behavior.
-- [ ] Journal favorites.
-- [ ] User profile and audit timestamps where not completed earlier.
+- [x] Journal favorites.
+- [x] User profile and audit timestamps completed in earlier sub-phases.
 - Deferred unless justified: categories, archive/soft delete, analytics.
 
 Acceptance: each retained feature solves a clear journal use case and has its

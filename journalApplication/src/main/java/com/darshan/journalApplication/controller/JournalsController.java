@@ -41,10 +41,11 @@ public class JournalsController {
             @RequestParam(required = false, name = "q") String query,
             @RequestParam(required = false) Instant from,
             @RequestParam(required = false) Instant to,
+            @RequestParam(required = false) Boolean favorite,
             @RequestParam(defaultValue = "createdAt,desc") String sort) {
         SortSelection selection = parseSort(sort);
         return PageResponse.from(journals.searchOwned(authentication.getName(),
-                new JournalSearchCriteria(query, from, to), page, size,
+                new JournalSearchCriteria(query, from, to, favorite), page, size,
                 selection.field(), selection.direction()), mapper::toResponse);
     }
 

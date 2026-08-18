@@ -4,4 +4,5 @@ import java.time.LocalDateTime;
 import java.time.Instant;
 
 public record JournalResponse(Long id, String title, String content,
-                              LocalDateTime date, Instant createdAt, Instant updatedAt) {}
+                              LocalDateTime date, Instant createdAt, Instant updatedAt,
+                              boolean favorite) {}
