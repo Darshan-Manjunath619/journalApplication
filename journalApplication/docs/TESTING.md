@@ -59,5 +59,6 @@ and deletion rules, journal mapping and combined updates, tag clearing, date
 validation, and safe query/body validation responses. Phase 1.6C-1 strengthened
 repository, transaction, and combined-filter verification. Phase 1.6C-2 will
 run the same persistence boundary against a temporary real MySQL database with
-Testcontainers. It remains pending until a Docker engine is available; the
-regular test suite does not require Docker.
+Testcontainers. It is deferred to Phase 3, when Docker-based Kafka and Redis
+infrastructure is introduced. The regular Phase 1 test suite does not require
+Docker.

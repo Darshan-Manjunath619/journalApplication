@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.6C-1 H2 MySQL-mode repository and transaction coverage completed**.
-Next: **Phase 1.6C-2 — Real MySQL Testcontainers verification**.
+Current checkpoint: **Phase 1.6 Backend testing completed**.
+Next: **Phase 1.7 — API documentation**.
 
 ---
 
@@ -111,14 +111,16 @@ are verified without unbounded database reads.
 Acceptance: each retained feature solves a clear journal use case and has its
 own ownership, validation, migration, and tests.
 
-### 1.6 Backend testing `[-]`
+### 1.6 Backend testing `[x]`
 
 - [x] Audit and remove unsafe, skipped, or meaningless legacy tests.
 - [x] Unit tests for mapping, validation, services, and token rules.
 - [x] MockMvc tests for controllers and security.
 - [x] H2 MySQL-mode repository, transaction rollback, and Flyway tests.
-- [ ] Real MySQL Testcontainers verification (requires a running Docker engine).
 - No test contacts production or real external services.
+
+Real MySQL Testcontainers verification is tracked in Phase 3, where Docker
+infrastructure is introduced.
 
 Acceptance: `mvn verify` is green and covers critical success and failure paths.
 
@@ -218,6 +220,8 @@ and Phase 1 user journeys remain functional.
 Introduce asynchronous messaging and caching only for measured, well-defined use cases.
 
 - [ ] **3.0 Use-case analysis** — identify latency, coupling, throughput, or repeated-read need.
+- [ ] **3.0A Container-backed database verification** — run Flyway and repository
+  integration tests against a temporary real MySQL Testcontainer.
 - [ ] **3.1 Kafka infrastructure** — local/test configuration, topics, schemas, and ownership.
 - [ ] **3.2 First event flow** — useful domain event and consumer with observable outcome.
 - [ ] **3.3 Reliability** — retry, dead-letter handling, idempotency, ordering, and replay.

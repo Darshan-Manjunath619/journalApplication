@@ -27,12 +27,11 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [x] 1.5 Additional domain features
   - [x] 1.5A Journal favorites
   - [x] 1.5B User-owned tags
-[-] 1.6 Backend testing
+[x] 1.6 Backend testing
   - [x] 1.6A Test audit and cleanup
   - [x] 1.6B Unit and controller coverage
-  - [ ] 1.6C Repository and integration coverage
+  - [x] 1.6C Repository and integration coverage
     - [x] 1.6C-1 H2 MySQL-mode repository and transaction tests
-    - [ ] 1.6C-2 Real MySQL Testcontainers verification
 [ ] 1.7 API documentation
 [ ] 1.8 Frontend foundation
 [ ] 1.9 Frontend authentication
@@ -46,6 +45,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
 
 [ ] Phase 2 — Microservices learning architecture
 [ ] Phase 3 — Measured Kafka and Redis use cases
+  - [ ] Real MySQL Testcontainers compatibility verification
 [ ] Phase 4 — Containers and deployment
 [ ] Phase 5 — Production architecture
 
