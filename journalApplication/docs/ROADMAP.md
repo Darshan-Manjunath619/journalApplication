@@ -32,7 +32,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.6B Unit and controller coverage
   - [x] 1.6C Repository and integration coverage
     - [x] 1.6C-1 H2 MySQL-mode repository and transaction tests
-[ ] 1.7 API documentation
+[x] 1.7 API documentation
 [ ] 1.8 Frontend foundation
 [ ] 1.9 Frontend authentication
 [ ] 1.10 Journal frontend

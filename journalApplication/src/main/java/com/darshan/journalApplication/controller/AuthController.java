@@ -9,6 +9,9 @@ import com.darshan.journalApplication.user.dto.UserResponse;
 import com.darshan.journalApplication.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +21,7 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Authentication")
 public class AuthController {
     private final UserEntryService users;
     private final UserMapper userMapper;
@@ -41,12 +45,20 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a user", description = "Creates a USER account; roles cannot be supplied by the client.")
+    @ApiResponse(responseCode = "201", description = "User registered")
+    @ApiResponse(responseCode = "400", description = "Request validation failed")
+    @ApiResponse(responseCode = "409", description = "Username or email already exists")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
         User saved = users.saveNewUser(userMapper.toEntity(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toResponse(saved));
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Returns an access token and sets a rotating HttpOnly refresh-token cookie.")
+    @ApiResponse(responseCode = "200", description = "Authenticated")
+    @ApiResponse(responseCode = "400", description = "Request validation failed")
+    @ApiResponse(responseCode = "401", description = "Invalid credentials")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         String username = normalize(request.userName());
         authenticationManager.authenticate(
@@ -57,6 +69,10 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "Refresh access token", description = "Rotates the HttpOnly refresh cookie and returns a new access token.")
+    @ApiResponse(responseCode = "200", description = "Token rotated")
+    @ApiResponse(responseCode = "401", description = "Refresh token is missing, invalid, expired, revoked, or reused")
+    @ApiResponse(responseCode = "403", description = "Origin is not trusted")
     public ResponseEntity<AuthResponse> refresh(
             HttpServletRequest request, @RequestHeader(value = "Origin", required = false) String origin) {
         trustedOrigins.verify(origin);
@@ -69,6 +85,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "Logout", description = "Revokes the presented refresh token and clears its cookie.")
+    @ApiResponse(responseCode = "204", description = "Logged out")
+    @ApiResponse(responseCode = "403", description = "Origin is not trusted")
     public ResponseEntity<Void> logout(
             HttpServletRequest request, @RequestHeader(value = "Origin", required = false) String origin) {
         trustedOrigins.verify(origin);
