@@ -36,7 +36,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.7A Restricted operational health endpoint
 [-] 1.8 Frontend foundation
   - [x] 1.8A React, TypeScript, and Vite initialization
-  - [ ] 1.8B Routing and application shell
+  - [x] 1.8B Routing and application shell
   - [ ] 1.8C API client, TanStack Query, and environment configuration
   - [ ] 1.8D Forms, styling, and test infrastructure
 [ ] 1.9 Frontend authentication
