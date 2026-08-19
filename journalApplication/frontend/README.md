@@ -18,6 +18,24 @@ npm.cmd run dev
 
 The development server runs at `http://localhost:5173`.
 
+## Backend configuration
+
+Create the ignored local configuration from the safe template:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+The template calls:
+
+```text
+http://localhost:8080/journal/api/v1
+```
+
+For another environment, set `VITE_API_BASE_URL` when building the frontend.
+Only variables beginning with `VITE_` are exposed to browser code, so never
+store passwords, tokens, private keys, or database credentials in them.
+
 Verification:
 
 ```powershell

@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.8B routing and application shell completed**.
-Next: **Phase 1.8C — API client, TanStack Query, and environment configuration**.
+Current checkpoint: **Phase 1.8C API client, TanStack Query, and environment configuration completed**.
+Next: **Phase 1.8D — Forms, styling, and frontend test infrastructure**.
 
 ---
 
@@ -137,7 +137,7 @@ Acceptance: a developer can exercise every supported API from the generated docs
 
 - [x] React, TypeScript, and Vite initialization.
 - [x] Routing and responsive application shell.
-- [ ] API client, TanStack Query, and environment configuration.
+- [x] API client, TanStack Query, and environment configuration.
 - [ ] Forms, styling, and frontend test infrastructure.
 - React Router, TanStack Query, React Hook Form, Zod, and Tailwind.
 - Feature-based structure, environment configuration, API client, and test setup.
