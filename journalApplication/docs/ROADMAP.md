@@ -34,14 +34,14 @@ Status: [ ] not started, [-] in progress, [x] completed.
     - [x] 1.6C-1 H2 MySQL-mode repository and transaction tests
 [x] 1.7 API documentation
   - [x] 1.7A Restricted operational health endpoint
-[-] 1.8 Frontend foundation
+[x] 1.8 Frontend foundation
   - [x] 1.8A React, TypeScript, and Vite initialization
   - [x] 1.8B Routing and application shell
   - [x] 1.8C API client, TanStack Query, and environment configuration
-  - [-] 1.8D Forms, styling, and test infrastructure
+  - [x] 1.8D Forms, styling, and test infrastructure
     - [x] 1.8D-1 Frontend testing foundation
     - [x] 1.8D-2 Form and validation foundation
-    - [ ] 1.8D-3 Tailwind styling foundation
+    - [x] 1.8D-3 Tailwind styling foundation
 [ ] 1.9 Frontend authentication
 [ ] 1.10 Journal frontend
 [ ] 1.11 Frontend search and pagination

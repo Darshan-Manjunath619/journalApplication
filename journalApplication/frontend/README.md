@@ -2,6 +2,9 @@
 
 React and TypeScript single-page application built with Vite.
 
+Frontend foundations include React Router, TanStack Query, React Hook Form,
+Zod, Tailwind CSS, Vitest, and React Testing Library.
+
 ## Requirements
 
 - Node.js 24 LTS
