@@ -44,7 +44,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
     - [x] 1.8D-3 Tailwind styling foundation
 [-] 1.9 Frontend authentication
   - [x] 1.9A Authentication state, contracts, and session bootstrap
-  - [ ] 1.9B Registration and login forms
+  - [x] 1.9B Registration and login forms
   - [ ] 1.9C Protected routes, refresh retry, and logout
   - [ ] 1.9D Profile integration
 [ ] 1.10 Journal frontend

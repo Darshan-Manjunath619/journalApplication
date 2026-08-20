@@ -33,5 +33,13 @@ A refresh `401` produces `unauthenticated`. Network or server failures produce
 The authentication provider is outside React development `StrictMode` because
 refresh rotates server state and must not be replayed by development checks.
 
-Phase 1.9A implements contracts, state, and bootstrap. Forms, protected routes,
-automatic `401` retry, logout, and profile editing follow in later increments.
+## Login and registration
+
+Login validates input, posts credentials to `/api/v1/auth/login`, stores the
+returned access token in memory, loads `/api/v1/users/me`, and then navigates
+to the dashboard. Registration posts to `/api/v1/auth/register` and redirects
+to login with a confirmation message; it does not automatically authenticate
+because registration does not return tokens.
+
+Phase 1.9A and 1.9B implement state, bootstrap, login, and registration.
+Protected routes, automatic `401` retry, logout, and profile editing follow.

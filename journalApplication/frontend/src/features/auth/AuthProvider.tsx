@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AuthContext } from './AuthContext'
-import type { AuthStatus, CurrentUser } from './authTypes'
-import { clearLocalSession, restoreSession } from './authService'
+import type { AuthStatus, CurrentUser, LoginRequest, RegisterRequest } from './authTypes'
+import { clearLocalSession, loginSession, registerUser, restoreSession } from './authService'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null)
@@ -38,9 +38,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setBootstrapAttempt((attempt) => attempt + 1)
   }, [])
 
+  const login = useCallback(async (request: LoginRequest) => {
+    setStatus('loading')
+    setError(null)
+    try {
+      const authenticatedUser = await loginSession(request)
+      setUser(authenticatedUser)
+      setStatus('authenticated')
+    } catch (cause) {
+      setUser(null)
+      setStatus('unauthenticated')
+      throw cause
+    }
+  }, [])
+
+  const register = useCallback(async (request: RegisterRequest) => {
+    await registerUser(request)
+  }, [])
+
   const value = useMemo(
-    () => ({ user, status, error, retryBootstrap }),
-    [user, status, error, retryBootstrap],
+    () => ({ user, status, error, retryBootstrap, login, register }),
+    [user, status, error, retryBootstrap, login, register],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
