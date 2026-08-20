@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
+import type { RouteObject } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { DashboardPage } from '../pages/DashboardPage'
 import { LoginPage } from '../pages/LoginPage'
@@ -6,7 +7,7 @@ import { NotFoundPage } from '../pages/NotFoundPage'
 import { ProfilePage } from '../pages/ProfilePage'
 import { RegisterPage } from '../pages/RegisterPage'
 
-export const router = createBrowserRouter([
+export const appRoutes: RouteObject[] = [
   { path: '/', element: <Navigate to={'/dashboard'} replace /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
@@ -18,4 +19,6 @@ export const router = createBrowserRouter([
     ],
   },
   { path: '*', element: <NotFoundPage /> },
-])
+]
+
+export const router = createBrowserRouter(appRoutes)

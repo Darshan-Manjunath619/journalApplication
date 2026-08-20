@@ -40,10 +40,13 @@ Verification:
 
 ```powershell
 npm.cmd run lint
+npm.cmd run test
 npm.cmd run build
 ```
 
 - `lint` checks source-code quality.
+- `test` runs the frontend test suite once with Vitest.
+- `test:watch` reruns affected tests while frontend code changes.
 - `build` type-checks TypeScript and creates optimized static files in `dist/`.
 - `node_modules/` and `dist/` are generated and intentionally ignored by Git.
 
