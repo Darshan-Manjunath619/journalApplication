@@ -8,5 +8,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
+    env: {
+      VITE_API_BASE_URL: 'http://localhost:8080/journal/api/v1',
+    },
   },
 })

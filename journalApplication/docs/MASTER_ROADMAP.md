@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.8 frontend foundation completed**.
-Next: **Phase 1.9 — Frontend authentication**.
+Current checkpoint: **Phase 1.9A authentication state and session bootstrap completed**.
+Next: **Phase 1.9B — Registration and login forms**.
 
 ---
 
@@ -147,9 +147,12 @@ Acceptance: a developer can exercise every supported API from the generated docs
 
 Acceptance: lint, type-check, tests, and production build pass; the app starts locally.
 
-### 1.9 Frontend authentication `[ ]`
+### 1.9 Frontend authentication `[-]`
 
-- Register, login, logout, auth bootstrap, protected routes, and profile.
+- [x] Authentication state, typed contracts, and refresh-based session bootstrap.
+- [ ] Register and login forms.
+- [ ] Protected routes, automatic refresh retry, and logout.
+- [ ] Profile integration.
 - Access token held in memory, never local storage.
 - Single shared refresh request and one retry after access-token expiry.
 
