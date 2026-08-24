@@ -1,14 +1,18 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
-import { vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { appRoutes } from './router'
 import { AuthContext } from '../features/auth/AuthContext'
 import type { AuthContextValue } from '../features/auth/AuthContext'
 
 function renderRoute(path: string, authOverrides: Partial<AuthContextValue> = {}) {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({
+    content: [], page: 0, size: 10, totalElements: 0, totalPages: 0, first: true, last: true,
+  }), { status: 200, headers: { 'Content-Type': 'application/json' } })))
   const router = createMemoryRouter(appRoutes, { initialEntries: [path] })
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
   const auth: AuthContextValue = {
     user: { id: 7, userName: 'darshan_01', email: 'darshan@example.com', sentimentAnalysis: false, roles: ['USER'] },
     status: 'authenticated',
@@ -21,9 +25,15 @@ function renderRoute(path: string, authOverrides: Partial<AuthContextValue> = {}
     changePassword: vi.fn().mockResolvedValue(undefined),
     ...authOverrides,
   }
-  render(<AuthContext.Provider value={auth}><RouterProvider router={router} /></AuthContext.Provider>)
+  render(
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={auth}><RouterProvider router={router} /></AuthContext.Provider>
+    </QueryClientProvider>,
+  )
   return auth
 }
+
+afterEach(() => vi.unstubAllGlobals())
 
 describe('application routing', () => {
   it('renders the profile inside the shared application shell', () => {
