@@ -42,11 +42,11 @@ Status: [ ] not started, [-] in progress, [x] completed.
     - [x] 1.8D-1 Frontend testing foundation
     - [x] 1.8D-2 Form and validation foundation
     - [x] 1.8D-3 Tailwind styling foundation
-[-] 1.9 Frontend authentication
+[x] 1.9 Frontend authentication
   - [x] 1.9A Authentication state, contracts, and session bootstrap
   - [x] 1.9B Registration and login forms
   - [x] 1.9C Protected routes, refresh retry, and logout
-  - [ ] 1.9D Profile integration
+  - [x] 1.9D Profile integration
 [ ] 1.10 Journal frontend
 [ ] 1.11 Frontend search and pagination
 [ ] 1.12 UI error handling and user experience

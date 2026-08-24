@@ -14,6 +14,7 @@ export function LoginPage() {
   const location = useLocation()
   const [serverError, setServerError] = useState<string | null>(null)
   const registrationComplete = Boolean((location.state as { registrationComplete?: boolean } | null)?.registrationComplete)
+  const passwordChanged = Boolean((location.state as { passwordChanged?: boolean } | null)?.passwordChanged)
   const requestedPath = (location.state as { from?: string } | null)?.from ?? '/dashboard'
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -38,6 +39,11 @@ export function LoginPage() {
         {registrationComplete && (
           <p className={'mt-4 rounded-lg bg-emerald-50 p-3 text-sm font-medium text-emerald-800'} role={'status'}>
             Account created. You can now sign in.
+          </p>
+        )}
+        {passwordChanged && (
+          <p className={'mt-4 rounded-lg bg-emerald-50 p-3 text-sm font-medium text-emerald-800'} role={'status'}>
+            Password changed. Sign in again with your new password.
           </p>
         )}
         {serverError && <p className={'mt-4 rounded-lg bg-rose-50 p-3 text-sm font-medium text-rose-700'} role={'alert'}>{serverError}</p>}

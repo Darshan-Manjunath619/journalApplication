@@ -55,5 +55,16 @@ Logout posts to `/api/v1/auth/logout`, allowing the backend to revoke the
 refresh token and clear its cookie. The frontend clears its in-memory access
 token and user state even if the network request fails, then returns to login.
 
-Phase 1.9A through 1.9C implement bootstrap, login, registration, protected
-routes, refresh retry, and logout. Profile editing follows in Phase 1.9D.
+## Profile management
+
+The profile screen displays username and roles as read-only identity fields.
+Only email and sentiment preference are sent to `PATCH /api/v1/users/me`.
+The returned profile replaces the shared user in `AuthContext`, keeping the
+shell and future features consistent without another page load.
+
+Password changes require the current password and matching new-password
+confirmation. After `PATCH /api/v1/users/me/password` succeeds, the frontend
+clears its session and returns to login because the backend revokes every
+refresh token belonging to the user.
+
+Phase 1.9A through 1.9D complete the frontend authentication and profile flow.

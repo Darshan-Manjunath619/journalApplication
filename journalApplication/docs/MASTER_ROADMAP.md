@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.9C protected routes, refresh retry, and logout completed**.
-Next: **Phase 1.9D — Profile integration**.
+Current checkpoint: **Phase 1.9 frontend authentication and profile integration completed**.
+Next: **Phase 1.10 — Journal frontend**.
 
 ---
 

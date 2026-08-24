@@ -17,6 +17,8 @@ function renderRoute(path: string, authOverrides: Partial<AuthContextValue> = {}
     login: vi.fn(),
     register: vi.fn(),
     logout: vi.fn().mockResolvedValue(undefined),
+    updateProfile: vi.fn().mockResolvedValue(undefined),
+    changePassword: vi.fn().mockResolvedValue(undefined),
     ...authOverrides,
   }
   render(<AuthContext.Provider value={auth}><RouterProvider router={router} /></AuthContext.Provider>)

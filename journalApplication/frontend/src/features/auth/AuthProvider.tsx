@@ -4,6 +4,8 @@ import { AuthContext } from './AuthContext'
 import type { AuthStatus, CurrentUser, LoginRequest, RegisterRequest } from './authTypes'
 import { clearLocalSession, loginSession, logoutSession, registerUser, restoreSession } from './authService'
 import { setSessionExpiredHandler } from '../../lib/apiClient'
+import type { ChangePasswordRequest, UpdateProfileRequest } from '../profile/profileTypes'
+import { changePasswordRequest, updateProfileRequest } from '../profile/profileService'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null)
@@ -77,9 +79,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const updateProfile = useCallback(async (request: UpdateProfileRequest) => {
+    const updatedUser = await updateProfileRequest(request)
+    setUser(updatedUser)
+  }, [])
+
+  const changePassword = useCallback(async (request: ChangePasswordRequest) => {
+    await changePasswordRequest(request)
+    await logoutSession().catch(() => undefined)
+    setUser(null)
+    setError(null)
+    setStatus('unauthenticated')
+  }, [])
+
   const value = useMemo(
-    () => ({ user, status, error, retryBootstrap, login, register, logout }),
-    [user, status, error, retryBootstrap, login, register, logout],
+    () => ({ user, status, error, retryBootstrap, login, register, logout, updateProfile, changePassword }),
+    [user, status, error, retryBootstrap, login, register, logout, updateProfile, changePassword],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
