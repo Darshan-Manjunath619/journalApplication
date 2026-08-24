@@ -20,6 +20,14 @@ export function registerUser(request: RegisterRequest) {
   return apiClient.post<CurrentUser>('/auth/register', request)
 }
 
+export async function logoutSession() {
+  try {
+    await apiClient.post<void>('/auth/logout')
+  } finally {
+    clearLocalSession()
+  }
+}
+
 export async function restoreSession(): Promise<CurrentUser | null> {
   try {
     const auth = await apiClient.post<AuthResponse>('/auth/refresh')

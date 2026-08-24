@@ -16,6 +16,7 @@ function renderAuthPage(path: string, overrides: Partial<AuthContextValue> = {})
     retryBootstrap: vi.fn(),
     login: vi.fn(),
     register: vi.fn(),
+    logout: vi.fn(),
     ...overrides,
   }
 

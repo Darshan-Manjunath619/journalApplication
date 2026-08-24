@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { setAccessToken } from '../../lib/apiClient'
-import { loginSession, registerUser } from './authService'
+import { loginSession, logoutSession, registerUser } from './authService'
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -61,5 +61,16 @@ describe('authService', () => {
       method: 'POST',
       body: JSON.stringify(request),
     })
+  })
+
+  it('calls logout and clears the access token', async () => {
+    setAccessToken('access-token')
+    const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await logoutSession()
+
+    expect(fetchMock.mock.calls[0][0]).toContain('/auth/logout')
+    expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: 'POST', credentials: 'include' })
   })
 })

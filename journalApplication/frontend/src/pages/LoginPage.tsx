@@ -14,6 +14,7 @@ export function LoginPage() {
   const location = useLocation()
   const [serverError, setServerError] = useState<string | null>(null)
   const registrationComplete = Boolean((location.state as { registrationComplete?: boolean } | null)?.registrationComplete)
+  const requestedPath = (location.state as { from?: string } | null)?.from ?? '/dashboard'
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { userName: '', password: '' },
@@ -23,7 +24,7 @@ export function LoginPage() {
     setServerError(null)
     try {
       await login(values)
-      navigate('/dashboard', { replace: true })
+      navigate(requestedPath, { replace: true })
     } catch (error) {
       setServerError(loginErrorMessage(error))
     }

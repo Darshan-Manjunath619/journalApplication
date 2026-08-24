@@ -28,12 +28,46 @@ if (!configuredBaseUrl) {
 
 const apiBaseUrl = configuredBaseUrl.replace(/\/$/, '')
 let accessToken: string | null = null
+let refreshPromise: Promise<boolean> | null = null
+let sessionExpiredHandler: (() => void) | null = null
+
+type AuthResponse = {
+  accessToken: string
+}
 
 export function setAccessToken(token: string | null) {
   accessToken = token
 }
 
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+export function setSessionExpiredHandler(handler: (() => void) | null) {
+  sessionExpiredHandler = handler
+}
+
+async function refreshAccessToken(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = fetch(`${apiBaseUrl}/auth/refresh`, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    })
+      .then(async (response) => {
+        if (!response.ok) return false
+        const auth = await response.json() as AuthResponse
+        setAccessToken(auth.accessToken)
+        return true
+      })
+      .finally(() => {
+        refreshPromise = null
+      })
+  }
+  return refreshPromise
+}
+
+function canRefresh(path: string) {
+  return !path.startsWith('/auth/')
+}
+
+async function request<T>(path: string, init: RequestInit = {}, retryAfterRefresh = true): Promise<T> {
   const headers = new Headers(init.headers)
   headers.set('Accept', 'application/json')
 
@@ -50,6 +84,15 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     headers,
     credentials: 'include',
   })
+
+  if (response.status === 401 && retryAfterRefresh && canRefresh(path)) {
+    const refreshed = await refreshAccessToken()
+    if (refreshed) {
+      return request<T>(path, init, false)
+    }
+    setAccessToken(null)
+    sessionExpiredHandler?.()
+  }
 
   if (!response.ok) {
     const isProblemJson = response.headers

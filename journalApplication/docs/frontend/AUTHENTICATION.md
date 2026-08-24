@@ -41,5 +41,19 @@ to the dashboard. Registration posts to `/api/v1/auth/register` and redirects
 to login with a confirmation message; it does not automatically authenticate
 because registration does not return tokens.
 
-Phase 1.9A and 1.9B implement state, bootstrap, login, and registration.
-Protected routes, automatic `401` retry, logout, and profile editing follow.
+## Protected requests and refresh retry
+
+Dashboard and profile routes render only for an authenticated session. A `401`
+from a protected API request starts one shared refresh request. When refresh
+succeeds, the client stores the new access token and retries each original
+request once. A rejected refresh clears the session and returns the user to
+login; auth endpoints never trigger refresh, preventing retry loops.
+
+## Logout
+
+Logout posts to `/api/v1/auth/logout`, allowing the backend to revoke the
+refresh token and clear its cookie. The frontend clears its in-memory access
+token and user state even if the network request fails, then returns to login.
+
+Phase 1.9A through 1.9C implement bootstrap, login, registration, protected
+routes, refresh retry, and logout. Profile editing follows in Phase 1.9D.

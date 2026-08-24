@@ -45,7 +45,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [-] 1.9 Frontend authentication
   - [x] 1.9A Authentication state, contracts, and session bootstrap
   - [x] 1.9B Registration and login forms
-  - [ ] 1.9C Protected routes, refresh retry, and logout
+  - [x] 1.9C Protected routes, refresh retry, and logout
   - [ ] 1.9D Profile integration
 [ ] 1.10 Journal frontend
 [ ] 1.11 Frontend search and pagination

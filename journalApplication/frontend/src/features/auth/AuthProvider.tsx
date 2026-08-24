@@ -2,13 +2,24 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AuthContext } from './AuthContext'
 import type { AuthStatus, CurrentUser, LoginRequest, RegisterRequest } from './authTypes'
-import { clearLocalSession, loginSession, registerUser, restoreSession } from './authService'
+import { clearLocalSession, loginSession, logoutSession, registerUser, restoreSession } from './authService'
+import { setSessionExpiredHandler } from '../../lib/apiClient'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null)
   const [status, setStatus] = useState<AuthStatus>('loading')
   const [error, setError] = useState<Error | null>(null)
   const [bootstrapAttempt, setBootstrapAttempt] = useState(0)
+
+  useEffect(() => {
+    setSessionExpiredHandler(() => {
+      clearLocalSession()
+      setUser(null)
+      setError(null)
+      setStatus('unauthenticated')
+    })
+    return () => setSessionExpiredHandler(null)
+  }, [])
 
   useEffect(() => {
     let active = true
@@ -56,9 +67,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await registerUser(request)
   }, [])
 
+  const logout = useCallback(async () => {
+    try {
+      await logoutSession()
+    } finally {
+      setUser(null)
+      setError(null)
+      setStatus('unauthenticated')
+    }
+  }, [])
+
   const value = useMemo(
-    () => ({ user, status, error, retryBootstrap, login, register }),
-    [user, status, error, retryBootstrap, login, register],
+    () => ({ user, status, error, retryBootstrap, login, register, logout }),
+    [user, status, error, retryBootstrap, login, register, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

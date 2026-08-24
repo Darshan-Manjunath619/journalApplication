@@ -8,6 +8,7 @@ export type AuthContextValue = {
   retryBootstrap: () => void
   login: (request: LoginRequest) => Promise<void>
   register: (request: RegisterRequest) => Promise<void>
+  logout: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined)
