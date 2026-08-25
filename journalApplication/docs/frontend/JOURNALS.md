@@ -46,3 +46,14 @@ sort fields (`createdAt`, `updatedAt`, or `title`) with `asc` or `desc`. Search
 is submitted explicitly instead of querying on every keystroke. Changing search
 or sort returns pagination to page zero, and the full request becomes part of
 the TanStack Query cache key.
+
+## Filters and URL state
+
+Tag, favorite, start-date, and end-date filters are stored with search, sort,
+and page in the dashboard URL. For example, `/dashboard?tag=3&favorite=true`
+restores the same controls after a refresh. The URL values are validated before
+they become a typed journal request; invalid values fall back to safe defaults.
+
+The service converts date-only controls into UTC day boundaries before calling
+the backend. Clearing filters removes only filter parameters, preserves search
+and sorting, and returns pagination to page zero.

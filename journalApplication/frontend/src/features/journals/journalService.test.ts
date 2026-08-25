@@ -15,7 +15,7 @@ describe('journalService', () => {
     }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
 
-    await getJournals({ page: 1, size: 10, query: '', sortField: 'createdAt', sortDirection: 'desc' })
+    await getJournals({ page: 1, size: 10, query: '', sortField: 'createdAt', sortDirection: 'desc', tagId: null, favorite: null, fromDate: '', toDate: '' })
 
     const url = String(fetchMock.mock.calls[0][0])
     expect(url).toContain('/journals?')
@@ -30,11 +30,26 @@ describe('journalService', () => {
     }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
 
-    await getJournals({ page: 0, size: 10, query: ' spring security ', sortField: 'title', sortDirection: 'asc' })
+    await getJournals({ page: 0, size: 10, query: ' spring security ', sortField: 'title', sortDirection: 'asc', tagId: null, favorite: null, fromDate: '', toDate: '' })
 
     const url = String(fetchMock.mock.calls[0][0])
     expect(url).toContain('q=spring+security')
     expect(url).toContain('sort=title%2Casc')
+  })
+
+  it('includes tag, favorite, and UTC date boundaries', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      content: [], page: 0, size: 10, totalElements: 0, totalPages: 0, first: true, last: true,
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await getJournals({ page: 0, size: 10, query: '', sortField: 'createdAt', sortDirection: 'desc', tagId: 3, favorite: true, fromDate: '2026-08-01', toDate: '2026-08-25' })
+
+    const url = String(fetchMock.mock.calls[0][0])
+    expect(url).toContain('tag=3')
+    expect(url).toContain('favorite=true')
+    expect(url).toContain('from=2026-08-01T00%3A00%3A00.000Z')
+    expect(url).toContain('to=2026-08-25T23%3A59%3A59.999Z')
   })
 
   it('uses the create and owned-detail endpoints', async () => {

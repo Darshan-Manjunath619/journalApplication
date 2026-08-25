@@ -31,14 +31,22 @@ function journal(id: number, title: string) {
   }
 }
 
-function renderDashboard() {
+function renderDashboard(initialEntry = '/dashboard') {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
-  render(<QueryClientProvider client={queryClient}><MemoryRouter><DashboardPage /></MemoryRouter></QueryClientProvider>)
+  render(<QueryClientProvider client={queryClient}><MemoryRouter initialEntries={[initialEntry]}><DashboardPage /></MemoryRouter></QueryClientProvider>)
   return queryClient
 }
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
+}
+
+function routeFetch(journalResponses: Response[], tags: unknown[] = []) {
+  let journalIndex = 0
+  return vi.fn((input: string | URL | Request) => {
+    if (String(input).endsWith('/tags')) return Promise.resolve(jsonResponse(tags))
+    return Promise.resolve(journalResponses[Math.min(journalIndex++, journalResponses.length - 1)].clone())
+  })
 }
 
 afterEach(() => vi.unstubAllGlobals())
@@ -52,7 +60,7 @@ describe('DashboardPage', () => {
   })
 
   it('shows an empty state for a successful empty page', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(pageResponse([]))))
+    vi.stubGlobal('fetch', routeFetch([jsonResponse(pageResponse([]))]))
     renderDashboard()
 
     expect(await screen.findByRole('heading', { name: 'No journal entries yet' })).toBeInTheDocument()
@@ -60,26 +68,25 @@ describe('DashboardPage', () => {
 
   it('renders journal details and loads the next page', async () => {
     const browser = userEvent.setup()
-    const fetchMock = vi.fn()
-      .mockResolvedValueOnce(jsonResponse(pageResponse([journal(1, 'First entry')], { totalElements: 2, totalPages: 2, last: false })))
-      .mockResolvedValueOnce(jsonResponse(pageResponse([journal(2, 'Second entry')], { page: 1, totalElements: 2, totalPages: 2, first: false })))
+    const fetchMock = routeFetch([
+      jsonResponse(pageResponse([journal(1, 'First entry')], { totalElements: 2, totalPages: 2, last: false })),
+      jsonResponse(pageResponse([journal(2, 'Second entry')], { page: 1, totalElements: 2, totalPages: 2, first: false })),
+    ], [{ id: 3, name: 'Personal', createdAt: '2026-08-24T09:00:00Z' }])
     vi.stubGlobal('fetch', fetchMock)
     renderDashboard()
 
     expect(await screen.findByRole('heading', { name: 'First entry' })).toBeInTheDocument()
-    expect(screen.getByText('Favorite')).toBeInTheDocument()
-    expect(screen.getByText('Personal')).toBeInTheDocument()
+    expect(screen.getAllByText('Favorite')).toHaveLength(2)
+    expect(screen.getAllByText('Personal')).toHaveLength(2)
     await browser.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Second entry' })).toBeInTheDocument()
-    expect(String(fetchMock.mock.calls[1][0])).toContain('page=1')
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('page=1'))).toBe(true)
   })
 
   it('shows an error and retries the request', async () => {
     const browser = userEvent.setup()
-    const fetchMock = vi.fn()
-      .mockResolvedValueOnce(jsonResponse({ message: 'failure' }, 500))
-      .mockResolvedValueOnce(jsonResponse(pageResponse([])))
+    const fetchMock = routeFetch([jsonResponse({ message: 'failure' }, 500), jsonResponse(pageResponse([]))])
     vi.stubGlobal('fetch', fetchMock)
     renderDashboard()
 
@@ -87,12 +94,12 @@ describe('DashboardPage', () => {
     await browser.click(screen.getByRole('button', { name: 'Try again' }))
 
     expect(await screen.findByRole('heading', { name: 'No journal entries yet' })).toBeInTheDocument()
-    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(fetchMock.mock.calls.filter(([url]) => !String(url).endsWith('/tags'))).toHaveLength(2)
   })
 
   it('sends submitted search and allowed sorting and resets to page zero', async () => {
     const browser = userEvent.setup()
-    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(jsonResponse(pageResponse([]))))
+    const fetchMock = routeFetch([jsonResponse(pageResponse([]))])
     vi.stubGlobal('fetch', fetchMock)
     renderDashboard()
     await screen.findByRole('heading', { name: 'No journal entries yet' })
@@ -111,6 +118,37 @@ describe('DashboardPage', () => {
       expect(url).toContain('page=0')
       expect(url).toContain('sort=title%2Casc')
       expect(url).toContain('q=spring+security')
+    })
+  })
+
+  it('restores filters from the URL and sends them to the backend', async () => {
+    const browser = userEvent.setup()
+    const fetchMock = routeFetch([jsonResponse(pageResponse([]))], [{ id: 3, name: 'Personal', createdAt: '2026-08-24T09:00:00Z' }])
+    vi.stubGlobal('fetch', fetchMock)
+    renderDashboard('/dashboard?tag=3&favorite=true&from=2026-08-01&to=2026-08-25&page=2')
+
+    await screen.findByRole('option', { name: 'Personal' })
+    expect(screen.getByLabelText('Tag')).toHaveValue('3')
+    expect(screen.getByLabelText('Favorite')).toHaveValue('true')
+    expect(screen.getByLabelText('From date')).toHaveValue('2026-08-01')
+    expect(screen.getByLabelText('To date')).toHaveValue('2026-08-25')
+    await waitFor(() => {
+      const url = fetchMock.mock.calls.map(([value]) => String(value)).find((value) => value.includes('/journals?')) ?? ''
+      expect(url).toContain('tag=3')
+      expect(url).toContain('favorite=true')
+      expect(url).toContain('from=2026-08-01T00%3A00%3A00.000Z')
+      expect(url).toContain('to=2026-08-25T23%3A59%3A59.999Z')
+    })
+
+    await browser.click(screen.getByRole('button', { name: 'Clear filters' }))
+    await waitFor(() => {
+      const urls = fetchMock.mock.calls.map(([value]) => String(value)).filter((value) => value.includes('/journals?'))
+      const latest = urls.at(-1) ?? ''
+      expect(latest).not.toContain('tag=')
+      expect(latest).not.toContain('favorite=')
+      expect(latest).not.toContain('from=')
+      expect(latest).not.toContain('to=')
+      expect(latest).toContain('page=0')
     })
   })
 })

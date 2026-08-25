@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.11A frontend journal search and sorting completed**.
-Next: **Phase 1.11B — Tag, favorite, and date filters with URL query state**.
+Current checkpoint: **Phase 1.11 frontend search, filtering, sorting, pagination, and URL state completed**.
+Next: **Phase 1.12 — UI error handling and user experience**.
 
 ---
 
@@ -147,29 +147,30 @@ Acceptance: a developer can exercise every supported API from the generated docs
 
 Acceptance: lint, type-check, tests, and production build pass; the app starts locally.
 
-### 1.9 Frontend authentication `[-]`
+### 1.9 Frontend authentication `[x]`
 
 - [x] Authentication state, typed contracts, and refresh-based session bootstrap.
-- [ ] Register and login forms.
-- [ ] Protected routes, automatic refresh retry, and logout.
-- [ ] Profile integration.
+- [x] Register and login forms.
+- [x] Protected routes, automatic refresh retry, and logout.
+- [x] Profile integration.
 - Access token held in memory, never local storage.
 - Single shared refresh request and one retry after access-token expiry.
 
 Acceptance: authentication lifecycle and failure states pass component/API-mock tests.
 
-### 1.10 Journal frontend `[ ]`
+### 1.10 Journal frontend `[x]`
 
-- [ ] Dashboard and journal listing.
-- [ ] Create and view workflows.
-- [ ] Edit and delete workflows with confirmation and recovery.
-- [ ] Tag and favorite controls.
+- [x] Dashboard and journal listing.
+- [x] Create and view workflows.
+- [x] Edit and delete workflows with confirmation and recovery.
+- [x] Tag and favorite controls.
 
 Acceptance: each workflow works against the real backend and has focused tests.
 
-### 1.11 Frontend search and pagination `[ ]`
+### 1.11 Frontend search and pagination `[x]`
 
-- Search, filtering, sorting, page navigation, and URL query-state integration.
+- [x] Search, filtering, sorting, page navigation, and URL query-state integration.
+- [x] Tag, favorite, and UTC date-boundary filters.
 - Query flow documented from browser parameters to database and response.
 
 Acceptance: filters combine correctly, navigation is stable, and stale requests

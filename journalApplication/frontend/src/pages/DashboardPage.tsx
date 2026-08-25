@@ -1,31 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { JournalCard } from '../features/journals/JournalCard'
 import { useJournals } from '../features/journals/useJournals'
-
-const PAGE_SIZE = 10
+import { parseDashboardQuery, updateDashboardQuery } from '../features/journals/dashboardQueryState'
+import { useTags } from '../features/tags/useTags'
 
 export function DashboardPage() {
-  const [page, setPage] = useState(0)
-  const [draftQuery, setDraftQuery] = useState('')
-  const [query, setQuery] = useState('')
-  const [sortField, setSortField] = useState<'createdAt' | 'updatedAt' | 'title'>('createdAt')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
+  const [searchParameters, setSearchParameters] = useSearchParams()
+  const request = parseDashboardQuery(searchParameters)
+  const { page, query, sortField, sortDirection, tagId, favorite, fromDate, toDate } = request
+  const [draftQuery, setDraftQuery] = useState(query)
   const location = useLocation()
-  const journals = useJournals({ page, size: PAGE_SIZE, query, sortField, sortDirection })
+  const journals = useJournals(request)
+  const tags = useTags()
   const deleted = Boolean((location.state as { deleted?: boolean } | null)?.deleted)
+  const hasFilters = tagId !== null || favorite !== null || Boolean(fromDate) || Boolean(toDate)
+  const hasCriteria = Boolean(query) || hasFilters
+
+  useEffect(() => setDraftQuery(query), [query])
+
+  function updateQuery(changes: Record<string, string | number | boolean | null>) {
+    setSearchParameters(updateDashboardQuery(searchParameters, changes))
+  }
 
   function search(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setPage(0)
-    setQuery(draftQuery.trim())
+    updateQuery({ q: draftQuery.trim(), page: null })
   }
 
   function clearSearch() {
-    setDraftQuery('')
-    setQuery('')
-    setPage(0)
+    updateQuery({ q: null, page: null })
+  }
+
+  function clearFilters() {
+    updateQuery({ tag: null, favorite: null, from: null, to: null, page: null })
   }
 
   return (
@@ -50,9 +59,16 @@ export function DashboardPage() {
           {query && <button className={'rounded-lg border border-slate-300 px-4 py-2.5 font-semibold text-slate-700'} type={'button'} onClick={clearSearch}>Clear</button>}
         </form>
         <div className={'mt-4 grid gap-4 sm:grid-cols-2'}>
-          <label className={'text-sm font-semibold text-slate-700'}>Sort by<select className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} value={sortField} onChange={(event) => { setSortField(event.target.value as typeof sortField); setPage(0) }}><option value={'createdAt'}>Created date</option><option value={'updatedAt'}>Updated date</option><option value={'title'}>Title</option></select></label>
-          <label className={'text-sm font-semibold text-slate-700'}>Direction<select className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} value={sortDirection} onChange={(event) => { setSortDirection(event.target.value as typeof sortDirection); setPage(0) }}><option value={'desc'}>Descending</option><option value={'asc'}>Ascending</option></select></label>
+          <label className={'text-sm font-semibold text-slate-700'}>Sort by<select className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} value={sortField} onChange={(event) => updateQuery({ sort: `${event.target.value},${sortDirection}`, page: null })}><option value={'createdAt'}>Created date</option><option value={'updatedAt'}>Updated date</option><option value={'title'}>Title</option></select></label>
+          <label className={'text-sm font-semibold text-slate-700'}>Direction<select className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} value={sortDirection} onChange={(event) => updateQuery({ sort: `${sortField},${event.target.value}`, page: null })}><option value={'desc'}>Descending</option><option value={'asc'}>Ascending</option></select></label>
         </div>
+        <div className={'mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4'}>
+          <label className={'text-sm font-semibold text-slate-700'}>Tag<select className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} value={tagId ?? ''} onChange={(event) => updateQuery({ tag: event.target.value, page: null })}><option value={''}>All tags</option>{Array.isArray(tags.data) && tags.data.map((tag) => <option value={tag.id} key={tag.id}>{tag.name}</option>)}</select></label>
+          <label className={'text-sm font-semibold text-slate-700'}>Favorite<select className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} value={favorite === null ? '' : String(favorite)} onChange={(event) => updateQuery({ favorite: event.target.value, page: null })}><option value={''}>All journals</option><option value={'true'}>Favorites only</option><option value={'false'}>Not favorites</option></select></label>
+          <label className={'text-sm font-semibold text-slate-700'}>From date<input className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} type={'date'} value={fromDate} max={toDate || undefined} onChange={(event) => updateQuery({ from: event.target.value, page: null })} /></label>
+          <label className={'text-sm font-semibold text-slate-700'}>To date<input className={'mt-2 block w-full rounded-lg border border-slate-300 px-3 py-2.5'} type={'date'} value={toDate} min={fromDate || undefined} onChange={(event) => updateQuery({ to: event.target.value, page: null })} /></label>
+        </div>
+        {hasFilters && <button className={'mt-4 text-sm font-semibold text-indigo-700'} type={'button'} onClick={clearFilters}>Clear filters</button>}
       </section>
 
       {journals.isPending && <DashboardMessage role={'status'}>Loading journals...</DashboardMessage>}
@@ -66,8 +82,8 @@ export function DashboardPage() {
 
       {journals.data?.content.length === 0 && (
         <DashboardMessage>
-          <h2 className={'text-xl font-bold text-slate-900'}>{query ? 'No matching journals' : 'No journal entries yet'}</h2>
-          <p className={'mt-2'}>{query ? `No journals matched “${query}”.` : 'Your entries will appear here after you create your first journal.'}</p>
+          <h2 className={'text-xl font-bold text-slate-900'}>{hasCriteria ? 'No matching journals' : 'No journal entries yet'}</h2>
+          <p className={'mt-2'}>{hasCriteria ? 'No journals matched the selected search and filters.' : 'Your entries will appear here after you create your first journal.'}</p>
         </DashboardMessage>
       )}
 
@@ -78,9 +94,9 @@ export function DashboardPage() {
             {journals.data.content.map((journal) => <JournalCard journal={journal} key={journal.id} />)}
           </div>
           <nav className={'flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4'} aria-label={'Journal pagination'}>
-            <button className={'rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'} type={'button'} disabled={journals.data.first || journals.isFetching} onClick={() => setPage((current) => current - 1)}>Previous</button>
+            <button className={'rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'} type={'button'} disabled={journals.data.first || journals.isFetching} onClick={() => updateQuery({ page: page - 1 || null })}>Previous</button>
             <span className={'text-sm text-slate-600'}>Page {journals.data.page + 1} of {journals.data.totalPages}</span>
-            <button className={'rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'} type={'button'} disabled={journals.data.last || journals.isFetching} onClick={() => setPage((current) => current + 1)}>Next</button>
+            <button className={'rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'} type={'button'} disabled={journals.data.last || journals.isFetching} onClick={() => updateQuery({ page: page + 1 })}>Next</button>
           </nav>
         </>
       )}

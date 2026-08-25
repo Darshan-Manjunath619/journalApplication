@@ -21,6 +21,10 @@ export type JournalPageRequest = {
   query: string
   sortField: 'createdAt' | 'updatedAt' | 'title'
   sortDirection: 'asc' | 'desc'
+  tagId: number | null
+  favorite: boolean | null
+  fromDate: string
+  toDate: string
 }
 
 export type CreateJournalRequest = {
