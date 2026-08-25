@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { setAccessToken } from '../../lib/apiClient'
-import { createJournal, getJournal, getJournals } from './journalService'
+import { createJournal, deleteJournal, getJournal, getJournals, updateJournal } from './journalService'
 
 afterEach(() => {
   setAccessToken(null)
@@ -39,5 +39,21 @@ describe('journalService', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('/journals')
     expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: 'POST', body: JSON.stringify(request) })
     expect(fetchMock.mock.calls[1][0]).toContain('/journals/9')
+  })
+
+  it('uses the update and delete endpoints', async () => {
+    setAccessToken('access-token')
+    const request = { title: 'Updated', content: 'Updated content', favorite: true, tagIds: [2] }
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ id: 9, ...request, tags: [] }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response(null, { status: 204 }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await updateJournal(9, request)
+    await deleteJournal(9)
+
+    expect(fetchMock.mock.calls[0][0]).toContain('/journals/9')
+    expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: 'PATCH', body: JSON.stringify(request) })
+    expect(fetchMock.mock.calls[1][1]).toMatchObject({ method: 'DELETE' })
   })
 })

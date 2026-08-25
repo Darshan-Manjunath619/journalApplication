@@ -11,14 +11,21 @@ type JournalFormProps = {
   tags: JournalTag[]
   isSubmitting: boolean
   serverError: string | null
-  onSubmit: (values: JournalFormValues, tagIds: number[]) => Promise<void>
+  initialValues?: JournalFormValues
+  initialTagIds?: number[]
+  initialFavorite?: boolean
+  showFavorite?: boolean
+  submitLabel?: string
+  cancelTo?: string
+  onSubmit: (values: JournalFormValues, tagIds: number[], favorite: boolean) => Promise<void>
 }
 
-export function JournalForm({ tags, isSubmitting, serverError, onSubmit }: JournalFormProps) {
-  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
+export function JournalForm({ tags, isSubmitting, serverError, initialValues, initialTagIds = [], initialFavorite = false, showFavorite = false, submitLabel = 'Create journal', cancelTo = '/dashboard', onSubmit }: JournalFormProps) {
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>(initialTagIds)
+  const [favorite, setFavorite] = useState(initialFavorite)
   const form = useForm<JournalFormValues>({
     resolver: zodResolver(journalSchema),
-    defaultValues: { title: '', content: '' },
+    defaultValues: initialValues ?? { title: '', content: '' },
   })
 
   function toggleTag(id: number) {
@@ -28,7 +35,7 @@ export function JournalForm({ tags, isSubmitting, serverError, onSubmit }: Journ
   }
 
   return (
-    <form className={'space-y-5'} noValidate onSubmit={form.handleSubmit((values) => onSubmit(values, selectedTagIds))}>
+    <form className={'space-y-5'} noValidate onSubmit={form.handleSubmit((values) => onSubmit(values, selectedTagIds, favorite))}>
       {serverError && <p className={'rounded-lg bg-rose-50 p-3 text-sm font-medium text-rose-700'} role={'alert'}>{serverError}</p>}
       <FormField id={'journal-title'} label={'Title'} maxLength={160} error={form.formState.errors.title?.message} {...form.register('title')} />
       <div className={'space-y-2'}>
@@ -49,11 +56,12 @@ export function JournalForm({ tags, isSubmitting, serverError, onSubmit }: Journ
           </div>
         </fieldset>
       )}
+      {showFavorite && <label className={'flex items-center gap-3 text-sm font-semibold text-slate-700'}><input className={'size-4 rounded border-slate-300 text-indigo-600'} type={'checkbox'} checked={favorite} onChange={(event) => setFavorite(event.target.checked)} />Favorite journal</label>}
       <div className={'flex flex-wrap gap-3'}>
         <button className={'rounded-lg bg-indigo-600 px-4 py-2.5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60'} type={'submit'} disabled={isSubmitting}>
-          {isSubmitting ? 'Creating...' : 'Create journal'}
+          {isSubmitting ? 'Saving...' : submitLabel}
         </button>
-        <Link className={'rounded-lg border border-slate-300 px-4 py-2.5 font-semibold text-slate-700 no-underline'} to={'/dashboard'}>Cancel</Link>
+        <Link className={'rounded-lg border border-slate-300 px-4 py-2.5 font-semibold text-slate-700 no-underline'} to={cancelTo}>Cancel</Link>
       </div>
     </form>
   )

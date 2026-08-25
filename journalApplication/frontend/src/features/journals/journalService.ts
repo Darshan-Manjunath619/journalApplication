@@ -1,6 +1,6 @@
 import { apiClient } from '../../lib/apiClient'
 import type { PageResponse } from '../../types/api'
-import type { CreateJournalRequest, Journal, JournalPageRequest } from './journalTypes'
+import type { CreateJournalRequest, Journal, JournalPageRequest, UpdateJournalRequest } from './journalTypes'
 
 export function getJournals({ page, size }: JournalPageRequest) {
   const parameters = new URLSearchParams({
@@ -17,4 +17,12 @@ export function getJournal(id: number) {
 
 export function createJournal(request: CreateJournalRequest) {
   return apiClient.post<Journal>('/journals', request)
+}
+
+export function updateJournal(id: number, request: UpdateJournalRequest) {
+  return apiClient.patch<Journal>(`/journals/${id}`, request)
+}
+
+export function deleteJournal(id: number) {
+  return apiClient.delete(`/journals/${id}`)
 }

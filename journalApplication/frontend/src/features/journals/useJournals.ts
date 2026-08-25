@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createJournal, getJournal, getJournals } from './journalService'
-import type { CreateJournalRequest, JournalPageRequest } from './journalTypes'
+import { createJournal, deleteJournal, getJournal, getJournals, updateJournal } from './journalService'
+import type { CreateJournalRequest, JournalPageRequest, UpdateJournalRequest } from './journalTypes'
 
 export const journalKeys = {
   all: ['journals'] as const,
@@ -23,6 +23,28 @@ export function useCreateJournal() {
     mutationFn: (request: CreateJournalRequest) => createJournal(request),
     onSuccess: (created) => {
       queryClient.setQueryData(journalKeys.detail(created.id), created)
+      return queryClient.invalidateQueries({ queryKey: journalKeys.lists() })
+    },
+  })
+}
+
+export function useUpdateJournal(id: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (request: UpdateJournalRequest) => updateJournal(id, request),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(journalKeys.detail(id), updated)
+      return queryClient.invalidateQueries({ queryKey: journalKeys.lists() })
+    },
+  })
+}
+
+export function useDeleteJournal(id: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => deleteJournal(id),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: journalKeys.detail(id) })
       return queryClient.invalidateQueries({ queryKey: journalKeys.lists() })
     },
   })

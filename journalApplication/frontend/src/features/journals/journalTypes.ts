@@ -25,3 +25,7 @@ export type CreateJournalRequest = {
   content: string
   tagIds: number[]
 }
+
+export type UpdateJournalRequest = CreateJournalRequest & {
+  favorite: boolean
+}

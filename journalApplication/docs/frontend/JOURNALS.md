@@ -27,4 +27,14 @@ Opening a journal directly requests `GET /api/v1/journals/{id}`. The backend
 enforces ownership; a missing or unowned ID is displayed as the same safe
 not-found state and does not reveal whether another user owns that ID.
 
-Edit and delete workflows remain separate in Phase 1.10C.
+## Edit and delete flow
+
+The edit page loads the owned journal and available tags, then pre-fills the
+shared journal form. Saving sends title, content, favorite, and complete tag
+assignments to `PATCH /api/v1/journals/{id}`. The response replaces the detail
+cache and invalidates list caches so both pages reflect the saved values.
+
+Delete is available from the detail page only after explicit confirmation.
+`DELETE /api/v1/journals/{id}` removes the detail cache, refreshes journal
+lists, and returns the user to the dashboard. The backend remains responsible
+for ownership and returns the same `404` for missing or unowned journals.

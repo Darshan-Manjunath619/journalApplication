@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { JournalCard } from '../features/journals/JournalCard'
 import { useJournals } from '../features/journals/useJournals'
 
@@ -8,7 +8,9 @@ const PAGE_SIZE = 10
 
 export function DashboardPage() {
   const [page, setPage] = useState(0)
+  const location = useLocation()
   const journals = useJournals({ page, size: PAGE_SIZE })
+  const deleted = Boolean((location.state as { deleted?: boolean } | null)?.deleted)
 
   return (
     <div className={'space-y-6'}>
@@ -20,6 +22,7 @@ export function DashboardPage() {
           <Link className={'rounded-lg bg-indigo-600 px-4 py-2.5 font-semibold text-white no-underline'} to={'/journals/new'}>New journal</Link>
         </div>
       </section>
+      {deleted && <p className={'rounded-lg bg-emerald-50 p-3 text-sm font-medium text-emerald-800'} role={'status'}>Journal deleted successfully.</p>}
 
       {journals.isPending && <DashboardMessage role={'status'}>Loading journals...</DashboardMessage>}
 
