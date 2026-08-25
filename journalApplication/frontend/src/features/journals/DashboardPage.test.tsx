@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { DashboardPage } from '../../pages/DashboardPage'
+import { MemoryRouter } from 'react-router-dom'
 
 function pageResponse(content: unknown[], overrides: Record<string, unknown> = {}) {
   return {
@@ -32,7 +33,7 @@ function journal(id: number, title: string) {
 
 function renderDashboard() {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
-  render(<QueryClientProvider client={queryClient}><DashboardPage /></QueryClientProvider>)
+  render(<QueryClientProvider client={queryClient}><MemoryRouter><DashboardPage /></MemoryRouter></QueryClientProvider>)
   return queryClient
 }
 

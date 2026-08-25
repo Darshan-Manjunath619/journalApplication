@@ -49,7 +49,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.9D Profile integration
 [-] 1.10 Journal frontend
   - [x] 1.10A Journal dashboard and paginated listing
-  - [ ] 1.10B Journal create and detail workflows
+  - [x] 1.10B Journal create and detail workflows
   - [ ] 1.10C Journal edit and delete workflows
 [ ] 1.11 Frontend search and pagination
 [ ] 1.12 UI error handling and user experience

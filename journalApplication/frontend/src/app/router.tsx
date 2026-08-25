@@ -7,6 +7,8 @@ import { NotFoundPage } from '../pages/NotFoundPage'
 import { ProfilePage } from '../pages/ProfilePage'
 import { RegisterPage } from '../pages/RegisterPage'
 import { ProtectedRoute } from '../features/auth/ProtectedRoute'
+import { CreateJournalPage } from '../pages/CreateJournalPage'
+import { JournalDetailPage } from '../pages/JournalDetailPage'
 
 export const appRoutes: RouteObject[] = [
   { path: '/', element: <Navigate to={'/dashboard'} replace /> },
@@ -19,6 +21,8 @@ export const appRoutes: RouteObject[] = [
         element: <AppShell />,
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
+          { path: '/journals/new', element: <CreateJournalPage /> },
+          { path: '/journals/:id', element: <JournalDetailPage /> },
           { path: '/profile', element: <ProfilePage /> },
         ],
       },

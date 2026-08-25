@@ -19,3 +19,9 @@ export type JournalPageRequest = {
   page: number
   size: number
 }
+
+export type CreateJournalRequest = {
+  title: string
+  content: string
+  tagIds: number[]
+}
