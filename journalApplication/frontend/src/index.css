@@ -15,6 +15,13 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #4f46e5;
+  outline-offset: 3px;
 }

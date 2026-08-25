@@ -89,10 +89,10 @@ export function DashboardPage() {
           <div className={'grid gap-4 md:grid-cols-2'} aria-busy={journals.isFetching}>
             {journals.data.content.map((journal) => <JournalCard journal={journal} key={journal.id} />)}
           </div>
-          <nav className={'flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4'} aria-label={'Journal pagination'}>
-            <button className={'rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'} type={'button'} disabled={journals.data.first || journals.isFetching} onClick={() => updateQuery({ page: page - 1 || null })}>Previous</button>
-            <span className={'text-sm text-slate-600'}>Page {journals.data.page + 1} of {journals.data.totalPages}</span>
-            <button className={'rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50'} type={'button'} disabled={journals.data.last || journals.isFetching} onClick={() => updateQuery({ page: page + 1 })}>Next</button>
+          <nav className={'grid grid-cols-2 items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-[auto_1fr_auto]'} aria-label={'Journal pagination'}>
+            <button className={'row-start-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50 sm:col-start-1 sm:row-start-1'} type={'button'} disabled={journals.data.first || journals.isFetching} onClick={() => updateQuery({ page: page - 1 || null })}>Previous</button>
+            <span className={'col-span-2 row-start-1 text-center text-sm text-slate-600 sm:col-span-1 sm:col-start-2'}>Page {journals.data.page + 1} of {journals.data.totalPages}</span>
+            <button className={'row-start-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50 sm:col-start-3 sm:row-start-1'} type={'button'} disabled={journals.data.last || journals.isFetching} onClick={() => updateQuery({ page: page + 1 })}>Next</button>
           </nav>
         </>
       )}

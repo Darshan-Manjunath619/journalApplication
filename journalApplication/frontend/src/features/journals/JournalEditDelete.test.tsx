@@ -81,12 +81,28 @@ describe('journal edit and delete workflows', () => {
     renderRoute('/journals/12')
 
     await browser.click(await screen.findByRole('button', { name: 'Delete journal' }))
-    expect(screen.getByRole('dialog', { name: 'Confirm journal deletion' })).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: 'Delete this journal permanently?' })).toBeInTheDocument()
     expect(fetchMock.mock.calls.filter(([, init]) => init?.method === 'DELETE')).toHaveLength(0)
     await browser.click(screen.getByRole('button', { name: 'Confirm delete' }))
 
     expect(await screen.findByRole('heading', { name: 'Dashboard destination' })).toBeInTheDocument()
     await waitFor(() => expect(fetchMock.mock.calls.filter(([, init]) => init?.method === 'DELETE')).toHaveLength(1))
+  })
+
+  it('moves focus into delete confirmation and restores it after Escape', async () => {
+    const browser = userEvent.setup()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(entry())))
+    renderRoute('/journals/12')
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete journal' })
+    await browser.click(deleteButton)
+
+    expect(screen.getByRole('button', { name: 'Confirm delete' })).toHaveFocus()
+    expect(screen.getByRole('dialog', { name: 'Delete this journal permanently?' })).toHaveAttribute('aria-modal', 'true')
+    await browser.keyboard('{Escape}')
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(deleteButton).toHaveFocus()
   })
 
   it('shows the same safe not-found state for an unowned edit URL', async () => {

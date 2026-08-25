@@ -54,9 +54,9 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [x] 1.11 Frontend search and pagination
   - [x] 1.11A Journal search and sorting
   - [x] 1.11B Tag, favorite, and date filters with URL query state
-[-] 1.12 UI error handling and user experience
+[x] 1.12 UI error handling and user experience
   - [x] 1.12A Consistent feedback and retry states
-  - [ ] 1.12B Accessibility and responsive layout
+  - [x] 1.12B Accessibility and responsive layout
 [ ] 1.13 Full integration verification
 [ ] 1.14 Documentation and phase completion
 
