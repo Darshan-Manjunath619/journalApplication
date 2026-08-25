@@ -18,6 +18,9 @@ export type Journal = {
 export type JournalPageRequest = {
   page: number
   size: number
+  query: string
+  sortField: 'createdAt' | 'updatedAt' | 'title'
+  sortDirection: 'asc' | 'desc'
 }
 
 export type CreateJournalRequest = {

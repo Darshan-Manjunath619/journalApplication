@@ -51,7 +51,9 @@ Status: [ ] not started, [-] in progress, [x] completed.
   - [x] 1.10A Journal dashboard and paginated listing
   - [x] 1.10B Journal create and detail workflows
   - [x] 1.10C Journal edit and delete workflows
-[ ] 1.11 Frontend search and pagination
+[-] 1.11 Frontend search and pagination
+  - [x] 1.11A Journal search and sorting
+  - [ ] 1.11B Tag, favorite, and date filters with URL query state
 [ ] 1.12 UI error handling and user experience
 [ ] 1.13 Full integration verification
 [ ] 1.14 Documentation and phase completion

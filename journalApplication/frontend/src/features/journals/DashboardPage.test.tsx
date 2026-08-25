@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { DashboardPage } from '../../pages/DashboardPage'
@@ -88,5 +88,29 @@ describe('DashboardPage', () => {
 
     expect(await screen.findByRole('heading', { name: 'No journal entries yet' })).toBeInTheDocument()
     expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('sends submitted search and allowed sorting and resets to page zero', async () => {
+    const browser = userEvent.setup()
+    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(jsonResponse(pageResponse([]))))
+    vi.stubGlobal('fetch', fetchMock)
+    renderDashboard()
+    await screen.findByRole('heading', { name: 'No journal entries yet' })
+
+    await browser.type(screen.getByLabelText('Search journals'), ' spring security ')
+    await browser.click(screen.getByRole('button', { name: 'Search' }))
+
+    expect(await screen.findByRole('heading', { name: 'No matching journals' })).toBeInTheDocument()
+    await waitFor(() => expect(String(fetchMock.mock.calls.at(-1)?.[0])).toContain('q=spring+security'))
+
+    await browser.selectOptions(screen.getByLabelText('Sort by'), 'title')
+    await browser.selectOptions(screen.getByLabelText('Direction'), 'asc')
+
+    await waitFor(() => {
+      const url = String(fetchMock.mock.calls.at(-1)?.[0])
+      expect(url).toContain('page=0')
+      expect(url).toContain('sort=title%2Casc')
+      expect(url).toContain('q=spring+security')
+    })
   })
 })

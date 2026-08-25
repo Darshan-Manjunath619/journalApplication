@@ -38,3 +38,11 @@ Delete is available from the detail page only after explicit confirmation.
 `DELETE /api/v1/journals/{id}` removes the detail cache, refreshes journal
 lists, and returns the user to the dashboard. The backend remains responsible
 for ownership and returns the same `404` for missing or unowned journals.
+
+## Search and sorting
+
+The dashboard submits search text as `q` and sends only the backend allowlisted
+sort fields (`createdAt`, `updatedAt`, or `title`) with `asc` or `desc`. Search
+is submitted explicitly instead of querying on every keystroke. Changing search
+or sort returns pagination to page zero, and the full request becomes part of
+the TanStack Query cache key.

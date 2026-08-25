@@ -2,12 +2,13 @@ import { apiClient } from '../../lib/apiClient'
 import type { PageResponse } from '../../types/api'
 import type { CreateJournalRequest, Journal, JournalPageRequest, UpdateJournalRequest } from './journalTypes'
 
-export function getJournals({ page, size }: JournalPageRequest) {
+export function getJournals({ page, size, query, sortField, sortDirection }: JournalPageRequest) {
   const parameters = new URLSearchParams({
     page: String(page),
     size: String(size),
-    sort: 'createdAt,desc',
+    sort: `${sortField},${sortDirection}`,
   })
+  if (query.trim()) parameters.set('q', query.trim())
   return apiClient.get<PageResponse<Journal>>(`/journals?${parameters.toString()}`)
 }
 

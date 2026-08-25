@@ -15,13 +15,26 @@ describe('journalService', () => {
     }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
 
-    await getJournals({ page: 1, size: 10 })
+    await getJournals({ page: 1, size: 10, query: '', sortField: 'createdAt', sortDirection: 'desc' })
 
     const url = String(fetchMock.mock.calls[0][0])
     expect(url).toContain('/journals?')
     expect(url).toContain('page=1')
     expect(url).toContain('size=10')
     expect(url).toContain('sort=createdAt%2Cdesc')
+  })
+
+  it('trims and includes search with the selected allowed sort', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      content: [], page: 0, size: 10, totalElements: 0, totalPages: 0, first: true, last: true,
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await getJournals({ page: 0, size: 10, query: ' spring security ', sortField: 'title', sortDirection: 'asc' })
+
+    const url = String(fetchMock.mock.calls[0][0])
+    expect(url).toContain('q=spring+security')
+    expect(url).toContain('sort=title%2Casc')
   })
 
   it('uses the create and owned-detail endpoints', async () => {

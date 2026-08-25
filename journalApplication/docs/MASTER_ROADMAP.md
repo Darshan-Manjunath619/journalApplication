@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.10 journal dashboard and CRUD workflows completed**.
-Next: **Phase 1.11 — Frontend search, filtering, sorting, and pagination**.
+Current checkpoint: **Phase 1.11A frontend journal search and sorting completed**.
+Next: **Phase 1.11B — Tag, favorite, and date filters with URL query state**.
 
 ---
 
