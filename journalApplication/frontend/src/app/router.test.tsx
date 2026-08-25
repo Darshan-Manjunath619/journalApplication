@@ -72,6 +72,15 @@ describe('application routing', () => {
     expect(screen.queryByRole('heading', { name: 'Your journals' })).not.toBeInTheDocument()
   })
 
+  it('shows a retry action when session bootstrap fails', async () => {
+    const user = userEvent.setup()
+    const auth = renderRoute('/dashboard', { user: null, status: 'error' })
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Unable to check your session')
+    await user.click(screen.getByRole('button', { name: 'Try again' }))
+    expect(auth.retryBootstrap).toHaveBeenCalledOnce()
+  })
+
   it('logs out and returns to login', async () => {
     const user = userEvent.setup()
     const auth = renderRoute('/dashboard')

@@ -97,6 +97,27 @@ describe('DashboardPage', () => {
     expect(fetchMock.mock.calls.filter(([url]) => !String(url).endsWith('/tags'))).toHaveLength(2)
   })
 
+  it('keeps journals usable and retries when tags fail', async () => {
+    const browser = userEvent.setup()
+    let tagAttempts = 0
+    const fetchMock = vi.fn((input: string | URL | Request) => {
+      if (String(input).endsWith('/tags')) {
+        tagAttempts += 1
+        return Promise.resolve(tagAttempts === 1 ? jsonResponse({ message: 'failure' }, 500) : jsonResponse([]))
+      }
+      return Promise.resolve(jsonResponse(pageResponse([])))
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    renderDashboard()
+
+    expect(await screen.findByText('Tags could not be loaded. Other filters still work.')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'No journal entries yet' })).toBeInTheDocument()
+    await browser.click(screen.getByRole('button', { name: 'Retry tags' }))
+
+    await waitFor(() => expect(tagAttempts).toBe(2))
+    await waitFor(() => expect(screen.queryByText('Tags could not be loaded. Other filters still work.')).not.toBeInTheDocument())
+  })
+
   it('sends submitted search and allowed sorting and resets to page zero', async () => {
     const browser = userEvent.setup()
     const fetchMock = routeFetch([jsonResponse(pageResponse([]))])

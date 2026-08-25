@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.11 frontend search, filtering, sorting, pagination, and URL state completed**.
-Next: **Phase 1.12 — UI error handling and user experience**.
+Current checkpoint: **Phase 1.12A consistent frontend feedback and retry states completed**.
+Next: **Phase 1.12B — Accessibility and responsive layout**.
 
 ---
 
@@ -176,10 +176,11 @@ Acceptance: each workflow works against the real backend and has focused tests.
 Acceptance: filters combine correctly, navigation is stable, and stale requests
 do not overwrite newer results.
 
-### 1.12 UI error handling and user experience `[ ]`
+### 1.12 UI error handling and user experience `[-]`
 
-- Loading, empty, retry, validation, unauthorized, and server-error states.
-- Responsive layout and keyboard/screen-reader accessibility pass.
+- [x] Shared page-level loading, empty, retry, and server-error presentation.
+- [x] Non-blocking tag failure and focused retry behavior.
+- [ ] Keyboard, focus, responsive layout, and screen-reader accessibility pass.
 
 Acceptance: important failure scenarios are usable and verified on mobile and desktop.
 

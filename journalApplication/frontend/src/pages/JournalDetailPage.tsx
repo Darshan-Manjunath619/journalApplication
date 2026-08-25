@@ -1,9 +1,9 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
-import type { ReactNode } from 'react'
 import { ApiError } from '../lib/apiClient'
 import { useDeleteJournal, useJournal } from '../features/journals/useJournals'
 import { journalErrorMessage } from '../features/journals/journalErrors'
+import { FeedbackPanel } from '../components/FeedbackPanel'
 
 export function JournalDetailPage() {
   const { id } = useParams()
@@ -29,10 +29,10 @@ export function JournalDetailPage() {
   }
 
   if (journalId === null || (journal.error instanceof ApiError && journal.error.status === 404)) {
-    return <JournalMessage title={'Journal not found'}>The journal does not exist or is not available to your account.</JournalMessage>
+    return <FeedbackPanel title={'Journal not found'} footer={<Link className={'font-semibold text-indigo-700'} to={'/dashboard'}>Back to dashboard</Link>}>The journal does not exist or is not available to your account.</FeedbackPanel>
   }
-  if (journal.isPending) return <JournalMessage role={'status'} title={'Loading journal'}>Please wait...</JournalMessage>
-  if (journal.isError) return <JournalMessage role={'alert'} title={'Unable to load journal'}><button className={'mt-4 rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white'} type={'button'} onClick={() => journal.refetch()}>Try again</button></JournalMessage>
+  if (journal.isPending) return <FeedbackPanel role={'status'} title={'Loading journal'}>Please wait...</FeedbackPanel>
+  if (journal.isError) return <FeedbackPanel role={'alert'} title={'Unable to load journal'} actionLabel={'Try again'} actionDisabled={journal.isFetching} onAction={() => journal.refetch()} footer={<Link className={'font-semibold text-indigo-700'} to={'/dashboard'}>Back to dashboard</Link>}>Your journal could not be loaded.</FeedbackPanel>
 
   return (
     <article className={'rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10'}>
@@ -56,10 +56,6 @@ export function JournalDetailPage() {
       </div>
     </article>
   )
-}
-
-function JournalMessage({ title, children, role }: { title: string, children: ReactNode, role?: 'alert' | 'status' }) {
-  return <section className={'rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-600 shadow-sm'} role={role}><h1 className={'text-2xl font-bold text-slate-900'}>{title}</h1><div className={'mt-2'}>{children}</div><Link className={'mt-5 inline-flex font-semibold text-indigo-700'} to={'/dashboard'}>Back to dashboard</Link></section>
 }
 
 function formatDate(value: string) {

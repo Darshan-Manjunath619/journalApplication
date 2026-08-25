@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import type { FormEvent, ReactNode } from 'react'
+import type { FormEvent } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { JournalCard } from '../features/journals/JournalCard'
 import { useJournals } from '../features/journals/useJournals'
 import { parseDashboardQuery, updateDashboardQuery } from '../features/journals/dashboardQueryState'
 import { useTags } from '../features/tags/useTags'
+import { FeedbackPanel } from '../components/FeedbackPanel'
 
 export function DashboardPage() {
   const [searchParameters, setSearchParameters] = useSearchParams()
@@ -48,6 +49,7 @@ export function DashboardPage() {
         </div>
       </section>
       {deleted && <p className={'rounded-lg bg-emerald-50 p-3 text-sm font-medium text-emerald-800'} role={'status'}>Journal deleted successfully.</p>}
+      {tags.isError && <div className={'flex flex-wrap items-center justify-between gap-3 rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800'} role={'status'}><span>Tags could not be loaded. Other filters still work.</span><button className={'font-bold underline'} type={'button'} disabled={tags.isFetching} onClick={() => tags.refetch()}>{tags.isFetching ? 'Retrying...' : 'Retry tags'}</button></div>}
 
       <section className={'rounded-xl border border-slate-200 bg-white p-4 shadow-sm'} aria-label={'Journal search and sorting'}>
         <form className={'grid gap-4 lg:grid-cols-[1fr_auto_auto] lg:items-end'} onSubmit={search}>
@@ -71,20 +73,14 @@ export function DashboardPage() {
         {hasFilters && <button className={'mt-4 text-sm font-semibold text-indigo-700'} type={'button'} onClick={clearFilters}>Clear filters</button>}
       </section>
 
-      {journals.isPending && <DashboardMessage role={'status'}>Loading journals...</DashboardMessage>}
+      {journals.isPending && <FeedbackPanel title={'Loading journals'} role={'status'}>Please wait...</FeedbackPanel>}
 
       {journals.isError && (
-        <DashboardMessage role={'alert'}>
-          <p>Unable to load your journals.</p>
-          <button className={'mt-4 rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white'} type={'button'} onClick={() => journals.refetch()}>Try again</button>
-        </DashboardMessage>
+        <FeedbackPanel title={'Unable to load your journals'} role={'alert'} actionLabel={'Try again'} actionDisabled={journals.isFetching} onAction={() => journals.refetch()}>Your journals are still safe. Check the connection and retry.</FeedbackPanel>
       )}
 
       {journals.data?.content.length === 0 && (
-        <DashboardMessage>
-          <h2 className={'text-xl font-bold text-slate-900'}>{hasCriteria ? 'No matching journals' : 'No journal entries yet'}</h2>
-          <p className={'mt-2'}>{hasCriteria ? 'No journals matched the selected search and filters.' : 'Your entries will appear here after you create your first journal.'}</p>
-        </DashboardMessage>
+        <FeedbackPanel title={hasCriteria ? 'No matching journals' : 'No journal entries yet'}>{hasCriteria ? 'No journals matched the selected search and filters.' : 'Your entries will appear here after you create your first journal.'}</FeedbackPanel>
       )}
 
       {journals.data && journals.data.content.length > 0 && (
@@ -102,8 +98,4 @@ export function DashboardPage() {
       )}
     </div>
   )
-}
-
-function DashboardMessage({ children, role }: { children: ReactNode, role?: 'alert' | 'status' }) {
-  return <section className={'rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-600 shadow-sm'} role={role}>{children}</section>
 }
