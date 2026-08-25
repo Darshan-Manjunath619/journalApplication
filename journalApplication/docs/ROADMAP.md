@@ -57,7 +57,9 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [x] 1.12 UI error handling and user experience
   - [x] 1.12A Consistent feedback and retry states
   - [x] 1.12B Accessibility and responsive layout
-[ ] 1.13 Full integration verification
+[-] 1.13 Full integration verification
+  - [x] 1.13A Automated backend and frontend verification
+  - [ ] 1.13B Real MySQL and browser application journey
 [ ] 1.14 Documentation and phase completion
 
 ## Later phases

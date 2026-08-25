@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.12 frontend error handling, accessibility, and responsive experience completed**.
-Next: **Phase 1.13 — Full integration verification**.
+Current checkpoint: **Phase 1.13A automated backend and frontend verification completed**.
+Next: **Phase 1.13B — Real MySQL and browser application journey**.
 
 ---
 
@@ -184,11 +184,12 @@ do not overwrite newer results.
 
 Acceptance: important failure scenarios are usable and verified on mobile and desktop.
 
-### 1.13 Full integration verification `[ ]`
+### 1.13 Full integration verification `[-]`
 
-- Register → login → dashboard → create → view → search/filter → edit →
+- [x] Backend verify and frontend lint, tests, type-check, and production build.
+- [ ] Register → login → dashboard → create → view → search/filter → edit →
   favorite → delete → logout.
-- Backend, frontend, integration, database, authentication, and error checks.
+- [ ] Real MySQL, authentication, health, OpenAPI, CORS, and error checks.
 
 Acceptance: the complete journey passes with no obvious regressions.
 
