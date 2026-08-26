@@ -9,26 +9,14 @@ their entries.
 
 ## Architecture
 
-```text
-Browser
-  |
-  v
-React + TypeScript SPA :5173
-  |
-  | JSON over /api/v1
-  v
-Spring Security
-  |-- short-lived JWT access token
-  |-- rotating HttpOnly refresh cookie
-  |-- CORS and role authorization
-  v
-Versioned DTO controllers
-  v
-Transactional application services
-  v
-Spring Data JPA repositories
-  v
-MySQL schema managed by Flyway
+```mermaid
+flowchart LR
+    User[User] --> SPA[React TypeScript SPA]
+    SPA -->|HTTPS JSON /api/v1| Security[Spring Security]
+    Security --> Modules[Modular Monolith]
+    Modules --> JPA[JPA and Hibernate]
+    JPA --> MySQL[(MySQL)]
+    Flyway[Flyway migrations] --> MySQL
 ```
 
 The backend and frontend live in one Git repository but are separate

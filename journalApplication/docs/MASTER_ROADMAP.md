@@ -23,7 +23,7 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1 completed and fully verified**.
+Current checkpoint: **Phase 1.15 modular monolith HLD documentation completed**.
 Next: **Phase 2.0 — Microservices architecture design, only when requested**.
 
 ---
@@ -203,6 +203,15 @@ Acceptance: the complete journey passes with no obvious regressions.
   setup, environment variables, and testing instructions.
 - ADRs for modular monolith, tokens, Flyway/MySQL, tags, and frontend state.
 - Create Git tag `phase-1-complete` only after all Phase 1 acceptance criteria pass.
+
+### 1.15 Modular monolith HLD diagrams `[x]`
+
+- Document system context, deployment containers, backend components, authentication,
+  journal request flow, database relationships, and runtime configuration.
+- Preserve this as the Phase 1 baseline for comparison with Phase 2 microservices.
+
+Acceptance: diagrams match the implemented system, render as Mermaid, and introduce
+no runtime changes.
 
 ---
 

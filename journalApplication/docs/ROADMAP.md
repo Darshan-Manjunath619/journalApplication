@@ -63,6 +63,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [x] 1.14 Documentation and phase completion
   - [x] 1.14A Retire legacy API routes
   - [x] 1.14B Final documentation, verification, and Phase 1 tag
+[x] 1.15 Modular monolith HLD diagrams
 
 ## Later phases
 
