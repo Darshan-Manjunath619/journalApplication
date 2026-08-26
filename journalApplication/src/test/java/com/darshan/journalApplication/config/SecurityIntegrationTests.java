@@ -21,12 +21,6 @@ class SecurityIntegrationTests {
     private MockMvc mvc;
 
     @Test
-    void permitsPublicHealthEndpoint() throws Exception {
-        mvc.perform(get("/public/health-checkup"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void exposesActuatorHealthWithoutAuthentication() throws Exception {
         mvc.perform(get("/actuator/health"))
                 .andExpect(status().isOk())
@@ -52,7 +46,7 @@ class SecurityIntegrationTests {
 
     @Test
     void returnsProblemDetailForMissingAccessToken() throws Exception {
-        mvc.perform(get("/journal").header("X-Correlation-ID", "security-401"))
+        mvc.perform(get("/api/v1/journals").header("X-Correlation-ID", "security-401"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentTypeCompatibleWith(
                         MediaType.APPLICATION_PROBLEM_JSON))
@@ -83,7 +77,7 @@ class SecurityIntegrationTests {
 
     @Test
     void returnsProblemDetailForMalformedAccessToken() throws Exception {
-        mvc.perform(get("/journal")
+        mvc.perform(get("/api/v1/journals")
                         .header("Authorization", "Bearer malformed")
                         .header("X-Correlation-ID", "malformed-401"))
                 .andExpect(status().isUnauthorized())
@@ -93,7 +87,7 @@ class SecurityIntegrationTests {
     @Test
     @WithMockUser(username = "member", roles = "USER")
     void returnsProblemDetailWhenUserLacksAdminRole() throws Exception {
-        mvc.perform(get("/admin").header("X-Correlation-ID", "security-403"))
+        mvc.perform(get("/api/v1/admin/users").header("X-Correlation-ID", "security-403"))
                 .andExpect(status().isForbidden())
                 .andExpect(content().contentTypeCompatibleWith(
                         MediaType.APPLICATION_PROBLEM_JSON))
@@ -103,7 +97,7 @@ class SecurityIntegrationTests {
 
     @Test
     void acceptsCorsPreflightFromConfiguredFrontend() throws Exception {
-        mvc.perform(options("/journal")
+        mvc.perform(options("/api/v1/journals")
                         .header("Origin", "http://localhost:5173")
                         .header("Access-Control-Request-Method", "GET"))
                 .andExpect(status().isOk())
@@ -113,7 +107,7 @@ class SecurityIntegrationTests {
 
     @Test
     void rejectsCorsPreflightFromUntrustedOrigin() throws Exception {
-        mvc.perform(options("/journal")
+        mvc.perform(options("/api/v1/journals")
                         .header("Origin", "https://attacker.example")
                         .header("Access-Control-Request-Method", "GET"))
                 .andExpect(status().isForbidden());
@@ -122,7 +116,14 @@ class SecurityIntegrationTests {
     @Test
     @WithMockUser(username = "administrator", roles = "ADMIN")
     void permitsAdminRoleOnAdminEndpoint() throws Exception {
-        mvc.perform(get("/admin"))
+        mvc.perform(get("/api/v1/admin/users"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void legacyRoutesAreNoLongerAvailable() throws Exception {
+        mvc.perform(get("/public/health-checkup"))
+                .andExpect(status().isForbidden());
     }
 }

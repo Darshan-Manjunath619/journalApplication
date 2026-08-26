@@ -34,11 +34,14 @@ class OpenApiDocumentationTests {
                         .isArray())
                 .andExpect(jsonPath("$.paths['/api/v1/journals'].get.responses['400']")
                         .exists())
+                .andExpect(jsonPath("$.paths['/api/v1/admin/users'].get.security[0].bearerAuth")
+                        .isArray())
                 .andExpect(jsonPath("$.components.schemas.RegisterRequest.properties.userName.example")
                         .value("darshan_01"))
                 .andExpect(jsonPath("$.components.schemas.CreateJournalRequest.properties.title.maxLength")
                         .value(160))
                 .andExpect(jsonPath("$.paths['/journal']").doesNotExist())
-                .andExpect(jsonPath("$.paths['/public/login']").doesNotExist());
+                .andExpect(jsonPath("$.paths['/public/login']").doesNotExist())
+                .andExpect(jsonPath("$.paths['/admin']").doesNotExist());
     }
 }

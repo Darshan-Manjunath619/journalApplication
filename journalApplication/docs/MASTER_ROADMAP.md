@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.13 full automated and real-system integration verification completed**.
-Next: **Phase 1.14 — Documentation and Phase 1 completion**.
+Current checkpoint: **Phase 1.14A legacy API retirement completed**.
+Next: **Phase 1.14B — Final documentation, verification, and Phase 1 tag**.
 
 ---
 
@@ -193,8 +193,12 @@ Acceptance: important failure scenarios are usable and verified on mobile and de
 
 Acceptance: the complete journey passes with no obvious regressions.
 
-### 1.14 Documentation and completion `[ ]`
+### 1.14 Documentation and completion `[-]`
 
+- [x] **1.14A Legacy API retirement** — remove obsolete unversioned controllers,
+  expose administration at `/api/v1/admin/users`, and verify deny-by-default behavior.
+- [ ] **1.14B Final documentation and completion** — finish architecture and setup
+  documentation, run final verification, and create the Phase 1 tag.
 - Architecture, package structure, database, authentication, request flows,
   setup, environment variables, and testing instructions.
 - ADRs for modular monolith, tokens, Flyway/MySQL, tags, and frontend state.

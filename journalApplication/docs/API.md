@@ -1,7 +1,7 @@
 # Journal Application API
 
 The supported browser/client contract is `/api/v1/**`. Legacy unversioned
-controllers are intentionally excluded from the generated documentation.
+controllers have been removed, so clients must use the versioned routes.
 
 ## OpenAPI and Swagger UI
 
@@ -55,6 +55,12 @@ integrations do not make the core service unhealthy when they are disabled.
 ```json
 {"status":"UP"}
 ```
+
+## Administration
+
+`GET /api/v1/admin/users` returns safe user response DTOs and requires an
+authenticated account with the `ADMIN` role. Password hashes and persistence
+entities are never returned.
 
 ## Journal pagination
 

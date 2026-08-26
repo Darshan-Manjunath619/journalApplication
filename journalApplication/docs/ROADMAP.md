@@ -60,7 +60,9 @@ Status: [ ] not started, [-] in progress, [x] completed.
 [x] 1.13 Full integration verification
   - [x] 1.13A Automated backend and frontend verification
   - [x] 1.13B Real MySQL and browser application journey
-[ ] 1.14 Documentation and phase completion
+[-] 1.14 Documentation and phase completion
+  - [x] 1.14A Retire legacy API routes
+  - [ ] 1.14B Final documentation, verification, and Phase 1 tag
 
 ## Later phases
 

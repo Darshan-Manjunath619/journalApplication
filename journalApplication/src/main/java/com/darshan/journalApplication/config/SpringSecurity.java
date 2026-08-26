@@ -47,11 +47,11 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**", "/api/v1/auth/**", "/v3/api-docs/**",
+                        .requestMatchers("/api/v1/auth/**", "/v3/api-docs/**",
                                 "/swagger-ui/**", "/swagger-ui.html",
                                 "/actuator/health").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/journal/**", "/user/**", "/api/v1/users/**",
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/users/**",
                                 "/api/v1/journals/**", "/api/v1/tags/**")
                         .authenticated()
                         .anyRequest().denyAll())
