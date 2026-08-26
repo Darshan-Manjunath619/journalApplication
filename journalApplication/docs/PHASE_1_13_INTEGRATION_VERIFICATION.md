@@ -17,11 +17,21 @@ suite does not require developer MySQL, Redis, SMTP, or Weatherstack services.
 
 ## 1.13B Real application journey
 
-Pending verification against the local MySQL database and running backend and
-frontend:
+Verified against local MySQL and the running backend/frontend on 2026-08-25 and
+2026-08-26:
 
-- Register, login, session refresh, and logout.
-- Create, view, search/filter, edit, favorite, and delete a journal.
-- Profile update and password change.
-- Invalid credentials, validation, protected routes, and API failure responses.
-- Flyway schema state, health endpoint, OpenAPI, and browser CORS behavior.
+- Health was `UP`; OpenAPI, frontend, and trusted-origin CORS returned `200`.
+- Flyway validated the real MySQL schema at version 5 with no pending migration.
+- Invalid login returned `401`; invalid registration returned `400`.
+- Registration assigned only `USER`; login and owned profile access succeeded.
+- Tag and journal create, detail, combined search/filter, update, favorite, and
+  delete succeeded. The disposable journal and tag were removed afterward.
+- Profile update, refresh-token rotation, logout, and unauthenticated `401`
+  behavior succeeded.
+- Password change returned `204`; the old password returned `401`, and the new
+  password authenticated successfully.
+- The user manually confirmed the React journey, browser refresh/session
+  restoration, protected-route redirect after logout, and absence of CORS errors.
+
+The disposable account remains clearly named `phase113b_20260825102210`; it has
+no journal or tag records and can be removed manually when no longer useful.
