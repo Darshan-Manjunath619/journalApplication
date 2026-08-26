@@ -29,10 +29,10 @@ title change was rolled back, so the transaction is atomic.
 
 ## Commands
 
-Run everything:
+Run the final backend verification, including packaging:
 
 ```powershell
-.\mvnw.cmd clean test
+.\mvnw.cmd verify
 ```
 
 Run one class:
@@ -41,7 +41,13 @@ Run one class:
 .\mvnw.cmd "-Dtest=TagsIntegrationTests" test
 ```
 
-`mvn verify` is the final Phase 1.6 acceptance command.
+Run frontend verification from `frontend`:
+
+```powershell
+npm.cmd run lint
+npm.cmd run test
+npm.cmd run build
+```
 
 ## Removed legacy tests
 
@@ -52,13 +58,10 @@ Run one class:
 
 These tests produced no confidence and could encourage external side effects.
 
-## Remaining planned coverage
+## Coverage boundary
 
-Phase 1.6B added focused unit/controller tests for tag normalization, duplicate
-and deletion rules, journal mapping and combined updates, tag clearing, date
-validation, and safe query/body validation responses. Phase 1.6C-1 strengthened
-repository, transaction, and combined-filter verification. Phase 1.6C-2 will
-run the same persistence boundary against a temporary real MySQL database with
-Testcontainers. It is deferred to Phase 3, when Docker-based Kafka and Redis
-infrastructure is introduced. The regular Phase 1 test suite does not require
-Docker.
+Phase 1 covers tag normalization and conflicts, journal mapping and transactions,
+security, authentication rotation, validation, pagination, combined filters,
+controllers, Flyway, and frontend behavior. Real MySQL Testcontainers
+compatibility remains explicitly deferred to Phase 3, when container-based test
+infrastructure is introduced. The regular Phase 1 suite does not require Docker.
