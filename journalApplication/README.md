@@ -208,6 +208,7 @@ Backend tests require no running MySQL, Redis, SMTP, or weather service. See
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Architecture decisions](docs/ARCHITECTURE_DECISIONS.md)
+- [Phase 2 microservices design](docs/phase2/MICROSERVICES_HLD.md)
 - [API guide](docs/API.md)
 - [Environment configuration](docs/ENVIRONMENT.md)
 - [Testing strategy](docs/TESTING.md)

@@ -67,7 +67,15 @@ Status: [ ] not started, [-] in progress, [x] completed.
 
 ## Later phases
 
-[ ] Phase 2 — Microservices learning architecture
+[-] Phase 2 — Microservices learning architecture
+  - [x] 2.0 Architecture design
+  - [ ] 2.1 Service boundaries
+  - [ ] 2.2 Extract Journal Service
+  - [ ] 2.3 Database separation
+  - [ ] 2.4 Service communication
+  - [ ] 2.5 Distributed authentication
+  - [ ] 2.6 Integration testing
+  - [ ] 2.7 Phase verification
 [ ] Phase 3 — Measured Kafka and Redis use cases
   - [ ] Real MySQL Testcontainers compatibility verification
 [ ] Phase 4 — Containers and deployment

@@ -18,13 +18,13 @@ compare current progress with the complete target architecture.
 | Major phase | Status | Outcome |
 |---|---|---|
 | Phase 1 — Modular monolith and SPA | `[x]` | Secure full-stack journal application |
-| Phase 2 — Microservices | `[ ]` | Extract justified service boundaries |
+| Phase 2 — Microservices | `[-]` | Extract justified service boundaries |
 | Phase 3 — Kafka and Redis | `[ ]` | Add measured event and cache use cases |
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.15 modular monolith HLD documentation completed**.
-Next: **Phase 2.0 — Microservices architecture design, only when requested**.
+Current checkpoint: **Phase 2.0 microservices architecture design completed**.
+Next: **Phase 2.1 — Enforce and prepare the selected service boundaries**.
 
 ---
 
@@ -215,7 +215,7 @@ no runtime changes.
 
 ---
 
-## Phase 2 — Microservices Learning Architecture `[ ]`
+## Phase 2 — Microservices Learning Architecture `[-]`
 
 ### Goal
 
@@ -223,7 +223,7 @@ Demonstrate service extraction only after Phase 1 boundaries are stable. This is
 an architectural learning/scalability phase, not a claim that current traffic
 requires microservices.
 
-- [ ] **2.0 Architecture design** — business boundaries, ADRs, operational cost,
+- [x] **2.0 Architecture design** — business boundaries, ADRs, operational cost,
   failure modes, and extraction order.
 - [ ] **2.1 Service boundaries** — contracts and ownership for auth/user,
   journal/tag, and optional notification capabilities.
