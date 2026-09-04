@@ -1,8 +1,11 @@
 package com.darshan.journalservice.persistence;
 
 import com.darshan.journalservice.journal.domain.JournalEntry;
+import com.darshan.journalservice.journal.application.JournalService;
+import com.darshan.journalservice.journal.application.UpdateJournalCommand;
 import com.darshan.journalservice.journal.persistence.JournalEntryRepository;
 import com.darshan.journalservice.tag.domain.Tag;
+import com.darshan.journalservice.tag.application.TagService;
 import com.darshan.journalservice.tag.persistence.TagRepository;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,8 @@ class JournalPersistenceTests {
     @Autowired TagRepository tags;
     @Autowired Flyway flyway;
     @Autowired JdbcTemplate jdbc;
+    @Autowired JournalService journalService;
+    @Autowired TagService tagService;
 
     @Test
     void migrationCreatesOnlyJournalOwnedTables() {
@@ -52,6 +57,22 @@ class JournalPersistenceTests {
         assertTrue(journals.findByIdAndOwnerId(entry.getId(), 99L).isEmpty());
         assertNotNull(entry.getCreatedAt());
         assertNotNull(entry.getUpdatedAt());
+    }
+
+    @Test
+    void failedTagAssignmentRollsBackJournalUpdate() {
+        Tag tag = tagService.create(77L, "Java");
+        JournalEntry entry = journalService.create(
+                JournalEntry.builder().title("Original").content("Body").build(),
+                77L, java.util.Set.of(tag.getId()));
+
+        assertThrows(com.darshan.journalservice.shared.error.ResourceNotFoundException.class,
+                () -> journalService.update(entry.getId(), 77L,
+                        new UpdateJournalCommand("Changed", null, null,
+                                java.util.Set.of(Long.MAX_VALUE))));
+
+        JournalEntry reloaded = journals.findById(entry.getId()).orElseThrow();
+        assertEquals("Original", reloaded.getTitle());
     }
 
     private int tableCount(String name) {

@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.2B-1 Journal persistence foundation completed**.
-Next: **Phase 2.2B-2 — Move journal and tag application services**.
+Current checkpoint: **Phase 2.2B-2 Journal application services completed**.
+Next: **Phase 2.2B-3 — Add Journal Service HTTP API parity**.
 
 ---
 
@@ -242,7 +242,7 @@ requires microservices.
     application, domain, persistence, validation, and error behavior.
     - [x] **2.2B-1 Domain and persistence foundation** — service-owned entities,
       repositories, Flyway schema, audit fields, indexes, and isolated tests.
-    - [ ] **2.2B-2 Application services** — move journal/tag business rules and
+    - [x] **2.2B-2 Application services** — move journal/tag business rules and
       ownership-aware transactions.
     - [ ] **2.2B-3 HTTP API parity** — expose compatible DTO controllers and
       error responses before frontend cutover.
