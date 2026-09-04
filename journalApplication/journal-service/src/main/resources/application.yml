@@ -1,6 +1,18 @@
 spring:
   application:
     name: journal-service
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${JOURNAL_DB_URL}
+    username: ${JOURNAL_DB_USERNAME}
+    password: ${JOURNAL_DB_PASSWORD}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
 
 server:
   port: ${JOURNAL_SERVICE_PORT:8081}

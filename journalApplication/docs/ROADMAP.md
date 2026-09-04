@@ -76,7 +76,10 @@ Status: [ ] not started, [-] in progress, [x] completed.
       - [x] 2.1B-2 Package dependency guardrails
   - [-] 2.2 Extract Journal Service
     - [x] 2.2A Separate deployable scaffold and health check
-    - [ ] 2.2B Move journal and tag capability
+    - [-] 2.2B Move journal and tag capability
+      - [x] 2.2B-1 Domain and persistence foundation
+      - [ ] 2.2B-2 Application services
+      - [ ] 2.2B-3 HTTP API parity
     - [ ] 2.2C Journal Service JWT validation
     - [ ] 2.2D Frontend journal API cutover
     - [ ] 2.2E Remove legacy journal code
