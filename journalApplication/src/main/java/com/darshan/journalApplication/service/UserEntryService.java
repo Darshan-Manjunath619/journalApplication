@@ -1,7 +1,5 @@
 package com.darshan.journalApplication.service;
-import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.entity.User;
-import com.darshan.journalApplication.repository.JournalEntryRepository;
 import com.darshan.journalApplication.repository.UserEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 

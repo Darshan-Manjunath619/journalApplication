@@ -1,7 +1,7 @@
 package com.darshan.journalApplication.tag;
 
 import com.darshan.journalApplication.journal.port.JournalOwnerIdentityPort;
-import com.darshan.journalApplication.repository.JournalEntryRepository;
+import com.darshan.journalApplication.journal.persistence.JournalEntryRepository;
 import com.darshan.journalApplication.shared.error.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;

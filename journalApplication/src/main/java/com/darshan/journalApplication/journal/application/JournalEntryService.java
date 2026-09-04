@@ -1,7 +1,7 @@
-package com.darshan.journalApplication.service;
-import com.darshan.journalApplication.entity.JournalEntry;
+package com.darshan.journalApplication.journal.application;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import com.darshan.journalApplication.journal.port.JournalOwnerIdentityPort;
-import com.darshan.journalApplication.repository.JournalEntryRepository;
+import com.darshan.journalApplication.journal.persistence.JournalEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

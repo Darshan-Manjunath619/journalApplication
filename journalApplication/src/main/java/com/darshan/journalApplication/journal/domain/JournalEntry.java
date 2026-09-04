@@ -1,4 +1,4 @@
-package com.darshan.journalApplication.entity;
+package com.darshan.journalApplication.journal.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

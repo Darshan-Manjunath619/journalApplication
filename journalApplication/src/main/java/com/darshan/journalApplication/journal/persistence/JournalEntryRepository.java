@@ -1,6 +1,6 @@
-package com.darshan.journalApplication.repository;
+package com.darshan.journalApplication.journal.persistence;
 
-import com.darshan.journalApplication.entity.JournalEntry;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.EntityGraph;

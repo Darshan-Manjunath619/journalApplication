@@ -1,7 +1,7 @@
 package com.darshan.journalApplication.tag;
 
 import com.darshan.journalApplication.journal.port.JournalOwnerIdentityPort;
-import com.darshan.journalApplication.repository.JournalEntryRepository;
+import com.darshan.journalApplication.journal.persistence.JournalEntryRepository;
 import com.darshan.journalApplication.shared.error.ConflictException;
 import com.darshan.journalApplication.shared.error.ResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;

@@ -1,9 +1,9 @@
 package com.darshan.journalApplication.controller;
 
-import com.darshan.journalApplication.entity.JournalEntry;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import com.darshan.journalApplication.journal.JournalMapper;
 import com.darshan.journalApplication.journal.dto.*;
-import com.darshan.journalApplication.service.JournalEntryService;
+import com.darshan.journalApplication.journal.application.JournalEntryService;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

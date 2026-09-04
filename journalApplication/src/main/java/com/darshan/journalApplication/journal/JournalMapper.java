@@ -1,6 +1,6 @@
 package com.darshan.journalApplication.journal;
 
-import com.darshan.journalApplication.entity.JournalEntry;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import com.darshan.journalApplication.journal.dto.*;
 import org.springframework.stereotype.Component;
 import com.darshan.journalApplication.tag.dto.TagResponse;

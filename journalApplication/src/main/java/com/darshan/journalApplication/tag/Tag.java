@@ -1,6 +1,6 @@
 package com.darshan.journalApplication.tag;
 
-import com.darshan.journalApplication.entity.JournalEntry;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

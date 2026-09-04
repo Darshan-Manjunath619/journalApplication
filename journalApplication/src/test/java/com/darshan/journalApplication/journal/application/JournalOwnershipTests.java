@@ -1,10 +1,10 @@
-package com.darshan.journalApplication.service;
+package com.darshan.journalApplication.journal.application;
 
-import com.darshan.journalApplication.entity.*;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import com.darshan.journalApplication.journal.dto.UpdateJournalRequest;
 import com.darshan.journalApplication.journal.JournalSearchCriteria;
 import com.darshan.journalApplication.journal.port.JournalOwnerIdentityPort;
-import com.darshan.journalApplication.repository.JournalEntryRepository;
+import com.darshan.journalApplication.journal.persistence.JournalEntryRepository;
 import com.darshan.journalApplication.shared.error.ResourceNotFoundException;
 import com.darshan.journalApplication.shared.error.InvalidQueryParameterException;
 import com.darshan.journalApplication.tag.Tag;

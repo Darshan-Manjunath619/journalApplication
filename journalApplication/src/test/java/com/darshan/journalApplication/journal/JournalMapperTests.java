@@ -1,6 +1,6 @@
 package com.darshan.journalApplication.journal;
 
-import com.darshan.journalApplication.entity.*;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import com.darshan.journalApplication.journal.dto.*;
 import com.darshan.journalApplication.tag.Tag;
 import org.junit.jupiter.api.Test;

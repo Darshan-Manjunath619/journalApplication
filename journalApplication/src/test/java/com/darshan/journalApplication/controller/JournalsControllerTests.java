@@ -1,7 +1,7 @@
 package com.darshan.journalApplication.controller;
 
 import com.darshan.journalApplication.journal.JournalMapper;
-import com.darshan.journalApplication.service.JournalEntryService;
+import com.darshan.journalApplication.journal.application.JournalEntryService;
 import com.darshan.journalApplication.shared.error.GlobalExceptionHandler;
 import org.junit.jupiter.api.*;
 import org.springframework.http.MediaType;

@@ -1,9 +1,9 @@
 package com.darshan.journalApplication.scheduler;
 
-import com.darshan.journalApplication.entity.JournalEntry;
+import com.darshan.journalApplication.journal.domain.JournalEntry;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.repository.UserEntryRepository;
-import com.darshan.journalApplication.repository.JournalEntryRepository;
+import com.darshan.journalApplication.journal.persistence.JournalEntryRepository;
 import com.darshan.journalApplication.service.EmailService;
 import com.darshan.journalApplication.service.SentimentAnalysis;
 import org.springframework.beans.factory.annotation.Autowired;
