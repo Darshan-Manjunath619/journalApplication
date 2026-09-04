@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.1 service boundaries completed**.
-Next: **Phase 2.2 — Extract the Journal Service deployable**.
+Current checkpoint: **Phase 2.2A Journal Service scaffold completed**.
+Next: **Phase 2.2B — Move journal and tag capabilities into the new service**.
 
 ---
 
@@ -235,7 +235,17 @@ requires microservices.
       relationships with stable owner IDs behind a journal-owned identity port.
     - [x] **2.1B-2 Package dependency guardrails** — reorganize remaining journal
       code and enforce allowed module dependencies with automated tests.
-- [ ] **2.2 Extract first microservice** — smallest justified boundary with parity.
+- [-] **2.2 Extract first microservice** — smallest justified boundary with parity.
+  - [x] **2.2A Separate deployable scaffold** — independent Maven build, port,
+    Actuator health endpoint, executable JAR, and real HTTP startup test.
+  - [ ] **2.2B Move journal and tag capability** — copy module-owned API,
+    application, domain, persistence, validation, and error behavior.
+  - [ ] **2.2C Journal Service JWT validation** — validate the existing access
+    token locally and authorize using its immutable user ID and roles.
+  - [ ] **2.2D Frontend cutover** — route journal/tag calls to the new service
+    while keeping auth/profile calls on Identity.
+  - [ ] **2.2E Remove legacy journal code** — retire duplicate endpoints only
+    after parity, rollback, and frontend verification.
 - [ ] **2.3 Database separation** — database ownership, migration, and consistency plan.
 - [ ] **2.4 Service communication** — synchronous contracts, timeouts, and versioning.
 - [ ] **2.5 Distributed authentication** — token validation and authorization boundaries.

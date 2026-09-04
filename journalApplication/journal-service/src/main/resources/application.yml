@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: journal-service
+
+server:
+  port: ${JOURNAL_SERVICE_PORT:8081}
+  servlet:
+    context-path: /journal
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
