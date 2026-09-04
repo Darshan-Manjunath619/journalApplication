@@ -1,6 +1,5 @@
 package com.darshan.journalApplication.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -55,8 +54,6 @@ public class JournalEntry {
     @BatchSize(size = 50)
     private Set<Tag> tags = new LinkedHashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long ownerId;
 }

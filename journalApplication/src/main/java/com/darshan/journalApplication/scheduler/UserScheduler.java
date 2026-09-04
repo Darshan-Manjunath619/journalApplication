@@ -3,6 +3,7 @@ package com.darshan.journalApplication.scheduler;
 import com.darshan.journalApplication.entity.JournalEntry;
 import com.darshan.journalApplication.entity.User;
 import com.darshan.journalApplication.repository.UserEntryRepository;
+import com.darshan.journalApplication.repository.JournalEntryRepository;
 import com.darshan.journalApplication.service.EmailService;
 import com.darshan.journalApplication.service.SentimentAnalysis;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +23,23 @@ public class UserScheduler {
     private final SentimentAnalysis sentimentAnalysis;
     private final EmailService emailService;
     private final UserEntryRepository userEntryRepository;
+    private final JournalEntryRepository journalEntryRepository;
 
     public UserScheduler(SentimentAnalysis sentimentAnalysis, EmailService emailService,
-                         UserEntryRepository userEntryRepository) {
+                         UserEntryRepository userEntryRepository,
+                         JournalEntryRepository journalEntryRepository) {
         this.sentimentAnalysis = sentimentAnalysis;
         this.emailService = emailService;
         this.userEntryRepository = userEntryRepository;
+        this.journalEntryRepository = journalEntryRepository;
     }
 
     @Scheduled(cron = "0 0 9 * * SUN")
     public void fetchUserAndSentimentAnalysis(){
         List<User> users = userEntryRepository.findByEmailIsNotNullAndSentimentAnalysisTrue();
         for(User user : users){
-            List<JournalEntry> journalEntries = user.getJournalEntries();
+            List<JournalEntry> journalEntries =
+                    journalEntryRepository.findAllByOwnerIdOrderByDateDesc(user.getId());
             List<String> collect = journalEntries.stream().filter(x -> x.getDate().isAfter(LocalDateTime.now().minus(7, ChronoUnit.DAYS))).map(x -> x.getContent()).collect(Collectors.toList());
             String join = String.join(" " + collect);
             String sentiment = sentimentAnalysis.getSentiment(join);

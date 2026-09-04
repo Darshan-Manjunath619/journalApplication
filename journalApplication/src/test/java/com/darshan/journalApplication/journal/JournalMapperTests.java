@@ -15,7 +15,7 @@ class JournalMapperTests {
                 new CreateJournalRequest(" Title ", "Body", java.util.Set.of(10L)));
         assertEquals("Title", entry.getTitle());
         assertEquals("Body", entry.getContent());
-        assertNull(entry.getUser());
+        assertNull(entry.getOwnerId());
         assertTrue(entry.getTags().isEmpty());
     }
 
@@ -24,7 +24,7 @@ class JournalMapperTests {
         Tag javaTag = tag(1L, "Java", "java");
         JournalEntry entry = JournalEntry.builder().id(5L).title("Learning")
                 .content("Notes").favorite(true)
-                .user(User.builder().id(9L).password("secret-hash").build())
+                .ownerId(9L)
                 .tags(new LinkedHashSet<>(java.util.List.of(spring, javaTag))).build();
         JournalResponse response = mapper.toResponse(entry);
         assertTrue(response.favorite());

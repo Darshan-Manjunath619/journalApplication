@@ -43,7 +43,7 @@ class RepositoryIntegrationTests {
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Spring Deep Dive", result.getContent().get(0).getTitle());
-        assertEquals(alice.getId(), result.getContent().get(0).getUser().getId());
+        assertEquals(alice.getId(), result.getContent().get(0).getOwnerId());
     }
 
     @Test void stableIdTieBreakerKeepsPageBoundariesDeterministic() {
@@ -85,6 +85,18 @@ class RepositoryIntegrationTests {
                 () -> tag(owner, "SPRING", "spring"));
     }
 
+    @Test void deletingUserCascadesOwnedJournalAndTagData() {
+        User owner = user("repo_cascade");
+        Tag tag = tag(owner, "Spring", "spring");
+        JournalEntry journal = journal(owner, "Owned", "Body", false, tag);
+
+        users.deleteById(owner.getId());
+        users.flush();
+
+        assertFalse(journals.existsById(journal.getId()));
+        assertFalse(tags.existsById(tag.getId()));
+    }
+
     private User user(String name) {
         return users.save(User.builder().userName(name)
                 .email(name + "@example.com").password("test-hash")
@@ -93,7 +105,7 @@ class RepositoryIntegrationTests {
 
     private Tag tag(User user, String name, String normalizedName) {
         Tag tag = new Tag();
-        tag.setUser(user);
+        tag.setOwnerId(user.getId());
         tag.setName(name);
         tag.setNormalizedName(normalizedName);
         return tags.saveAndFlush(tag);
@@ -102,7 +114,7 @@ class RepositoryIntegrationTests {
     private JournalEntry journal(User user, String title, String content,
                                  boolean favorite, Tag... assignedTags) {
         JournalEntry entry = JournalEntry.builder().title(title).content(content)
-                .favorite(favorite).user(user)
+                .favorite(favorite).ownerId(user.getId())
                 .date(java.time.LocalDateTime.now())
                 .tags(new LinkedHashSet<>(List.of(assignedTags))).build();
         return journals.saveAndFlush(entry);

@@ -21,7 +21,7 @@ class FlywayMigrationTests {
 
     @Test
     void appliesAllMigrationsAndCreatesExpectedTables() {
-        assertEquals("5", flyway.info().current().getVersion().getVersion());
+        assertEquals("6", flyway.info().current().getVersion().getVersion());
         assertEquals(1, tableCount("USERS"));
         assertEquals(1, tableCount("JOURNAL_ENTRIES"));
         assertEquals(1, tableCount("USER_ROLES"));

@@ -10,10 +10,10 @@ import java.util.*;
 @Repository
 public interface JournalEntryRepository extends JpaRepository<JournalEntry, Long>,
         JpaSpecificationExecutor<JournalEntry> {
-    List<JournalEntry> findAllByUserUserNameOrderByDateDesc(String userName);
+    List<JournalEntry> findAllByOwnerIdOrderByDateDesc(Long ownerId);
 
     @EntityGraph(attributePaths = "tags")
-    Optional<JournalEntry> findByIdAndUserUserName(Long id, String userName);
+    Optional<JournalEntry> findByIdAndOwnerId(Long id, Long ownerId);
 
     boolean existsByTagsId(Long tagId);
 }

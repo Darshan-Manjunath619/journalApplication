@@ -1,7 +1,6 @@
 package com.darshan.journalApplication.tag;
 
 import com.darshan.journalApplication.entity.JournalEntry;
-import com.darshan.journalApplication.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,9 +33,8 @@ public class Tag {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long ownerId;
 
     @ManyToMany(mappedBy = "tags")
     private Set<JournalEntry> journalEntries = new LinkedHashSet<>();

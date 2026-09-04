@@ -1,8 +1,7 @@
 package com.darshan.journalApplication.tag;
 
-import com.darshan.journalApplication.entity.User;
+import com.darshan.journalApplication.journal.port.JournalOwnerIdentityPort;
 import com.darshan.journalApplication.repository.JournalEntryRepository;
-import com.darshan.journalApplication.service.UserEntryService;
 import com.darshan.journalApplication.shared.error.ConflictException;
 import com.darshan.journalApplication.shared.error.ResourceNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,26 +14,26 @@ import java.util.*;
 public class TagService {
     private final TagRepository tags;
     private final JournalEntryRepository journals;
-    private final UserEntryService users;
+    private final JournalOwnerIdentityPort ownerIdentity;
 
     public TagService(TagRepository tags, JournalEntryRepository journals,
-                      UserEntryService users) {
+                      JournalOwnerIdentityPort ownerIdentity) {
         this.tags = tags;
         this.journals = journals;
-        this.users = users;
+        this.ownerIdentity = ownerIdentity;
     }
 
     @Transactional(readOnly = true)
     public List<Tag> listOwned(String userName) {
-        return tags.findAllByUserUserNameOrderByNormalizedName(userName);
+        return tags.findAllByOwnerIdOrderByNormalizedName(ownerIdentity.requireOwnerId(userName));
     }
 
     @Transactional
     public Tag create(String userName, String requestedName) {
-        User user = users.getProfile(userName);
+        Long ownerId = ownerIdentity.requireOwnerId(userName);
         Tag tag = new Tag();
-        applyName(tag, requestedName, userName, null);
-        tag.setUser(user);
+        applyName(tag, requestedName, ownerId, null);
+        tag.setOwnerId(ownerId);
         try {
             return tags.saveAndFlush(tag);
         } catch (DataIntegrityViolationException exception) {
@@ -45,7 +44,7 @@ public class TagService {
     @Transactional
     public Tag rename(Long id, String userName, String requestedName) {
         Tag tag = getOwned(id, userName);
-        applyName(tag, requestedName, userName, id);
+        applyName(tag, requestedName, tag.getOwnerId(), id);
         try {
             return tags.saveAndFlush(tag);
         } catch (DataIntegrityViolationException exception) {
@@ -65,7 +64,8 @@ public class TagService {
     @Transactional(readOnly = true)
     public Set<Tag> resolveOwned(Set<Long> ids, String userName) {
         if (ids == null || ids.isEmpty()) return new LinkedHashSet<>();
-        List<Tag> owned = tags.findAllByIdInAndUserUserName(ids, userName);
+        Long ownerId = ownerIdentity.requireOwnerId(userName);
+        List<Tag> owned = tags.findAllByIdInAndOwnerId(ids, ownerId);
         if (owned.size() != ids.size()) {
             throw new ResourceNotFoundException("One or more tags were not found");
         }
@@ -73,14 +73,14 @@ public class TagService {
     }
 
     private Tag getOwned(Long id, String userName) {
-        return tags.findByIdAndUserUserName(id, userName)
+        return tags.findByIdAndOwnerId(id, ownerIdentity.requireOwnerId(userName))
                 .orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
     }
 
-    private void applyName(Tag tag, String requestedName, String userName, Long currentId) {
+    private void applyName(Tag tag, String requestedName, Long ownerId, Long currentId) {
         String displayName = requestedName.trim();
         String normalized = displayName.toLowerCase(Locale.ROOT);
-        tags.findByUserUserNameAndNormalizedName(userName, normalized)
+        tags.findByOwnerIdAndNormalizedName(ownerId, normalized)
                 .filter(existing -> !existing.getId().equals(currentId))
                 .ifPresent(existing -> {
                     throw new ConflictException("Tag name already exists");

@@ -3,6 +3,7 @@ package com.darshan.journalApplication.service;
 import com.darshan.journalApplication.entity.*;
 import com.darshan.journalApplication.journal.dto.UpdateJournalRequest;
 import com.darshan.journalApplication.journal.JournalSearchCriteria;
+import com.darshan.journalApplication.journal.port.JournalOwnerIdentityPort;
 import com.darshan.journalApplication.repository.JournalEntryRepository;
 import com.darshan.journalApplication.shared.error.ResourceNotFoundException;
 import com.darshan.journalApplication.shared.error.InvalidQueryParameterException;
@@ -18,29 +19,30 @@ import static org.mockito.Mockito.*;
 
 class JournalOwnershipTests {
     @Mock JournalEntryRepository repository;
-    @Mock UserEntryService users;
+    @Mock JournalOwnerIdentityPort ownerIdentity;
     @Mock TagService tags;
     JournalEntryService service;
 
     @BeforeEach void setUp() {
         MockitoAnnotations.openMocks(this);
-        service = new JournalEntryService(repository, users, tags);
+        when(ownerIdentity.requireOwnerId("alice")).thenReturn(1L);
+        service = new JournalEntryService(repository, ownerIdentity, tags);
     }
 
     @Test void missingOrUnownedEntryIsNotFound() {
-        when(repository.findByIdAndUserUserName(9L, "alice")).thenReturn(Optional.empty());
+        when(repository.findByIdAndOwnerId(9L, 1L)).thenReturn(Optional.empty());
         assertThrows(ResourceNotFoundException.class, () -> service.getOwned(9L, "alice"));
     }
 
     @Test void updateUsesOwnedQueryAndChangesOnlyProvidedFields() {
         JournalEntry entry = JournalEntry.builder().id(2L).title("Old").content("Keep").build();
-        when(repository.findByIdAndUserUserName(2L, "alice")).thenReturn(Optional.of(entry));
+        when(repository.findByIdAndOwnerId(2L, 1L)).thenReturn(Optional.of(entry));
         when(repository.save(entry)).thenReturn(entry);
         JournalEntry result = service.updateOwned(2L, "alice",
                 new UpdateJournalRequest(" New ", null, null, null));
         assertEquals("New", result.getTitle());
         assertEquals("Keep", result.getContent());
-        verify(repository).findByIdAndUserUserName(2L, "alice");
+        verify(repository).findByIdAndOwnerId(2L, 1L);
     }
 
     @Test void combinedUpdateChangesContentFavoriteAndOwnedTags() {
@@ -49,7 +51,7 @@ class JournalOwnershipTests {
         Tag tag = new Tag();
         tag.setId(7L);
         Set<Tag> resolved = new LinkedHashSet<>(List.of(tag));
-        when(repository.findByIdAndUserUserName(2L, "alice")).thenReturn(Optional.of(entry));
+        when(repository.findByIdAndOwnerId(2L, 1L)).thenReturn(Optional.of(entry));
         when(tags.resolveOwned(Set.of(7L), "alice")).thenReturn(resolved);
         when(repository.save(entry)).thenReturn(entry);
 
@@ -65,7 +67,7 @@ class JournalOwnershipTests {
     @Test void emptyTagIdsClearAssignments() {
         JournalEntry entry = JournalEntry.builder().id(2L).title("Keep").build();
         entry.getTags().add(new Tag());
-        when(repository.findByIdAndUserUserName(2L, "alice")).thenReturn(Optional.of(entry));
+        when(repository.findByIdAndOwnerId(2L, 1L)).thenReturn(Optional.of(entry));
         when(tags.resolveOwned(Set.of(), "alice")).thenReturn(new LinkedHashSet<>());
         when(repository.save(entry)).thenReturn(entry);
 

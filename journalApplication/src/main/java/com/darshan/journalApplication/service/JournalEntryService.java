@@ -1,6 +1,6 @@
 package com.darshan.journalApplication.service;
 import com.darshan.journalApplication.entity.JournalEntry;
-import com.darshan.journalApplication.entity.User;
+import com.darshan.journalApplication.journal.port.JournalOwnerIdentityPort;
 import com.darshan.journalApplication.repository.JournalEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +24,13 @@ import java.util.Optional;
 public class JournalEntryService {
 
     private final JournalEntryRepository journalEntryRepository;
-    private final UserEntryService userEntryService;
+    private final JournalOwnerIdentityPort ownerIdentity;
     private final TagService tagService;
 
     public JournalEntryService(JournalEntryRepository journalEntryRepository,
-                               UserEntryService userEntryService, TagService tagService) {
+                               JournalOwnerIdentityPort ownerIdentity, TagService tagService) {
         this.journalEntryRepository = journalEntryRepository;
-        this.userEntryService = userEntryService;
+        this.ownerIdentity = ownerIdentity;
         this.tagService = tagService;
     }
 
@@ -41,9 +41,9 @@ public class JournalEntryService {
 
     @Transactional
     public JournalEntry createOwned(JournalEntry journalEntry, String userName, Set<Long> tagIds) {
-        User user = userEntryService.getProfile(userName);
+        Long ownerId = ownerIdentity.requireOwnerId(userName);
         journalEntry.setDate(LocalDateTime.now());
-        journalEntry.setUser(user);
+        journalEntry.setOwnerId(ownerId);
         journalEntry.setTags(tagService.resolveOwned(tagIds, userName));
         return journalEntryRepository.save(journalEntry);
     }
@@ -64,7 +64,8 @@ public class JournalEntryService {
 
     @Transactional(readOnly = true)
     public List<JournalEntry> getAllByOwner(String userName) {
-        return journalEntryRepository.findAllByUserUserNameOrderByDateDesc(userName);
+        return journalEntryRepository.findAllByOwnerIdOrderByDateDesc(
+                ownerIdentity.requireOwnerId(userName));
     }
 
     @Transactional(readOnly = true)
@@ -76,9 +77,10 @@ public class JournalEntryService {
             throw new InvalidQueryParameterException("from must be before or equal to to");
         }
 
+        Long ownerId = ownerIdentity.requireOwnerId(userName);
         Specification<JournalEntry> specification = (root, query, builder) -> {
             query.distinct(true);
-            var predicate = builder.equal(root.get("user").get("userName"), userName);
+            var predicate = builder.equal(root.get("ownerId"), ownerId);
             if (criteria.query() != null && !criteria.query().isBlank()) {
                 String pattern = "%" + criteria.query().trim().toLowerCase() + "%";
                 predicate = builder.and(predicate, builder.or(
@@ -117,7 +119,8 @@ public class JournalEntryService {
 
     @Transactional(readOnly = true)
     public JournalEntry getOwned(Long id, String userName) {
-        return journalEntryRepository.findByIdAndUserUserName(id, userName)
+        return journalEntryRepository.findByIdAndOwnerId(
+                        id, ownerIdentity.requireOwnerId(userName))
                 .orElseThrow(() -> new ResourceNotFoundException("Journal entry not found"));
     }
 
