@@ -3,7 +3,7 @@ package com.darshan.journalApplication.auth;
 import java.time.Instant;
 
 public record RotatedRefreshToken(
-        String userName,
+        AccessTokenIdentity identity,
         String token,
         Instant expiresAt
 ) {

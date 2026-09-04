@@ -1,5 +1,6 @@
 package com.darshan.journalApplication.filter;
 
+import com.darshan.journalApplication.auth.AccessTokenIdentity;
 import com.darshan.journalApplication.service.UserDetailsImp;
 import com.darshan.journalApplication.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -35,17 +36,17 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
+        AccessTokenIdentity identity = null;
         String jwt = null;
 
         try {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 jwt = authorizationHeader.substring(7);
-                username = jwtUtil.extractUsername(jwt);
+                identity = jwtUtil.extractIdentity(jwt);
             }
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsImp.loadUserByUsername(username);
+            if (identity != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsImp.loadUserByUsername(identity.username());
 
                 if (jwtUtil.validateToken(jwt)) {
                     UsernamePasswordAuthenticationToken auth =

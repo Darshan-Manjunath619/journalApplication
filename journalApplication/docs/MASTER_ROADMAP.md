@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.0 microservices architecture design completed**.
-Next: **Phase 2.1 — Enforce and prepare the selected service boundaries**.
+Current checkpoint: **Phase 2.1A access-token identity contract completed**.
+Next: **Phase 2.1B — Enforce module ownership before extraction**.
 
 ---
 
@@ -225,8 +225,12 @@ requires microservices.
 
 - [x] **2.0 Architecture design** — business boundaries, ADRs, operational cost,
   failure modes, and extraction order.
-- [ ] **2.1 Service boundaries** — contracts and ownership for auth/user,
+- [-] **2.1 Service boundaries** — contracts and ownership for auth/user,
   journal/tag, and optional notification capabilities.
+  - [x] **2.1A Access-token identity contract** — signed immutable user ID and
+    roles shared consistently by login and refresh.
+  - [ ] **2.1B Module ownership enforcement** — remove forbidden code dependencies
+    before moving journal/tag code.
 - [ ] **2.2 Extract first microservice** — smallest justified boundary with parity.
 - [ ] **2.3 Database separation** — database ownership, migration, and consistency plan.
 - [ ] **2.4 Service communication** — synchronous contracts, timeouts, and versioning.

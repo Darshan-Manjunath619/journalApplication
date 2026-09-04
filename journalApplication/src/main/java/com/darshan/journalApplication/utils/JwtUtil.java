@@ -1,6 +1,8 @@
 package com.darshan.journalApplication.utils;
 
+import com.darshan.journalApplication.auth.AccessTokenIdentity;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +12,13 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 @Component
 public class JwtUtil {
+    private static final String USER_ID_CLAIM = "uid";
+    private static final String ROLES_CLAIM = "roles";
 
     private final String secret;
     private final String issuer;
@@ -39,8 +44,31 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
+        return extractIdentity(token).username();
+    }
+
+    public AccessTokenIdentity extractIdentity(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.getSubject();
+        Object rawUserId = claims.get(USER_ID_CLAIM);
+        Object rawRoles = claims.get(ROLES_CLAIM);
+
+        if (!(rawUserId instanceof Number userId)) {
+            throw new JwtException("Access token is missing a valid uid claim");
+        }
+        if (!(rawRoles instanceof List<?> roleValues)
+                || roleValues.stream().anyMatch(role -> !(role instanceof String))) {
+            throw new JwtException("Access token is missing a valid roles claim");
+        }
+
+        List<String> roles = roleValues.stream()
+                .map(String.class::cast)
+                .toList();
+        try {
+            return new AccessTokenIdentity(
+                    userId.longValue(), claims.getSubject(), roles);
+        } catch (IllegalArgumentException exception) {
+            throw new JwtException("Access token identity claims are invalid", exception);
+        }
     }
 
     public Date extractExpiration(String token) {
@@ -61,10 +89,12 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(AccessTokenIdentity identity) {
         Date issuedAt = new Date();
         return Jwts.builder()
-                .subject(username)
+                .subject(identity.username())
+                .claim(USER_ID_CLAIM, identity.userId())
+                .claim(ROLES_CLAIM, identity.roles())
                 .issuer(issuer)
                 .audience().add(audience).and()
                 .id(UUID.randomUUID().toString())

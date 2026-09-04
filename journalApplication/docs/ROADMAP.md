@@ -69,7 +69,9 @@ Status: [ ] not started, [-] in progress, [x] completed.
 
 [-] Phase 2 — Microservices learning architecture
   - [x] 2.0 Architecture design
-  - [ ] 2.1 Service boundaries
+  - [-] 2.1 Service boundaries
+    - [x] 2.1A Access-token identity contract
+    - [ ] 2.1B Enforce module ownership
   - [ ] 2.2 Extract Journal Service
   - [ ] 2.3 Database separation
   - [ ] 2.4 Service communication
