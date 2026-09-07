@@ -46,7 +46,7 @@ class SecurityIntegrationTests {
 
     @Test
     void returnsProblemDetailForMissingAccessToken() throws Exception {
-        mvc.perform(get("/api/v1/journals").header("X-Correlation-ID", "security-401"))
+        mvc.perform(get("/api/v1/users/me").header("X-Correlation-ID", "security-401"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentTypeCompatibleWith(
                         MediaType.APPLICATION_PROBLEM_JSON))
@@ -64,20 +64,8 @@ class SecurityIntegrationTests {
     }
 
     @Test
-    void protectsVersionedJournalsEndpoint() throws Exception {
-        mvc.perform(get("/api/v1/journals"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void protectsVersionedTagsEndpoint() throws Exception {
-        mvc.perform(get("/api/v1/tags"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void returnsProblemDetailForMalformedAccessToken() throws Exception {
-        mvc.perform(get("/api/v1/journals")
+        mvc.perform(get("/api/v1/users/me")
                         .header("Authorization", "Bearer malformed")
                         .header("X-Correlation-ID", "malformed-401"))
                 .andExpect(status().isUnauthorized())
@@ -97,7 +85,7 @@ class SecurityIntegrationTests {
 
     @Test
     void acceptsCorsPreflightFromConfiguredFrontend() throws Exception {
-        mvc.perform(options("/api/v1/journals")
+        mvc.perform(options("/api/v1/users/me")
                         .header("Origin", "http://localhost:5173")
                         .header("Access-Control-Request-Method", "GET"))
                 .andExpect(status().isOk())
@@ -107,7 +95,7 @@ class SecurityIntegrationTests {
 
     @Test
     void rejectsCorsPreflightFromUntrustedOrigin() throws Exception {
-        mvc.perform(options("/api/v1/journals")
+        mvc.perform(options("/api/v1/users/me")
                         .header("Origin", "https://attacker.example")
                         .header("Access-Control-Request-Method", "GET"))
                 .andExpect(status().isForbidden());
@@ -124,6 +112,15 @@ class SecurityIntegrationTests {
     @WithMockUser
     void legacyRoutesAreNoLongerAvailable() throws Exception {
         mvc.perform(get("/public/health-checkup"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser
+    void extractedJournalAndTagRoutesAreNoLongerAvailable() throws Exception {
+        mvc.perform(get("/api/v1/journals"))
+                .andExpect(status().isForbidden());
+        mvc.perform(get("/api/v1/tags"))
                 .andExpect(status().isForbidden());
     }
 }

@@ -19,9 +19,6 @@ logging:
     root: INFO
     com.darshan.journalApplication: INFO
 
-features:
-  sentiment-scheduler: false
-
 management:
   endpoints:
     web:

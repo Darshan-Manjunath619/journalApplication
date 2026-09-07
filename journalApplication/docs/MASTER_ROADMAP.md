@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.2D Frontend Journal Service cutover completed**.
-Next: **Phase 2.2E — Remove legacy journal and tag code from Identity**.
+Current checkpoint: **Phase 2.2E first microservice extraction completed**.
+Next: **Phase 2.3 — Separate and migrate journal data ownership**.
 
 ---
 
@@ -235,7 +235,7 @@ requires microservices.
       relationships with stable owner IDs behind a journal-owned identity port.
     - [x] **2.1B-2 Package dependency guardrails** — reorganize remaining journal
       code and enforce allowed module dependencies with automated tests.
-- [-] **2.2 Extract first microservice** — smallest justified boundary with parity.
+- [x] **2.2 Extract first microservice** — smallest justified boundary with parity.
   - [x] **2.2A Separate deployable scaffold** — independent Maven build, port,
     Actuator health endpoint, executable JAR, and real HTTP startup test.
   - [x] **2.2B Move journal and tag capability** — copy module-owned API,
@@ -250,7 +250,7 @@ requires microservices.
     token locally and authorize using its immutable user ID and roles.
   - [x] **2.2D Frontend cutover** — route journal/tag calls to the new service
     while keeping auth/profile calls on Identity.
-  - [ ] **2.2E Remove legacy journal code** — retire duplicate endpoints only
+  - [x] **2.2E Remove legacy journal code** — retire duplicate endpoints only
     after parity, rollback, and frontend verification.
 - [ ] **2.3 Database separation** — database ownership, migration, and consistency plan.
 - [ ] **2.4 Service communication** — synchronous contracts, timeouts, and versioning.
