@@ -65,7 +65,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(username, request.password()));
         User user = users.findByUserName(username);
         IssuedRefreshToken refresh = refreshTokens.issue(user);
-        return withRefreshCookie(username, refresh.token());
+        return withRefreshCookie(identityOf(user), refresh.token());
     }
 
     @PostMapping("/refresh")
@@ -81,7 +81,7 @@ public class AuthController {
             throw new InvalidRefreshTokenException();
         }
         RotatedRefreshToken rotated = refreshTokens.rotate(presented);
-        return withRefreshCookie(rotated.userName(), rotated.token());
+        return withRefreshCookie(rotated.identity(), rotated.token());
     }
 
     @PostMapping("/logout")
@@ -97,8 +97,9 @@ public class AuthController {
                 .build();
     }
 
-    private ResponseEntity<AuthResponse> withRefreshCookie(String username, String refreshToken) {
-        String accessToken = jwtUtil.generateToken(username);
+    private ResponseEntity<AuthResponse> withRefreshCookie(
+            AccessTokenIdentity identity, String refreshToken) {
+        String accessToken = jwtUtil.generateToken(identity);
         AuthResponse response = new AuthResponse(
                 accessToken, "Bearer", jwtUtil.getAccessTokenExpiresInSeconds());
         return ResponseEntity.ok()
@@ -108,5 +109,10 @@ public class AuthController {
 
     private String normalize(String username) {
         return username.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private AccessTokenIdentity identityOf(User user) {
+        return new AccessTokenIdentity(
+                user.getId(), user.getUserName(), user.getRole());
     }
 }

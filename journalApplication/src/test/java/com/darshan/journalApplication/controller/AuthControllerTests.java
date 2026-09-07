@@ -34,7 +34,7 @@ class AuthControllerTests {
         authenticationManager = mock(AuthenticationManager.class);
         jwt = mock(JwtUtil.class);
         refreshTokens = mock(RefreshTokenService.class);
-        when(jwt.generateToken(anyString())).thenReturn("access-jwt");
+        when(jwt.generateToken(any(AccessTokenIdentity.class))).thenReturn("access-jwt");
         when(jwt.getAccessTokenExpiresInSeconds()).thenReturn(900L);
         controller = new AuthController(
                 users, mock(UserMapper.class), authenticationManager, jwt,
@@ -46,7 +46,8 @@ class AuthControllerTests {
 
     @Test
     void loginReturnsAccessTokenAndHttpOnlyRefreshCookie() {
-        User user = User.builder().id(1L).userName("darshan").build();
+        User user = User.builder().id(1L).userName("darshan")
+                .role(List.of("USER")).build();
         when(users.findByUserName("darshan")).thenReturn(user);
         when(refreshTokens.issue(user)).thenReturn(new IssuedRefreshToken("refresh-1", EXPIRY));
 
@@ -58,6 +59,8 @@ class AuthControllerTests {
         assertTrue(response.getHeaders().getFirst(HttpHeaders.SET_COOKIE).contains("HttpOnly"));
         verify(users).findByUserName("darshan");
         verify(refreshTokens).issue(user);
+        verify(jwt).generateToken(new AccessTokenIdentity(
+                1L, "darshan", List.of("USER")));
     }
 
     @Test
@@ -65,7 +68,9 @@ class AuthControllerTests {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setCookies(new Cookie("refresh_token", "old-refresh"));
         when(refreshTokens.rotate("old-refresh"))
-                .thenReturn(new RotatedRefreshToken("darshan", "new-refresh", EXPIRY));
+                .thenReturn(new RotatedRefreshToken(
+                        new AccessTokenIdentity(1L, "darshan", List.of("USER")),
+                        "new-refresh", EXPIRY));
 
         ResponseEntity<AuthResponse> response = controller.refresh(
                 request, "http://localhost:5173");
@@ -73,6 +78,8 @@ class AuthControllerTests {
         assertEquals("access-jwt", response.getBody().accessToken());
         assertTrue(response.getHeaders().getFirst(HttpHeaders.SET_COOKIE)
                 .contains("refresh_token=new-refresh"));
+        verify(jwt).generateToken(new AccessTokenIdentity(
+                1L, "darshan", List.of("USER")));
     }
 
     @Test

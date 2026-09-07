@@ -15,15 +15,13 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customConfig() {
         return new OpenAPI().info(
-                new Info().title("Journal Application API")
+                new Info().title("Journal Identity API")
                         .version("v1")
-                        .description("Versioned API for authentication, profiles, journals, and tags. "
+                        .description("Versioned API for authentication, profiles, and administration. "
                                 + "Validation and error responses use RFC 9457 Problem Detail.")
         ).tags(List.of(
                 new Tag().name("Authentication").description("Registration and token lifecycle"),
-                new Tag().name("Profile").description("Current-user profile and password"),
-                new Tag().name("Journals").description("Owned journal entries"),
-                new Tag().name("Tags").description("Owned reusable journal tags")
+                new Tag().name("Profile").description("Current-user profile and password")
         )).components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()

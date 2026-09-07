@@ -63,7 +63,7 @@ public class RefreshTokenService {
         repository.save(current);
         IssuedRefreshToken replacement = issueAt(current.getUser(), now);
         return new RotatedRefreshToken(
-                current.getUser().getUserName(),
+                identityOf(current.getUser()),
                 replacement.token(),
                 replacement.expiresAt());
     }
@@ -93,5 +93,10 @@ public class RefreshTokenService {
     @Transactional
     public int revokeAllForUser(Long userId) {
         return repository.revokeAllActiveByUserId(userId, clock.instant());
+    }
+
+    private AccessTokenIdentity identityOf(User user) {
+        return new AccessTokenIdentity(
+                user.getId(), user.getUserName(), user.getRole());
     }
 }

@@ -1,0 +1,136 @@
+export type ProblemDetails = {
+  type?: string
+  title?: string
+  status?: number
+  detail?: string
+  instance?: string
+  correlationId?: string
+  errors?: Record<string, string>
+}
+
+export class ApiError extends Error {
+  readonly status: number
+  readonly problem?: ProblemDetails
+
+  constructor(status: number, problem?: ProblemDetails) {
+    super(problem?.detail ?? problem?.title ?? `Request failed with status ${status}`)
+    this.name = 'ApiError'
+    this.status = status
+    this.problem = problem
+  }
+}
+
+const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL
+const configuredJournalBaseUrl = import.meta.env.VITE_JOURNAL_API_BASE_URL
+
+if (!configuredBaseUrl) {
+  throw new Error('VITE_API_BASE_URL is not configured')
+}
+
+if (!configuredJournalBaseUrl) {
+  throw new Error('VITE_JOURNAL_API_BASE_URL is not configured')
+}
+
+const apiBaseUrl = configuredBaseUrl.replace(/\/$/, '')
+const journalApiBaseUrl = configuredJournalBaseUrl.replace(/\/$/, '')
+let accessToken: string | null = null
+let refreshPromise: Promise<boolean> | null = null
+let sessionExpiredHandler: (() => void) | null = null
+
+type AuthResponse = {
+  accessToken: string
+}
+
+export function setAccessToken(token: string | null) {
+  accessToken = token
+}
+
+export function setSessionExpiredHandler(handler: (() => void) | null) {
+  sessionExpiredHandler = handler
+}
+
+async function refreshAccessToken(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = fetch(`${apiBaseUrl}/auth/refresh`, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    })
+      .then(async (response) => {
+        if (!response.ok) return false
+        const auth = await response.json() as AuthResponse
+        setAccessToken(auth.accessToken)
+        return true
+      })
+      .finally(() => {
+        refreshPromise = null
+      })
+  }
+  return refreshPromise
+}
+
+function canRefresh(path: string) {
+  return !path.startsWith('/auth/')
+}
+
+async function request<T>(baseUrl: string, path: string, init: RequestInit = {}, retryAfterRefresh = true): Promise<T> {
+  const headers = new Headers(init.headers)
+  headers.set('Accept', 'application/json')
+
+  if (init.body && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json')
+  }
+
+  if (accessToken) {
+    headers.set('Authorization', `Bearer ${accessToken}`)
+  }
+
+  const response = await fetch(`${baseUrl}${path}`, {
+    ...init,
+    headers,
+    credentials: 'include',
+  })
+
+  if (response.status === 401 && retryAfterRefresh && canRefresh(path)) {
+    const refreshed = await refreshAccessToken()
+    if (refreshed) {
+      return request<T>(baseUrl, path, init, false)
+    }
+    setAccessToken(null)
+    sessionExpiredHandler?.()
+  }
+
+  if (!response.ok) {
+    const isProblemJson = response.headers
+      .get('content-type')
+      ?.includes('application/problem+json')
+    const problem = isProblemJson
+      ? await response.json() as ProblemDetails
+      : undefined
+    throw new ApiError(response.status, problem)
+  }
+
+  if (response.status === 204) {
+    return undefined as T
+  }
+
+  return response.json() as Promise<T>
+}
+
+function createApiClient(baseUrl: string) {
+  return {
+    get: <T>(path: string) => request<T>(baseUrl, path),
+    post: <T>(path: string, body?: unknown) => request<T>(baseUrl, path, {
+      method: 'POST',
+      body: body === undefined ? undefined : JSON.stringify(body),
+    }),
+    patch: <T>(path: string, body: unknown) => request<T>(baseUrl, path, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+    delete: (path: string) => request<void>(baseUrl, path, { method: 'DELETE' }),
+  }
+}
+
+export const apiClient = createApiClient(apiBaseUrl)
+export const journalApiClient = createApiClient(journalApiBaseUrl)

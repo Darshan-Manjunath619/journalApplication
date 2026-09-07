@@ -28,7 +28,8 @@ class RefreshTokenServiceTests {
 
     @Test
     void issuesRandomTokenButStoresOnlyItsHash() {
-        User user = User.builder().id(10L).userName("darshan").build();
+        User user = User.builder().id(10L).userName("darshan")
+                .role(java.util.List.of("USER")).build();
 
         IssuedRefreshToken issued = service.issue(user);
 
@@ -85,7 +86,8 @@ class RefreshTokenServiceTests {
 
     @Test
     void rotatesAnActiveTokenAndRevokesThePresentedToken() {
-        User user = User.builder().id(10L).userName("darshan").build();
+        User user = User.builder().id(10L).userName("darshan")
+                .role(java.util.List.of("USER")).build();
         RefreshToken current = new RefreshToken(
                 user, codec.hash("old-token"), NOW.plusSeconds(60), NOW.minusSeconds(60));
         when(repository.findForUpdateByTokenHash(codec.hash("old-token")))
@@ -93,7 +95,9 @@ class RefreshTokenServiceTests {
 
         RotatedRefreshToken rotated = service.rotate("old-token");
 
-        assertEquals("darshan", rotated.userName());
+        assertEquals(10L, rotated.identity().userId());
+        assertEquals("darshan", rotated.identity().username());
+        assertEquals(java.util.List.of("USER"), rotated.identity().roles());
         assertNotEquals("old-token", rotated.token());
         assertEquals(NOW, current.getRevokedAt());
         verify(repository, times(2)).save(any(RefreshToken.class));

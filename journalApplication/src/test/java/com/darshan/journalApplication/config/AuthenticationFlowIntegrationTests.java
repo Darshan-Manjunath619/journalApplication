@@ -1,5 +1,7 @@
 package com.darshan.journalApplication.config;
 
+import com.darshan.journalApplication.auth.AccessTokenIdentity;
+import com.darshan.journalApplication.utils.JwtUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthenticationFlowIntegrationTests {
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper objectMapper;
+    @Autowired JwtUtil jwtUtil;
 
     @Test
     void registerLoginProfileRotationAndReuseDetectionWorkTogether() throws Exception {
@@ -28,6 +31,10 @@ class AuthenticationFlowIntegrationTests {
 
         MvcResult login = login("security_flow");
         String accessToken = accessToken(login);
+        AccessTokenIdentity loginIdentity = jwtUtil.extractIdentity(accessToken);
+        assertTrue(loginIdentity.userId() > 0);
+        assertEquals("security_flow", loginIdentity.username());
+        assertEquals(java.util.List.of("USER"), loginIdentity.roles());
         Cookie originalRefresh = requiredRefreshCookie(login);
 
         mvc.perform(get("/api/v1/users/me")
@@ -44,6 +51,9 @@ class AuthenticationFlowIntegrationTests {
                 .andReturn();
         Cookie replacement = requiredRefreshCookie(rotation);
         assertNotEquals(originalRefresh.getValue(), replacement.getValue());
+        AccessTokenIdentity refreshedIdentity =
+                jwtUtil.extractIdentity(accessToken(rotation));
+        assertEquals(loginIdentity, refreshedIdentity);
 
         mvc.perform(post("/api/v1/auth/refresh")
                         .cookie(originalRefresh)

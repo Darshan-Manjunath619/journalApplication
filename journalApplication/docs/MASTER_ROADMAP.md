@@ -17,18 +17,18 @@ compare current progress with the complete target architecture.
 
 | Major phase | Status | Outcome |
 |---|---|---|
-| Phase 1 — Modular monolith and SPA | `[-]` | Secure full-stack journal application |
-| Phase 2 — Microservices | `[ ]` | Extract justified service boundaries |
+| Phase 1 — Modular monolith and SPA | `[x]` | Secure full-stack journal application |
+| Phase 2 — Microservices | `[-]` | Extract justified service boundaries |
 | Phase 3 — Kafka and Redis | `[ ]` | Add measured event and cache use cases |
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 1.7A Restricted operational health endpoint completed**.
-Next: **Phase 1.8 — Frontend foundation**.
+Current checkpoint: **Phase 2.3B existing-data migration tool completed**.
+Next: **Phase 2.3C — Verify cutover and retire legacy Identity tables**.
 
 ---
 
-## Phase 1 — Production-Style Modular Monolith and React SPA `[-]`
+## Phase 1 — Production-Style Modular Monolith and React SPA `[x]`
 
 ### Goal
 
@@ -133,64 +133,89 @@ Acceptance: `mvn verify` is green and covers critical success and failure paths.
 
 Acceptance: a developer can exercise every supported API from the generated docs.
 
-### 1.8 Frontend foundation `[ ]`
+### 1.8 Frontend foundation `[x]`
 
-- React, TypeScript, and Vite.
+- [x] React, TypeScript, and Vite initialization.
+- [x] Routing and responsive application shell.
+- [x] API client, TanStack Query, and environment configuration.
+- [x] Forms, styling, and frontend test infrastructure.
+  - [x] Vitest, React Testing Library, jsdom, and routing tests.
+  - [x] React Hook Form, Zod, and reusable form controls.
+  - [x] Tailwind CSS and reusable responsive visual styles.
 - React Router, TanStack Query, React Hook Form, Zod, and Tailwind.
 - Feature-based structure, environment configuration, API client, and test setup.
 
 Acceptance: lint, type-check, tests, and production build pass; the app starts locally.
 
-### 1.9 Frontend authentication `[ ]`
+### 1.9 Frontend authentication `[x]`
 
-- Register, login, logout, auth bootstrap, protected routes, and profile.
+- [x] Authentication state, typed contracts, and refresh-based session bootstrap.
+- [x] Register and login forms.
+- [x] Protected routes, automatic refresh retry, and logout.
+- [x] Profile integration.
 - Access token held in memory, never local storage.
 - Single shared refresh request and one retry after access-token expiry.
 
 Acceptance: authentication lifecycle and failure states pass component/API-mock tests.
 
-### 1.10 Journal frontend `[ ]`
+### 1.10 Journal frontend `[x]`
 
-- [ ] Dashboard and journal listing.
-- [ ] Create and view workflows.
-- [ ] Edit and delete workflows with confirmation and recovery.
-- [ ] Tag and favorite controls.
+- [x] Dashboard and journal listing.
+- [x] Create and view workflows.
+- [x] Edit and delete workflows with confirmation and recovery.
+- [x] Tag and favorite controls.
 
 Acceptance: each workflow works against the real backend and has focused tests.
 
-### 1.11 Frontend search and pagination `[ ]`
+### 1.11 Frontend search and pagination `[x]`
 
-- Search, filtering, sorting, page navigation, and URL query-state integration.
+- [x] Search, filtering, sorting, page navigation, and URL query-state integration.
+- [x] Tag, favorite, and UTC date-boundary filters.
 - Query flow documented from browser parameters to database and response.
 
 Acceptance: filters combine correctly, navigation is stable, and stale requests
 do not overwrite newer results.
 
-### 1.12 UI error handling and user experience `[ ]`
+### 1.12 UI error handling and user experience `[x]`
 
-- Loading, empty, retry, validation, unauthorized, and server-error states.
-- Responsive layout and keyboard/screen-reader accessibility pass.
+- [x] Shared page-level loading, empty, retry, and server-error presentation.
+- [x] Non-blocking tag failure and focused retry behavior.
+- [x] Keyboard, focus, responsive layout, and screen-reader accessibility pass.
 
 Acceptance: important failure scenarios are usable and verified on mobile and desktop.
 
-### 1.13 Full integration verification `[ ]`
+### 1.13 Full integration verification `[x]`
 
-- Register → login → dashboard → create → view → search/filter → edit →
+- [x] Backend verify and frontend lint, tests, type-check, and production build.
+- [x] Register → login → dashboard → create → view → search/filter → edit →
   favorite → delete → logout.
-- Backend, frontend, integration, database, authentication, and error checks.
+- [x] Real MySQL, authentication, health, OpenAPI, CORS, and error checks.
 
 Acceptance: the complete journey passes with no obvious regressions.
 
-### 1.14 Documentation and completion `[ ]`
+### 1.14 Documentation and completion `[x]`
 
+- [x] **1.14A Legacy API retirement** — remove obsolete unversioned controllers,
+  expose administration at `/api/v1/admin/users`, and verify deny-by-default behavior.
+- [x] **1.14B Final documentation and completion** — finish architecture and setup
+  documentation, run final verification, and create the Phase 1 tag.
 - Architecture, package structure, database, authentication, request flows,
   setup, environment variables, and testing instructions.
 - ADRs for modular monolith, tokens, Flyway/MySQL, tags, and frontend state.
 - Create Git tag `phase-1-complete` only after all Phase 1 acceptance criteria pass.
 
+### 1.15 Modular monolith HLD diagrams `[x]`
+
+- Document system context, deployment containers, backend components, authentication,
+  journal request flow, database relationships, and runtime configuration.
+- Preserve this as the Phase 1 baseline for comparison with Phase 2 microservices.
+
+Acceptance: diagrams match the implemented system, render as Mermaid, and introduce
+no runtime changes.
+
 ---
 
-## Phase 2 — Microservices Learning Architecture `[ ]`
+## Phase 2 — Microservices Learning Architecture `[-]`
 
 ### Goal
 
@@ -198,12 +223,42 @@ Demonstrate service extraction only after Phase 1 boundaries are stable. This is
 an architectural learning/scalability phase, not a claim that current traffic
 requires microservices.
 
-- [ ] **2.0 Architecture design** — business boundaries, ADRs, operational cost,
+- [x] **2.0 Architecture design** — business boundaries, ADRs, operational cost,
   failure modes, and extraction order.
-- [ ] **2.1 Service boundaries** — contracts and ownership for auth/user,
+- [x] **2.1 Service boundaries** — contracts and ownership for auth/user,
   journal/tag, and optional notification capabilities.
-- [ ] **2.2 Extract first microservice** — smallest justified boundary with parity.
-- [ ] **2.3 Database separation** — database ownership, migration, and consistency plan.
+  - [x] **2.1A Access-token identity contract** — signed immutable user ID and
+    roles shared consistently by login and refresh.
+  - [x] **2.1B Module ownership enforcement** — remove forbidden code dependencies
+    before moving journal/tag code.
+    - [x] **2.1B-1 Scalar journal owner boundary** — replace cross-domain JPA
+      relationships with stable owner IDs behind a journal-owned identity port.
+    - [x] **2.1B-2 Package dependency guardrails** — reorganize remaining journal
+      code and enforce allowed module dependencies with automated tests.
+- [x] **2.2 Extract first microservice** — smallest justified boundary with parity.
+  - [x] **2.2A Separate deployable scaffold** — independent Maven build, port,
+    Actuator health endpoint, executable JAR, and real HTTP startup test.
+  - [x] **2.2B Move journal and tag capability** — copy module-owned API,
+    application, domain, persistence, validation, and error behavior.
+    - [x] **2.2B-1 Domain and persistence foundation** — service-owned entities,
+      repositories, Flyway schema, audit fields, indexes, and isolated tests.
+    - [x] **2.2B-2 Application services** — move journal/tag business rules and
+      ownership-aware transactions.
+    - [x] **2.2B-3 HTTP API parity** — expose compatible DTO controllers and
+      error responses before frontend cutover.
+  - [x] **2.2C Journal Service JWT validation** — validate the existing access
+    token locally and authorize using its immutable user ID and roles.
+  - [x] **2.2D Frontend cutover** — route journal/tag calls to the new service
+    while keeping auth/profile calls on Identity.
+  - [x] **2.2E Remove legacy journal code** — retire duplicate endpoints only
+    after parity, rollback, and frontend verification.
+- [-] **2.3 Database separation** — database ownership, migration, and consistency plan.
+  - [x] **2.3A Independent schema ownership** — separate datasource variables,
+    Journal-owned Flyway history, schema validation, and local setup guidance.
+  - [x] **2.3B Existing-data migration rehearsal** — copy journals, tags, and
+    links while preserving IDs and produce a reconciliation report.
+  - [ ] **2.3C Cutover verification and cleanup** — verify the final copy and
+    retire legacy Identity tables only after the rollback window.
 - [ ] **2.4 Service communication** — synchronous contracts, timeouts, and versioning.
 - [ ] **2.5 Distributed authentication** — token validation and authorization boundaries.
 - [ ] **2.6 Integration testing** — contract, component, and cross-service tests.
