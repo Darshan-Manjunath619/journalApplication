@@ -26,6 +26,41 @@ Each service has its own datasource credentials and Flyway history table. In
 production these should be separate databases or schemas with permissions that
 prevent cross-service reads.
 
+## Local setup
+
+Create the empty databases once; Flyway creates and versions the tables inside
+them whenever each application starts:
+
+```sql
+CREATE DATABASE JournalApplication;
+CREATE DATABASE JournalService;
+```
+
+Configure the two independent connections in the ignored `.env` file:
+
+```properties
+DB_URL=jdbc:mysql://localhost:3306/JournalApplication?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+DB_USERNAME=root
+DB_PASSWORD=local-password
+
+JOURNAL_DB_URL=jdbc:mysql://localhost:3306/JournalService?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+JOURNAL_DB_USERNAME=root
+JOURNAL_DB_PASSWORD=local-password
+```
+
+Start Identity from the repository root and Journal Service from its directory:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+cd journal-service
+..\mvnw.cmd spring-boot:run
+```
+
+On Journal Service startup, Flyway reads `db/migration`, validates previously
+applied checksums, applies pending versions, and records them in that database's
+`flyway_schema_history`. Hibernate uses `ddl-auto: validate`, so entity changes
+cannot silently mutate the production schema.
+
 ## Identity schema
 
 Identity owns:

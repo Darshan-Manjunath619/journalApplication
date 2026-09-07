@@ -37,6 +37,7 @@ class JournalPersistenceTests {
         assertEquals(1, tableCount("journal_entries"));
         assertEquals(1, tableCount("tags"));
         assertEquals(1, tableCount("journal_entry_tags"));
+        assertEquals(1, tableCount("flyway_schema_history"));
     }
 
     @Test

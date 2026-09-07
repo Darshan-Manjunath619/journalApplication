@@ -83,7 +83,10 @@ Status: [ ] not started, [-] in progress, [x] completed.
     - [x] 2.2C Journal Service JWT validation
     - [x] 2.2D Frontend journal API cutover
     - [x] 2.2E Remove legacy journal code
-  - [ ] 2.3 Database separation
+  - [-] 2.3 Database separation
+    - [x] 2.3A Establish independent Journal Service schema ownership
+    - [ ] 2.3B Build and rehearse the existing-data migration
+    - [ ] 2.3C Verify cutover and retire legacy Identity tables
   - [ ] 2.4 Service communication
   - [ ] 2.5 Distributed authentication
   - [ ] 2.6 Integration testing

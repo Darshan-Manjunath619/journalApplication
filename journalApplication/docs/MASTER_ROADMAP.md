@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.2E first microservice extraction completed**.
-Next: **Phase 2.3 — Separate and migrate journal data ownership**.
+Current checkpoint: **Phase 2.3A independent Journal Service schema completed**.
+Next: **Phase 2.3B — Build and rehearse the existing-data migration**.
 
 ---
 
@@ -252,7 +252,13 @@ requires microservices.
     while keeping auth/profile calls on Identity.
   - [x] **2.2E Remove legacy journal code** — retire duplicate endpoints only
     after parity, rollback, and frontend verification.
-- [ ] **2.3 Database separation** — database ownership, migration, and consistency plan.
+- [-] **2.3 Database separation** — database ownership, migration, and consistency plan.
+  - [x] **2.3A Independent schema ownership** — separate datasource variables,
+    Journal-owned Flyway history, schema validation, and local setup guidance.
+  - [ ] **2.3B Existing-data migration rehearsal** — copy journals, tags, and
+    links while preserving IDs and produce a reconciliation report.
+  - [ ] **2.3C Cutover verification and cleanup** — verify the final copy and
+    retire legacy Identity tables only after the rollback window.
 - [ ] **2.4 Service communication** — synchronous contracts, timeouts, and versioning.
 - [ ] **2.5 Distributed authentication** — token validation and authorization boundaries.
 - [ ] **2.6 Integration testing** — contract, component, and cross-service tests.
