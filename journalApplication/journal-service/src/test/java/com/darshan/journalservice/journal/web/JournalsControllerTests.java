@@ -2,6 +2,7 @@ package com.darshan.journalservice.journal.web;
 
 import com.darshan.journalservice.identity.AuthenticationRequiredException;
 import com.darshan.journalservice.identity.CurrentOwnerProvider;
+import com.darshan.journalservice.identity.JwtTokenVerifier;
 import com.darshan.journalservice.journal.application.JournalSearchCriteria;
 import com.darshan.journalservice.journal.application.JournalService;
 import com.darshan.journalservice.journal.domain.JournalEntry;
@@ -10,6 +11,8 @@ import com.darshan.journalservice.tag.web.TagMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(JournalsController.class)
+@WebMvcTest(value = JournalsController.class,
+        excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import({JournalMapper.class, TagMapper.class, GlobalExceptionHandler.class})
 class JournalsControllerTests {
     @Autowired
@@ -44,6 +49,9 @@ class JournalsControllerTests {
 
     @MockitoBean
     JpaMetamodelMappingContext jpaMappingContext;
+
+    @MockitoBean
+    JwtTokenVerifier jwtTokenVerifier;
 
     @Test
     void listsOnlyForCurrentOwnerUsingStablePageContract() throws Exception {

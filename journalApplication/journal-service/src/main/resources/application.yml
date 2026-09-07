@@ -27,3 +27,11 @@ management:
   endpoint:
     health:
       show-details: never
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER:journal-application}
+    audience: ${JWT_AUDIENCE:journal-spa}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}

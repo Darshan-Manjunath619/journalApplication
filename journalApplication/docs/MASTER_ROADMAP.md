@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.2B-3 Journal Service HTTP API parity completed**.
-Next: **Phase 2.2C — Add Journal Service JWT validation**.
+Current checkpoint: **Phase 2.2C Journal Service JWT validation completed**.
+Next: **Phase 2.2D — Cut frontend journal and tag calls over to Journal Service**.
 
 ---
 
@@ -246,7 +246,7 @@ requires microservices.
       ownership-aware transactions.
     - [x] **2.2B-3 HTTP API parity** — expose compatible DTO controllers and
       error responses before frontend cutover.
-  - [ ] **2.2C Journal Service JWT validation** — validate the existing access
+  - [x] **2.2C Journal Service JWT validation** — validate the existing access
     token locally and authorize using its immutable user ID and roles.
   - [ ] **2.2D Frontend cutover** — route journal/tag calls to the new service
     while keeping auth/profile calls on Identity.

@@ -1,12 +1,15 @@
 package com.darshan.journalservice.tag.web;
 
 import com.darshan.journalservice.identity.CurrentOwnerProvider;
+import com.darshan.journalservice.identity.JwtTokenVerifier;
 import com.darshan.journalservice.shared.error.GlobalExceptionHandler;
 import com.darshan.journalservice.tag.application.TagService;
 import com.darshan.journalservice.tag.domain.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -19,7 +22,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TagsController.class)
+@WebMvcTest(value = TagsController.class,
+        excludeAutoConfiguration = UserDetailsServiceAutoConfiguration.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import({TagMapper.class, GlobalExceptionHandler.class})
 class TagsControllerTests {
     @Autowired
@@ -33,6 +38,9 @@ class TagsControllerTests {
 
     @MockitoBean
     JpaMetamodelMappingContext jpaMappingContext;
+
+    @MockitoBean
+    JwtTokenVerifier jwtTokenVerifier;
 
     @Test
     void createsTagForCurrentOwner() throws Exception {
