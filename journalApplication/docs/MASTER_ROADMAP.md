@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.2B-2 Journal application services completed**.
-Next: **Phase 2.2B-3 — Add Journal Service HTTP API parity**.
+Current checkpoint: **Phase 2.2B-3 Journal Service HTTP API parity completed**.
+Next: **Phase 2.2C — Add Journal Service JWT validation**.
 
 ---
 
@@ -238,13 +238,13 @@ requires microservices.
 - [-] **2.2 Extract first microservice** — smallest justified boundary with parity.
   - [x] **2.2A Separate deployable scaffold** — independent Maven build, port,
     Actuator health endpoint, executable JAR, and real HTTP startup test.
-  - [-] **2.2B Move journal and tag capability** — copy module-owned API,
+  - [x] **2.2B Move journal and tag capability** — copy module-owned API,
     application, domain, persistence, validation, and error behavior.
     - [x] **2.2B-1 Domain and persistence foundation** — service-owned entities,
       repositories, Flyway schema, audit fields, indexes, and isolated tests.
     - [x] **2.2B-2 Application services** — move journal/tag business rules and
       ownership-aware transactions.
-    - [ ] **2.2B-3 HTTP API parity** — expose compatible DTO controllers and
+    - [x] **2.2B-3 HTTP API parity** — expose compatible DTO controllers and
       error responses before frontend cutover.
   - [ ] **2.2C Journal Service JWT validation** — validate the existing access
     token locally and authorize using its immutable user ID and roles.
