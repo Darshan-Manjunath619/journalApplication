@@ -104,6 +104,11 @@ The one-time cross-database copy is not an application Flyway migration because
 each Flyway instance must own only its service schema. The copy runs as an
 explicit, reviewed migration job with a report.
 
+The migration job is in migration-tool. It defaults to a read-only preview and
+requires --execute to write. It refuses a non-empty target, checks orphaned
+owners, preserves IDs, copies all three tables in one target transaction, and
+commits only when source and target row counts match.
+
 If rollback is required after new writes reached Journal Service, pause writes
 again and run a reviewed reverse reconciliation before routing traffic to the old
 tables. A URL switch alone is safe only when no post-cutover writes occurred.

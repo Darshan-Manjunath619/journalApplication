@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.3A independent Journal Service schema completed**.
-Next: **Phase 2.3B — Build and rehearse the existing-data migration**.
+Current checkpoint: **Phase 2.3B existing-data migration tool completed**.
+Next: **Phase 2.3C — Verify cutover and retire legacy Identity tables**.
 
 ---
 
@@ -255,7 +255,7 @@ requires microservices.
 - [-] **2.3 Database separation** — database ownership, migration, and consistency plan.
   - [x] **2.3A Independent schema ownership** — separate datasource variables,
     Journal-owned Flyway history, schema validation, and local setup guidance.
-  - [ ] **2.3B Existing-data migration rehearsal** — copy journals, tags, and
+  - [x] **2.3B Existing-data migration rehearsal** — copy journals, tags, and
     links while preserving IDs and produce a reconciliation report.
   - [ ] **2.3C Cutover verification and cleanup** — verify the final copy and
     retire legacy Identity tables only after the rollback window.
