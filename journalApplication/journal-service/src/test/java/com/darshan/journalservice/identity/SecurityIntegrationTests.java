@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -40,6 +42,24 @@ class SecurityIntegrationTests {
     @Test
     void healthRemainsPublic() throws Exception {
         mvc.perform(get("/actuator/health")).andExpect(status().isOk());
+    }
+
+    @Test
+    void trustedFrontendCorsPreflightIsAccepted() throws Exception {
+        mvc.perform(options("/api/v1/journals")
+                        .header("Origin", "http://localhost:5173")
+                        .header("Access-Control-Request-Method", "GET"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin",
+                        "http://localhost:5173"));
+    }
+
+    @Test
+    void untrustedFrontendCorsPreflightIsRejected() throws Exception {
+        mvc.perform(options("/api/v1/journals")
+                        .header("Origin", "https://attacker.example")
+                        .header("Access-Control-Request-Method", "GET"))
+                .andExpect(status().isForbidden());
     }
 
     @Test

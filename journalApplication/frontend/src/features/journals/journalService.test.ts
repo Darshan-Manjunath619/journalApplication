@@ -18,6 +18,7 @@ describe('journalService', () => {
     await getJournals({ page: 1, size: 10, query: '', sortField: 'createdAt', sortDirection: 'desc', tagId: null, favorite: null, fromDate: '', toDate: '' })
 
     const url = String(fetchMock.mock.calls[0][0])
+    expect(url).toContain('localhost:8081')
     expect(url).toContain('/journals?')
     expect(url).toContain('page=1')
     expect(url).toContain('size=10')
@@ -65,6 +66,7 @@ describe('journalService', () => {
     await getJournal(9)
 
     expect(fetchMock.mock.calls[0][0]).toContain('/journals')
+    expect(fetchMock.mock.calls[0][0]).toContain('localhost:8081')
     expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: 'POST', body: JSON.stringify(request) })
     expect(fetchMock.mock.calls[1][0]).toContain('/journals/9')
   })

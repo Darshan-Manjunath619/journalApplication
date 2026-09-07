@@ -29,13 +29,16 @@ Create the ignored local configuration from the safe template:
 Copy-Item .env.example .env.local
 ```
 
-The template calls:
+The template configures two API destinations:
 
 ```text
-http://localhost:8080/journal/api/v1
+VITE_API_BASE_URL=http://localhost:8080/journal/api/v1
+VITE_JOURNAL_API_BASE_URL=http://localhost:8081/journal/api/v1
 ```
 
-For another environment, set `VITE_API_BASE_URL` when building the frontend.
+Authentication and profile requests use `VITE_API_BASE_URL`. Journal and tag
+requests use `VITE_JOURNAL_API_BASE_URL`. For another environment, set both
+values when building the frontend.
 Only variables beginning with `VITE_` are exposed to browser code, so never
 store passwords, tokens, private keys, or database credentials in them.
 
@@ -53,5 +56,6 @@ npm.cmd run build
 - `build` type-checks TypeScript and creates optimized static files in `dist/`.
 - `node_modules/` and `dist/` are generated and intentionally ignored by Git.
 
-The Spring Boot backend remains a separate project at the repository root and
-runs at `http://localhost:8080/journal`.
+Run the Identity application at `http://localhost:8080/journal` and the
+extracted Journal Service at `http://localhost:8081/journal` before testing the
+complete browser workflow.

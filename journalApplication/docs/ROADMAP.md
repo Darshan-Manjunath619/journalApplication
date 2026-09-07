@@ -81,7 +81,7 @@ Status: [ ] not started, [-] in progress, [x] completed.
       - [x] 2.2B-2 Application services
       - [x] 2.2B-3 HTTP API parity
     - [x] 2.2C Journal Service JWT validation
-    - [ ] 2.2D Frontend journal API cutover
+    - [x] 2.2D Frontend journal API cutover
     - [ ] 2.2E Remove legacy journal code
   - [ ] 2.3 Database separation
   - [ ] 2.4 Service communication

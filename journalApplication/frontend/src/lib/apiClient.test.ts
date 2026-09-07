@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { apiClient, setAccessToken, setSessionExpiredHandler } from './apiClient'
+import { apiClient, journalApiClient, setAccessToken, setSessionExpiredHandler } from './apiClient'
 
 function jsonResponse(body: unknown, status = 200, contentType = 'application/json') {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': contentType } })
@@ -27,13 +27,18 @@ describe('apiClient access-token refresh', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
 
-    await Promise.all([apiClient.get('/journals'), apiClient.get('/users/me')])
+    await Promise.all([journalApiClient.get('/journals'), apiClient.get('/users/me')])
 
     const refreshCalls = fetchMock.mock.calls.filter(([url]) => String(url).endsWith('/auth/refresh'))
     expect(refreshCalls).toHaveLength(1)
+    expect(String(refreshCalls[0][0])).toContain('localhost:8080')
     const retriedCalls = fetchMock.mock.calls.filter(([, init]) =>
       new Headers(init?.headers).get('Authorization') === 'Bearer new-token')
     expect(retriedCalls).toHaveLength(2)
+    expect(fetchMock.mock.calls.some(([url]) =>
+      String(url).startsWith('http://localhost:8081/journal/api/v1/journals'))).toBe(true)
+    expect(fetchMock.mock.calls.some(([url]) =>
+      String(url).startsWith('http://localhost:8080/journal/api/v1/users/me'))).toBe(true)
   })
 
   it('clears the session when refresh is rejected', async () => {
@@ -45,7 +50,7 @@ describe('apiClient access-token refresh', () => {
       .mockResolvedValueOnce(jsonResponse({ status: 401 }, 401, 'application/problem+json'))
     vi.stubGlobal('fetch', fetchMock)
 
-    await expect(apiClient.get('/journals')).rejects.toMatchObject({ status: 401 })
+    await expect(journalApiClient.get('/journals')).rejects.toMatchObject({ status: 401 })
 
     expect(onSessionExpired).toHaveBeenCalledOnce()
     expect(fetchMock).toHaveBeenCalledTimes(2)

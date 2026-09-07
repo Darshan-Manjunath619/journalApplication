@@ -23,8 +23,8 @@ compare current progress with the complete target architecture.
 | Phase 4 — Containers and deployment | `[ ]` | Reproducible containerized deployment |
 | Phase 5 — Production architecture | `[ ]` | Resilience, observability, security, and scale |
 
-Current checkpoint: **Phase 2.2C Journal Service JWT validation completed**.
-Next: **Phase 2.2D — Cut frontend journal and tag calls over to Journal Service**.
+Current checkpoint: **Phase 2.2D Frontend Journal Service cutover completed**.
+Next: **Phase 2.2E — Remove legacy journal and tag code from Identity**.
 
 ---
 
@@ -248,7 +248,7 @@ requires microservices.
       error responses before frontend cutover.
   - [x] **2.2C Journal Service JWT validation** — validate the existing access
     token locally and authorize using its immutable user ID and roles.
-  - [ ] **2.2D Frontend cutover** — route journal/tag calls to the new service
+  - [x] **2.2D Frontend cutover** — route journal/tag calls to the new service
     while keeping auth/profile calls on Identity.
   - [ ] **2.2E Remove legacy journal code** — retire duplicate endpoints only
     after parity, rollback, and frontend verification.

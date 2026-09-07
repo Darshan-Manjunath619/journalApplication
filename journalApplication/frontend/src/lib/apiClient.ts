@@ -21,12 +21,18 @@ export class ApiError extends Error {
 }
 
 const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL
+const configuredJournalBaseUrl = import.meta.env.VITE_JOURNAL_API_BASE_URL
 
 if (!configuredBaseUrl) {
   throw new Error('VITE_API_BASE_URL is not configured')
 }
 
+if (!configuredJournalBaseUrl) {
+  throw new Error('VITE_JOURNAL_API_BASE_URL is not configured')
+}
+
 const apiBaseUrl = configuredBaseUrl.replace(/\/$/, '')
+const journalApiBaseUrl = configuredJournalBaseUrl.replace(/\/$/, '')
 let accessToken: string | null = null
 let refreshPromise: Promise<boolean> | null = null
 let sessionExpiredHandler: (() => void) | null = null
@@ -67,7 +73,7 @@ function canRefresh(path: string) {
   return !path.startsWith('/auth/')
 }
 
-async function request<T>(path: string, init: RequestInit = {}, retryAfterRefresh = true): Promise<T> {
+async function request<T>(baseUrl: string, path: string, init: RequestInit = {}, retryAfterRefresh = true): Promise<T> {
   const headers = new Headers(init.headers)
   headers.set('Accept', 'application/json')
 
@@ -79,7 +85,7 @@ async function request<T>(path: string, init: RequestInit = {}, retryAfterRefres
     headers.set('Authorization', `Bearer ${accessToken}`)
   }
 
-  const response = await fetch(`${apiBaseUrl}${path}`, {
+  const response = await fetch(`${baseUrl}${path}`, {
     ...init,
     headers,
     credentials: 'include',
@@ -88,7 +94,7 @@ async function request<T>(path: string, init: RequestInit = {}, retryAfterRefres
   if (response.status === 401 && retryAfterRefresh && canRefresh(path)) {
     const refreshed = await refreshAccessToken()
     if (refreshed) {
-      return request<T>(path, init, false)
+      return request<T>(baseUrl, path, init, false)
     }
     setAccessToken(null)
     sessionExpiredHandler?.()
@@ -111,15 +117,20 @@ async function request<T>(path: string, init: RequestInit = {}, retryAfterRefres
   return response.json() as Promise<T>
 }
 
-export const apiClient = {
-  get: <T>(path: string) => request<T>(path),
-  post: <T>(path: string, body?: unknown) => request<T>(path, {
-    method: 'POST',
-    body: body === undefined ? undefined : JSON.stringify(body),
-  }),
-  patch: <T>(path: string, body: unknown) => request<T>(path, {
-    method: 'PATCH',
-    body: JSON.stringify(body),
-  }),
-  delete: (path: string) => request<void>(path, { method: 'DELETE' }),
+function createApiClient(baseUrl: string) {
+  return {
+    get: <T>(path: string) => request<T>(baseUrl, path),
+    post: <T>(path: string, body?: unknown) => request<T>(baseUrl, path, {
+      method: 'POST',
+      body: body === undefined ? undefined : JSON.stringify(body),
+    }),
+    patch: <T>(path: string, body: unknown) => request<T>(baseUrl, path, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+    delete: (path: string) => request<void>(baseUrl, path, { method: 'DELETE' }),
+  }
 }
+
+export const apiClient = createApiClient(apiBaseUrl)
+export const journalApiClient = createApiClient(journalApiBaseUrl)
